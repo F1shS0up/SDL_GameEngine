@@ -22,8 +22,4 @@ public:
 	Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
 
 	void Update(class Registry* reg, double* deltaTime);
-
-
-
-	Vector2D lastPos;
 };

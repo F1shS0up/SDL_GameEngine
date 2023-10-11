@@ -17,10 +17,12 @@ public:
 #pragma region components
 
     std::unordered_map<Entity, Rigidbody_Component> rigidbodies;
-    std::unordered_map<Entity, CircleFilled_Component> circlesFilled;
+    std::unordered_map<Entity, FilledCircle_Component> filledCircles;
+    std::unordered_map<Entity, FilledRectangle_Component> filledRectangles;
     std::unordered_map<Entity, Transform_Component> transforms;
-    std::unordered_map<Entity, CircleCollider_Component> circleCollider;
-    std::unordered_map<Entity, LineCollider_Component> lineCollider;
+    std::unordered_map<Entity, CircleCollider_Component> circleColliders;
+    std::unordered_map<Entity, RectangleCollider_Component> rectangleColliders;
+    std::unordered_map<Entity, LineCollider_Component> lineColliders;
 
 #pragma endregion
 

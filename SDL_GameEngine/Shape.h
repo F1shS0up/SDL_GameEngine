@@ -2,14 +2,22 @@
 #include "Vector2D.h"
 #include "SDL.h"
 
-struct CircleFilled_Component
+struct FilledCircle_Component
 {
-	int radius;
+	float radius;
 	SDL_Color color;
-
 
 	Vector2D* position;
 };
+struct FilledRectangle_Component
+{
+	float width, height;
+	SDL_Color color;
+
+	Vector2D* position;
+};
+
+
 class Shape_System
 {
 public:
