@@ -12,9 +12,9 @@
 
 const int rectangleLineThickness = 10;
 const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
-const float gravityStrength = 0;
+const float gravityStrength = 1000;
 
-
+#define StartWithRandom
 
 
 
@@ -91,13 +91,14 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 		Entity entity = EntityManager::Instance()->CreateEntity();
 		std::random_device rd;     // Only used once to initialise (seed) engine
 		std::mt19937 rng(rd());    // Random-number engine used (Mersenne-Twister in this case)
-		std::uniform_int_distribution<int> uni(0, 150); // Guaranteed unbiased
+		std::uniform_int_distribution<int> uni(5, 175); // Guaranteed unbiased
 		std::uniform_int_distribution<int> uni2(0, 800); // Guaranteed unbiased
-		std::uniform_int_distribution<int> uni3(1000, 2000); // Guaranteed unbiased
+		std::uniform_int_distribution<int> uni3(920, 2920); // Guaranteed unbiased
+		std::uniform_int_distribution<int> uni4(80, 2080); // Guaranteed unbiased
 
 		float size = uni(rng);
 		Vector2D rngDir = Vector2D(uni2(rng), uni2(rng));
-		Vector2D rngPos = Vector2D(uni3(rng), uni3(rng));
+		Vector2D rngPos = Vector2D(uni3(rng), uni4(rng));
 
 		unsigned int temp = 10101; // seed - this seeds the random number generator
 

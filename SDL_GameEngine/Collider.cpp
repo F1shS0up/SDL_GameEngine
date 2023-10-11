@@ -203,14 +203,3 @@ Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D* normal, V
 	return reflection;
 
 }
-
-Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D pos, float radius, Vector2D pos2, float radius2)
-{
-	Vector2D dirToMove = pos - pos2;
-	Vector2D difference = Vector2D(std::abs(pos2.x - pos.x), std::abs(pos2.y - pos.y));
-	float distance = radius + radius2 - difference.length();
-
-	return dirToMove.normalize() * distance + pos;
-}
-
-

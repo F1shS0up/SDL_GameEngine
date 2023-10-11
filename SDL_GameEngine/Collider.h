@@ -29,9 +29,6 @@ public:
 
 namespace ColliderFunctions
 {
-
-	static Vector2D vel, pos;
-
 	bool LineCollision(const Vector2D& A1, const Vector2D& A2,
 		const Vector2D& B1, const Vector2D& B2,
 		Vector2D* intersection = 0);
@@ -47,6 +44,4 @@ namespace ColliderFunctions
 
 	Vector2D PositionToReturnToAfterCollision(Vector2D* normal, CircleCollider_Component* circleCollider, Vector2D intersection);
 	Vector2D PositionToReturnToAfterCollision(Vector2D* normal, Vector2D pos, Vector2D newPos, float radius, Vector2D intersection, LineCollider_Component lc);
-	Vector2D PositionToReturnToAfterCollision(Vector2D pos, float radius, Vector2D pos2, float radius2);
-
 }

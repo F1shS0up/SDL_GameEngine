@@ -12,7 +12,6 @@ const int MAX_FPS = 0;
 
 Game* game = nullptr;
 
-
 std::chrono::steady_clock::time_point Start = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point TickTack;
 
