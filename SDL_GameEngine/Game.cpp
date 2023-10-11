@@ -96,6 +96,13 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(500, 500), Vector2D(0, gravityStrength) , 50 };
 	Registry::Instance()->rectangleColliders[square] = RectangleCollider_Component{ 100, 100 };
 
+	Entity square2 = EntityManager::Instance()->CreateEntity();
+
+	Registry::Instance()->filledRectangles[square2] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
+	Registry::Instance()->transforms[square2] = Transform_Component{ Vector2D(1400, 1200) };
+	Registry::Instance()->rigidbodies[square2] = Rigidbody_Component{ Vector2D(0, 600), Vector2D(0, gravityStrength) , 200 };
+	Registry::Instance()->rectangleColliders[square2] = RectangleCollider_Component{ 200, 200 };
+
 
 
 

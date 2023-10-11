@@ -61,6 +61,8 @@ namespace ColliderFunctions
 	Vector2D PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint);
 
 	//Check if rectangle intersects line, only works with non rotated rectangles
-	bool RectangleLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
+	bool RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
+
+	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB);
 
 }

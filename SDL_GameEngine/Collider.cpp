@@ -199,6 +199,43 @@ bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radius
 	return distance < radiusA + radiusB;
 }
 
+bool ColliderFunctions::RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection, Vector2D* from, Vector2D* to, float* outA)
+{
+	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y), Vector2D(pos.x + width, pos.y), A, B, intersection, outA))
+	{
+		*from = pos;
+		*to = Vector2D(pos.x + width, pos.y);
+		return true;
+	}
+	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y), Vector2D(pos.x + width, pos.y + height), A, B, intersection, outA))
+	{
+		*from = Vector2D(pos.x + width, pos.y);
+		*to = Vector2D(pos.x + width, pos.y + height);
+		return true;
+	}
+	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y + height), Vector2D(pos.x, pos.y + height), A, B, intersection, outA))
+	{
+		*from = Vector2D(pos.x + width, pos.y + height);
+		*to = Vector2D(pos.x, pos.y + height);
+		return true;
+	}
+	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y + height), Vector2D(pos.x, pos.y), A, B, intersection, outA))
+	{
+		*from = Vector2D(pos.x, pos.y + height);
+		*to = pos;
+		return true;
+	}
+	return false;
+}
+
+bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB)
+{
+	return posA.x < posB.x + widthB &&
+		posA.x + widthA > posB.x &&
+		posA.y < posB.y + heightB &&
+		posA.y + heightA > posB.y;
+}
+
 Vector2D ColliderFunctions::ReflectionNormal(const LineCollider_Component* lineColliders, Vector2D point)
 {
 	Vector2D normalA, normalB;
@@ -226,35 +263,6 @@ Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* nor
 	Vector2D reflection = reflect(newPos, lc->a, lc->b);
 	return reflection;
 
-}
-
-bool ColliderFunctions::RectangleLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection, Vector2D* from, Vector2D* to, float* outA)
-{
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y), Vector2D(pos.x + width, pos.y), A, B, intersection, outA))
-	{
-		*from = pos;
-		*to = Vector2D(pos.x + width, pos.y);
-		return true;
-	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y), Vector2D(pos.x + width, pos.y + height), A, B, intersection, outA))
-	{
-		*from = Vector2D(pos.x + width, pos.y);
-		*to = Vector2D(pos.x + width, pos.y + height);
-		return true;
-	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y + height), Vector2D(pos.x, pos.y + height), A, B, intersection, outA))
-	{
-		*from = Vector2D(pos.x + width, pos.y + height);
-		*to = Vector2D(pos.x, pos.y + height);
-		return true;
-	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y + height), Vector2D(pos.x, pos.y), A, B, intersection, outA))
-	{
-		*from = Vector2D(pos.x, pos.y + height);
-		*to = pos;
-		return true;
-	}
-	return false;
 }
 
 Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint)

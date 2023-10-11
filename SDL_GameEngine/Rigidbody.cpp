@@ -143,10 +143,45 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 
 						Vector2D intersectionPoint, fromIntersectedLine, toIntersectedLine;
 						float outA;
-						if (ColliderFunctions::RectangleLineIntersection(rc->width, rc->height, *rc->position, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
+						if (ColliderFunctions::RectangleWithLineIntersection(rc->width, rc->height, x1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
 						{
-							Vector2D normal = ColliderFunctions::ReflectionNormal(cl, *c->position);
-							c->velocity = ReflectionResponse(&normal, &c->velocity);
+							Vector2D normal = ColliderFunctions::ReflectionNormal(cl, x1);
+							c->velocity = ReflectionResponse(&normal, &v1);
+
+							//Set the position away from the line so that it wont collide again which could result in a rectangle being stuck in line
+							*c->position = ColliderFunctions::PositionToReturnToAfterCollision(fromIntersectedLine, toIntersectedLine, x1, outA, &intersectionPoint);
+						}
+					}
+				}
+				for (int e2 = e + 1; e2 <= EntityManager::Instance()->num_entities; e2++)
+				{
+					if (reg->rigidbodies.count(e2))
+					{
+						Rigidbody_Component* c2 = &reg->rigidbodies[e2];
+
+						//Basic rigidbody properties again for pretty look
+						Vector2D v2 = c2->velocity;
+						Vector2D x2 = *c2->position;
+						float m2 = c2->mass;
+
+						if (reg->rectangleColliders.count(e2))
+						{
+							RectangleCollider_Component* rc2 = &reg->rectangleColliders[e2];
+							if (ColliderFunctions::RectangleWithRectangleIntersection(rc->width, rc->height, x1, rc2->width, rc2->height, x2))
+							{
+								//Collided with another rectangle
+
+								//Calculate the velocity using the K.E. formula and conservation of energy
+								//Then save it in new variable, because we will still use the before collision velocity.
+								Vector2D v1new;
+								ComputeVelocity(v1, v2, x1, x2, m1, m2, &v1new);
+
+								Vector2D v2new;
+								ComputeVelocity(v2, v1, x2, x1, m2, m1, &v2new);
+
+								c->velocity = v1new;
+								c2->velocity = v2new;
+							}
 						}
 					}
 				}
