@@ -3,11 +3,7 @@
 #include "Entity.h"
 #include "Shapes.h"
 #include <numeric>
-
-float VectorDotProduct(Vector2D v1, Vector2D v2)
-{
-	return v1.x * v2.x + v1.y * v2.y;
-}
+#include <complex>
 void Collider_System::Init(Registry* reg)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -76,6 +72,24 @@ void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 #endif // _DEBUG
 inline double Dot(const Vector2D& a, const Vector2D& b) { return (a.x * b.x) + (a.y * b.y); }
 inline double PerpDot(const Vector2D& a, const Vector2D& b) { return (a.y * b.x) - (a.x * b.y); }
+inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)
+{
+	typedef std::complex<double> point;
+	// Performing translation and shifting origin at A
+	point Pt = point(P.x - A.x, P.y - A.y);
+	point Bt = point(B.x - A.x, B.y - A.y);
+
+	// Performing rotation in clockwise direction
+	// BtAt becomes the X-Axis in the new coordinate system
+	point Pr = Pt / Bt;
+
+	// Reflection of Pr about the new X-Axis
+	// Followed by restoring from rotation
+	// Followed by restoring from translation
+	point x = std::conj(Pr) * Bt + point(A.x, A.y);
+	return Vector2D(x.real(), x.imag());
+}
+
 
 bool ColliderFunctions::LineCollision(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection)
 {
@@ -128,14 +142,37 @@ bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineC
 	return intersects;
 }
 
-Vector2D* ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineCollider, CircleCollider_Component* circleCollider, Vector2D nextFramePosToAdd)
+bool ColliderFunctions::FrameIndependentCircleWithLineIntersection(LineCollider_Component* lineCollider, CircleCollider_Component* circleCollider, Vector2D nextFramePosToAdd, Vector2D* intersectionPoint)
 {
-	return nullptr;
+	bool intersect = CircleWithLineIntersection(lineCollider, *circleCollider->position + nextFramePosToAdd, circleCollider->radius, intersectionPoint);
+	if (intersect)
+	{
+		return true;
+	}
+
+	Vector2D a1, a2, b1, b2;
+	a1 = lineCollider->a;
+	b1 = lineCollider->b;
+
+	a2 = *circleCollider->position + nextFramePosToAdd;
+	// b2 is equal to the center of the circle and normal of line times radius
+	b2 = *circleCollider->position;
+	intersect = LineCollision(a1, b1, a2, b2, intersectionPoint);
+	if (intersect)
+	{
+		return true;
+	}
+
+	
+	return false;
 }
 
-Vector2D* ColliderFunctions::CircleWithCircleIntersection(CircleCollider_Component* circleCollider1, CircleCollider_Component* circleCollider2)
+bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB)
 {
-	return nullptr;
+	Vector2D difference = Vector2D(std::abs(posB.x - posA.x), std::abs(posB.y - posA.y));
+	float distance = difference.length();
+	
+	return distance < radiusA + radiusB;
 }
 
 Vector2D ColliderFunctions::ReflectionNormal(LineCollider_Component* lineCollider, Vector2D point)
@@ -153,23 +190,6 @@ Vector2D ColliderFunctions::ReflectionNormal(LineCollider_Component* lineCollide
 	return (lengthA < lengthB) ? lineCollider->normal : Vector2D(-lineCollider->normal.x, -lineCollider->normal.y);
 }
 
-Vector2D ColliderFunctions::ReflectionResponse(Vector2D* normal, Vector2D* velocity)
-{
-	// u = v * n * n * n
-	float dot = VectorDotProduct(*velocity, *normal);
-
-	Vector2D u = Vector2D(dot * normal->x, dot * normal->y);
-	Vector2D w = *velocity - u;
-	// w = v - u
-	// new v = w - u
-
-	// (v - v * n * n * n) - v * n * n * n
-
-	Vector2D result = w - u;
-
-	return result;
-}
-
 Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D* normal, CircleCollider_Component* circleCollider, Vector2D intersection)
 {
 	Vector2D pos = *circleCollider->position;
@@ -177,11 +197,20 @@ Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D* normal, C
 	Vector2D result = (biggestPos - intersection) * -1;
 	return result + pos;
 }
-Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D* normal, Vector2D pos, float radius, Vector2D intersection)
+Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D* normal, Vector2D pos, Vector2D newPos, float radius, Vector2D intersection, LineCollider_Component lc)
 {
-	Vector2D biggestPos = pos - Vector2D(radius * normal->x, radius * normal->y);
-	Vector2D result = (biggestPos - intersection) * -1;
-	return result + pos;
+	Vector2D reflection = reflect(newPos, lc.a, lc.b);
+	return reflection;
+
+}
+
+Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D pos, float radius, Vector2D pos2, float radius2)
+{
+	Vector2D dirToMove = pos - pos2;
+	Vector2D difference = Vector2D(std::abs(pos2.x - pos.x), std::abs(pos2.y - pos.y));
+	float distance = radius + radius2 - difference.length();
+
+	return dirToMove.normalize() * distance + pos;
 }
 
 

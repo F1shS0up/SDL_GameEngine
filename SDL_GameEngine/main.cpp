@@ -6,9 +6,9 @@
 #include <SDL_image.h>
 #include <chrono>
 
-const int WND_WIDTH = 3840, WND_HEIGHT = 2160;
-const int REN_WIDTH = 3840, REN_HEIGHT = 2160;
-const int MAX_FPS = 1;
+const int WND_WIDTH = 1920, WND_HEIGHT = 1080;
+const int REN_WIDTH = 1920, REN_HEIGHT = 1080;
+const int MAX_FPS = 0;
 
 Game* game = nullptr;
 
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
     SDL_Rect windowRect = { 0, 0, WND_WIDTH, WND_HEIGHT };
 
-    game->Init("Game window", windowRect, REN_WIDTH, REN_HEIGHT, false);
+    game->Init("Game window", windowRect, REN_WIDTH, REN_HEIGHT, true);
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
 

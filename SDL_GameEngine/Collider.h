@@ -40,14 +40,13 @@ namespace ColliderFunctions
 	bool CircleWithLineIntersection(LineCollider_Component* lineCollider, Vector2D position, float radius, Vector2D* intersectionPoint);
 
 	//It does the same except but if it fails it checks from middle to middle
-	Vector2D* CircleWithLineIntersection(LineCollider_Component* lineCollider, CircleCollider_Component* circleCollider, Vector2D nextFramePosToAdd);
-	Vector2D* CircleWithCircleIntersection(CircleCollider_Component* circleCollider1, CircleCollider_Component* circleCollider2);
+	bool FrameIndependentCircleWithLineIntersection(LineCollider_Component* lineCollider, CircleCollider_Component* circleCollider, Vector2D nextFramePosToAdd, Vector2D* intersectionPoint);
+	bool CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB);
 
 	Vector2D ReflectionNormal(LineCollider_Component* lineCollider, Vector2D point);
 
-	Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
-
 	Vector2D PositionToReturnToAfterCollision(Vector2D* normal, CircleCollider_Component* circleCollider, Vector2D intersection);
-	Vector2D PositionToReturnToAfterCollision(Vector2D* normal, Vector2D pos, float radius, Vector2D intersection);
+	Vector2D PositionToReturnToAfterCollision(Vector2D* normal, Vector2D pos, Vector2D newPos, float radius, Vector2D intersection, LineCollider_Component lc);
+	Vector2D PositionToReturnToAfterCollision(Vector2D pos, float radius, Vector2D pos2, float radius2);
 
 }
