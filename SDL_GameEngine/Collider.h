@@ -37,16 +37,24 @@ public:
 namespace ColliderFunctions
 {
 	//Check collision between two lines and return true if they collide/intersect
-	bool LineCollision(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA = 0);
+	bool LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA = 0);
 
 	//Calculates the furthest and nerest point in the circle and if it intersects with line.
 	bool CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint);
 
+	//Check if two circles intersect
+	bool CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB, float* penetration = 0);
+
+	//Check if rectangle intersects line, only works with non rotated rectangles
+	bool RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
+
+
+	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB);
+
 	//It does the same except but if it fails it checks from middle to middle
 	bool FrameIndependentCircleWithLineIntersection(LineCollider_Component* lineColliders, const CircleCollider_Component* circleColliders, Vector2D nextFramePosToAdd, Vector2D* intersectionPoint);
 
-	//Check if two circles intersect
-	bool CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB);
+	bool CircleWithRectangleIntersection(Vector2D pos, float radius, Vector2D pos2, float width, float height);
 
 	//Return the normal of line thats facing towards the point
 	Vector2D ReflectionNormal(const LineCollider_Component* lineColliders, Vector2D point);
@@ -59,10 +67,5 @@ namespace ColliderFunctions
 
 	//Position to go to when collision was detected for rectangle with line
 	Vector2D PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint);
-
-	//Check if rectangle intersects line, only works with non rotated rectangles
-	bool RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
-
-	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB);
 
 }

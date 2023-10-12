@@ -70,7 +70,7 @@ void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 					CircleCollider_Component* cc = &reg->circleColliders[e2];
 
 					Vector2D intersection;
-					bool inter = ColliderFunctions::LineCollision(*cc->position + cl->normal * cc->radius, *cc->position - cl->normal * cc->radius, cl->a, cl->b, &intersection);
+					bool inter = ColliderFunctions::LineLineIntersection(*cc->position + cl->normal * cc->radius, *cc->position - cl->normal * cc->radius, cl->a, cl->b, &intersection);
 					if (inter)
 					{
 						ShapesRendering::DrawFilledCircle(renderer, intersection.x, intersection.y, 20, SDL_Color{ 255, 255, 0, 1 });
@@ -113,7 +113,7 @@ inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)
 
 
 
-bool ColliderFunctions::LineCollision(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA)
+bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA)
 {
 	Vector2D a(A2 - A1);
 	Vector2D b(B2 - B1);
@@ -159,7 +159,7 @@ bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineC
 	b2 = position - lineColliders->normal * radius;
 
 	Vector2D intersection;
-	bool intersects = LineCollision(a1, b1, a2, b2, &intersection);
+	bool intersects = LineLineIntersection(a1, b1, a2, b2, &intersection);
 
 	*intersectionPoint = intersection;
 
@@ -181,7 +181,7 @@ bool ColliderFunctions::FrameIndependentCircleWithLineIntersection(LineCollider_
 	a2 = *circleColliders->position + nextFramePosToAdd;
 	// b2 is equal to the center of the circle and normal of line times radius
 	b2 = *circleColliders->position;
-	intersect = LineCollision(a1, b1, a2, b2, intersectionPoint);
+	intersect = LineLineIntersection(a1, b1, a2, b2, intersectionPoint);
 	if (intersect)
 	{
 		return true;
@@ -191,35 +191,38 @@ bool ColliderFunctions::FrameIndependentCircleWithLineIntersection(LineCollider_
 	return false;
 }
 
-bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB)
+bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB, float* penetration)
 {
 	Vector2D difference = Vector2D(std::abs(posB.x - posA.x), std::abs(posB.y - posA.y));
 	float distance = difference.length();
+
+	*penetration = radiusA + radiusB - distance;
+	
 	
 	return distance < radiusA + radiusB;
 }
 
 bool ColliderFunctions::RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection, Vector2D* from, Vector2D* to, float* outA)
 {
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y), Vector2D(pos.x + width, pos.y), A, B, intersection, outA))
+	if (ColliderFunctions::LineLineIntersection(Vector2D(pos.x, pos.y), Vector2D(pos.x + width, pos.y), A, B, intersection, outA))
 	{
 		*from = pos;
 		*to = Vector2D(pos.x + width, pos.y);
 		return true;
 	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y), Vector2D(pos.x + width, pos.y + height), A, B, intersection, outA))
+	if (ColliderFunctions::LineLineIntersection(Vector2D(pos.x + width, pos.y), Vector2D(pos.x + width, pos.y + height), A, B, intersection, outA))
 	{
 		*from = Vector2D(pos.x + width, pos.y);
 		*to = Vector2D(pos.x + width, pos.y + height);
 		return true;
 	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x + width, pos.y + height), Vector2D(pos.x, pos.y + height), A, B, intersection, outA))
+	if (ColliderFunctions::LineLineIntersection(Vector2D(pos.x + width, pos.y + height), Vector2D(pos.x, pos.y + height), A, B, intersection, outA))
 	{
 		*from = Vector2D(pos.x + width, pos.y + height);
 		*to = Vector2D(pos.x, pos.y + height);
 		return true;
 	}
-	if (ColliderFunctions::LineCollision(Vector2D(pos.x, pos.y + height), Vector2D(pos.x, pos.y), A, B, intersection, outA))
+	if (ColliderFunctions::LineLineIntersection(Vector2D(pos.x, pos.y + height), Vector2D(pos.x, pos.y), A, B, intersection, outA))
 	{
 		*from = Vector2D(pos.x, pos.y + height);
 		*to = pos;
@@ -234,6 +237,26 @@ bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float h
 		posA.x + widthA > posB.x &&
 		posA.y < posB.y + heightB &&
 		posA.y + heightA > posB.y;
+}
+
+bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, float radius, Vector2D pos2, float width, float height)
+{
+	Vector2D circleDistance;
+	Vector2D rectMid = pos2 + Vector2D(width / 2, height / 2);
+	circleDistance.x = abs(pos.x - rectMid.x);
+	circleDistance.y = abs(pos.y - rectMid.y);
+
+	if (circleDistance.x > (width / 2 + radius)) { return false; }
+	if (circleDistance.y > (height / 2 + radius)) { return false; }
+
+	if (circleDistance.x <= (width / 2)) { return true; }
+	if (circleDistance.y <= (height / 2)) { return true; }
+
+	float cornerDistance_sq;
+	cornerDistance_sq = (circleDistance.x - width / 2) * (circleDistance.x - width / 2) +
+		(circleDistance.y - height / 2) * (circleDistance.y - height / 2);
+
+	return (cornerDistance_sq <= (radius * radius));
 }
 
 Vector2D ColliderFunctions::ReflectionNormal(const LineCollider_Component* lineColliders, Vector2D point)
