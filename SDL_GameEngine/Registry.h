@@ -4,6 +4,7 @@
 #include "Shape.h"
 #include "Transform.h"
 #include "Collider.h"
+#include "FluidSimulation.h"
 #include <array>
 
 using Entity = std::size_t;
@@ -21,8 +22,9 @@ public:
     std::unordered_map<Entity, FilledRectangle_Component> filledRectangles;
     std::unordered_map<Entity, Transform_Component> transforms;
     std::unordered_map<Entity, CircleCollider_Component> circleColliders;
-    std::unordered_map<Entity, RectangleCollider_Component> rectangleColliders;
+    std::unordered_map<Entity, AABBCollider_Component> AABBColliders;
     std::unordered_map<Entity, LineCollider_Component> lineColliders;
+    std::unordered_map<Entity, Fluid_Component> fluids;
 
 #pragma endregion
 
@@ -31,6 +33,7 @@ public:
     Rigidbody_System rigidbodySystem;
     Shape_System shapeSystem;
     Collider_System colliderSystem;
+    FluidSimulation_System fluidSimulationSystem;
 
 #pragma endregion
 

@@ -48,6 +48,9 @@
     <ClCompile Include="Shapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FluidSimulation.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="FluidSimulation.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

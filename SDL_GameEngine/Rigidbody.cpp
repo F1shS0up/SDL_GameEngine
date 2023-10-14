@@ -62,12 +62,8 @@ Vector2D Rigidbody_System::ReflectionResponse(Vector2D* normal, Vector2D* veloci
 	return result;
 }
 
-void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B)
+void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B, Vector2D normal)
 {
-	//Calculate the collision normal (normallized difference in position -- okay for spheres
-	Vector2D normal = (*B->position - *A->position).normalize();
-	//glm::vec2 normal = glm::normalize(actor->GetPosition() - position);
-
 	//Calculate relative velocity between two objects -- improve by determining total velocity (linear + rotational velocity)
 	Vector2D relativeVelocity = B->velocity - A->velocity;
 
@@ -134,17 +130,19 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						Vector2D x2 = *c2->position;
 						float m2 = c2->mass;
 
-						if (reg->circleColliders.count(e2))
+
+						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
-							CircleCollider_Component* cc2 = &reg->circleColliders[e2];
-
-							float penetration = 0;
-
-							if (ColliderFunctions::CircleWithCircleIntersection(x2 + v2 * *deltaTime, cc2->radius, x1 + v1 * *deltaTime, cc->radius, &penetration))
+							if (reg->circleColliders.count(e2))
 							{
-								ResolveCollision(c, c2);
-								
-								
+								CircleCollider_Component* cc2 = &reg->circleColliders[e2];
+
+								float penetration = 0;
+
+								if (ColliderFunctions::CircleWithCircleIntersection(x2 + v2 * *deltaTime, cc2->radius, x1 + v1 * *deltaTime, cc->radius, &penetration))
+								{
+									ResolveCollision(c, c2, x2 - x1);
+								}
 							}
 						}
 					}
@@ -177,22 +175,25 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						Vector2D x2 = *c2->position;
 						float m2 = c2->mass;
 
-						if (reg->rectangleColliders.count(e2))
+						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
-							RectangleCollider_Component* rc = &reg->rectangleColliders[e2];
-
-							if (ColliderFunctions::CircleWithRectangleIntersection(x1, cc->radius, x2, rc->width, rc->height))
+							if (reg->AABBColliders.count(e2))
 							{
-								ResolveCollision(c, c2);
-								
+								AABBCollider_Component* ac = &reg->AABBColliders[e2];
+
+								if (ColliderFunctions::CircleWithRectangleIntersection(x1, cc->radius, x2, ac->width, ac->height))
+								{
+									ResolveCollision(c, c2, x2 - x1);
+
+								}
 							}
 						}
 					}
 				}
 			}
-			if (reg->rectangleColliders.count(e))
+			if (reg->AABBColliders.count(e))
 			{
-				RectangleCollider_Component* rc = &reg->rectangleColliders[e];
+				AABBCollider_Component* ac = &reg->AABBColliders[e];
 
 				for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
 				{
@@ -202,7 +203,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 
 						Vector2D intersectionPoint, fromIntersectedLine, toIntersectedLine;
 						float outA;
-						if (ColliderFunctions::RectangleWithLineIntersection(rc->width, rc->height, x1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
+						if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, x1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
 						{
 							Vector2D normal = ColliderFunctions::ReflectionNormal(cl, x1);
 							c->velocity = ReflectionResponse(&normal, &v1) * c->elasticity;
@@ -222,13 +223,17 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
 						float m2 = c2->mass;
-
-						if (reg->rectangleColliders.count(e2))
+						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
-							RectangleCollider_Component* rc2 = &reg->rectangleColliders[e2];
-							if (ColliderFunctions::RectangleWithRectangleIntersection(rc->width, rc->height, x1, rc2->width, rc2->height, x2))
+							if (reg->AABBColliders.count(e2))
 							{
-								ResolveCollision(c, c2);
+								AABBCollider_Component* ac2 = &reg->AABBColliders[e2];
+								Vector2D normal;
+								if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, x1, ac2->width, ac2->height, x2, &normal))
+								{
+									ResolveCollision(c, c2, normal);
+									std::cout << normal.x << " " << normal.y << std::endl;
+								}
 							}
 						}
 					}

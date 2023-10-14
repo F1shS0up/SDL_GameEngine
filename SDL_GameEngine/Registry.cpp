@@ -14,6 +14,7 @@ Registry* Registry::Instance()
 
 void Registry::Init()
 {
+    fluidSimulationSystem.Init(this);
     rigidbodySystem.Init(this);
     shapeSystem.Init(this);
     colliderSystem.Init(this);
@@ -22,11 +23,13 @@ void Registry::Init()
 void Registry::Update(double* deltaTime)
 {
     rigidbodySystem.Update(this, deltaTime);
+    fluidSimulationSystem.Update(deltaTime);
 }
 
 void Registry::Draw(SDL_Renderer* renderer)
 {
     shapeSystem.Draw(this, renderer);
+    fluidSimulationSystem.Draw(renderer);
 #ifdef _DEBUG
     rigidbodySystem.Draw(this, renderer);
     colliderSystem.Draw(this, renderer);

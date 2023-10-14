@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FluidSimulation.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ComponentType.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="FluidSimulation.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Registry.h" />

@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     int desiredDeltaTime = MAX_FPS != 0 ? 1000 / MAX_FPS : 1;
 
-    double deltaTime = 0.111;
+    double deltaTime = 0.1;
 
     while (game->Running())
     {

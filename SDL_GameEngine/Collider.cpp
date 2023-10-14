@@ -22,9 +22,9 @@ void Collider_System::Init(Registry* reg)
 				c->position = &cT->position;
 			}
 		}
-		if (reg->rectangleColliders.count(e))
+		if (reg->AABBColliders.count(e))
 		{
-			RectangleCollider_Component* c = &reg->rectangleColliders[e];
+			AABBCollider_Component* c = &reg->AABBColliders[e];
 
 			if (reg->transforms.count(e))
 			{
@@ -231,12 +231,46 @@ bool ColliderFunctions::RectangleWithLineIntersection(float width, float height,
 	return false;
 }
 
-bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB)
+bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal)
 {
-	return posA.x < posB.x + widthB &&
+	if (posA.x < posB.x + widthB &&
 		posA.x + widthA > posB.x &&
 		posA.y < posB.y + heightB &&
-		posA.y + heightA > posB.y;
+		posA.y + heightA > posB.y)
+	{
+		if (normal)
+		{
+			Vector2D n = posB - posA;
+
+			float x_overlap = widthA / 2 + widthB / 2 - abs(n.x);
+			float y_overlap = heightA / 2 + heightB / 2 - abs(n.y);
+
+			if (y_overlap > x_overlap && posA.x + widthA > posB.x && posA.x + widthA < posB.x + widthB)
+			{
+				//B on right
+				*normal = Vector2D(1, 0);
+			}
+			if (y_overlap > x_overlap && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
+			{
+				//B on left
+				*normal = Vector2D(-1, 0);
+			}
+			if (y_overlap < x_overlap && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
+			{
+				//B on bottom
+				*normal = Vector2D(0, 1);
+			}
+			if (y_overlap < x_overlap && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
+			{
+				//B on top
+				*normal = Vector2D(0, -1);
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, float radius, Vector2D pos2, float width, float height)
