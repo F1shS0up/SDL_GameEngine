@@ -131,8 +131,8 @@ static char* new_concat(const char* a, const char* b)
     char* new_string = (char*)malloc(size + 1);
 
     // Concatenate strings in the new buffer
-    strcpy_s(new_string, size,a);
-    strcat_s(new_string, size,b);
+    strcpy(new_string, a);
+    strcat(new_string, b);
 
     return new_string;
 }
@@ -490,7 +490,7 @@ char* U8_strdup(const char* string)
         return NULL;
     size_t size = strlen(string) + 1;
     result = (char*)malloc(size);
-    strcpy_s(result, size,string);
+    strcpy(result, string);
 
     return result;
 }

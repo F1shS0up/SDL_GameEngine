@@ -1,4 +1,5 @@
 #include "Registry.h"
+#include "Game.h"
 
 Registry* Registry::instance = NULL;
 
@@ -17,14 +18,17 @@ void Registry::Init(SDL_Renderer* renderer)
 	rigidbodySystem.Init(this);
 	shapeSystem.Init(this);
 	colliderSystem.Init(this);
+	sliderBoxSystem.Init(this, renderer);
 	textSystem.Init(this, renderer);
+	textBoxSystem.Init(this, renderer);
 }
 
-void Registry::Update(double* deltaTime)
+void Registry::Update(double* deltaTime, Game* game)
 {
 	rigidbodySystem.Update(this, deltaTime);
 	fluidSimulationSystem.Update(deltaTime);
-	
+	textBoxSystem.Update(this, deltaTime, game);
+	sliderBoxSystem.Update(this, deltaTime, game);
 }
 
 void Registry::Draw(SDL_Renderer* renderer)
@@ -32,6 +36,7 @@ void Registry::Draw(SDL_Renderer* renderer)
 	shapeSystem.Draw(this, renderer);
 	fluidSimulationSystem.Draw(renderer);
 	textSystem.Draw(this, renderer);
+	textBoxSystem.Draw(this, renderer);
 #ifdef _DEBUG
 	rigidbodySystem.Draw(this, renderer);
 	colliderSystem.Draw(this, renderer);

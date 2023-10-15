@@ -6,6 +6,7 @@
 #include <chrono>
 #include <random>
 #include <SDL_ttf.h>
+#include "SDL_filesystem.h"
 
 #define HandleError() \
 	std::cout << SDL_GetError() << std::endl; \
@@ -13,7 +14,9 @@
 
 const int rectangleLineThickness = 10;
 const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
-const float gravityStrength = 1000;
+float* gravityY;
+float* gravityX;
+std::string assetPath = "";
 
 Game::Game()
 {
@@ -21,10 +24,22 @@ Game::Game()
 Game::~Game()
 {
 }
-
+TextBox_Component* txt;
 void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int renderHeight, bool fullscreen)
 {
 	InitSDL(fullscreen, title, windowSize);
+
+	assetPath = SDL_GetBasePath();
+	assetPath += "Assets/";
+
+	gravityX = new float(0);
+	gravityY = new float(0);
+
+	Entity e = EntityManager::Instance()->CreateEntity();
+
+	std::string font = assetPath + "Fonts/consola.ttf";
+	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 3 };
+	gravityY = &Registry::Instance()->sliderBoxes[e].value;
 
 	Entity line1 = EntityManager::Instance()->CreateEntity();
 	Entity line2 = EntityManager::Instance()->CreateEntity();
@@ -41,27 +56,25 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 	Registry::Instance()->fluids[fluidSim] = Fluid_Component{ Vector2D(1920, 1080), Vector2D(0, gravityStrength), SDL_Rect{920, 80, 2000, 2000}, 27, 300, 80, 2, 20};*/
 
-	//Entity square = EntityManager::Instance()->CreateEntity();
-
-	//Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 100, 100, {255, 255, 255, 1} };
-	//Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 1000) };
-	//Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), Vector2D(0, gravityStrength) , 100 };
-	//Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 100, 100 };
-
-	//Entity square2 = EntityManager::Instance()->CreateEntity();
-
-	//Registry::Instance()->filledRectangles[square2] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
-	//Registry::Instance()->transforms[square2] = Transform_Component{ Vector2D(1400, 200) };
-	//Registry::Instance()->rigidbodies[square2] = Rigidbody_Component{ Vector2D(-500, 600), Vector2D(0, gravityStrength) , 200 };
-	//Registry::Instance()->AABBColliders[square2] = AABBCollider_Component{ 200, 200 };
-
 	Entity square = EntityManager::Instance()->CreateEntity();
 
-	Registry::Instance()->texts[square] = Text_Component{ "Hi", "consola.ttf", 300, SDL_Color{255, 255, 255, 1} };
+	Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 100, 100, {255, 255, 255, 1} };
+	Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 1000) };
+	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravityX, gravityY , 100 };
+	Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 100, 100 };
+
+	Entity square2 = EntityManager::Instance()->CreateEntity();
+
+	Registry::Instance()->filledRectangles[square2] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
+	Registry::Instance()->transforms[square2] = Transform_Component{ Vector2D(1400, 200) };
+	Registry::Instance()->rigidbodies[square2] = Rigidbody_Component{ Vector2D(-500, 600), gravityX, gravityY , 200 };
+	Registry::Instance()->AABBColliders[square2] = AABBCollider_Component{ 200, 200 };
+
 	inputManager = InputManager::Instance();
 
 	SDL_RenderSetLogicalSize(renderer, renderWidth, renderHeight);
 
+	SDL_StopTextInput();
 	Registry::Instance()->Init(renderer);
 }
 
@@ -124,19 +137,42 @@ void Game::HandleEvents()
 	case SDL_QUIT:
 		isRunning = false;
 		break;
+	case SDL_TEXTINPUT:
+		/* Add new text onto the end of our text */
+		
+		activeTextInput->append(evt.text.text);
+		break;
 	case SDL_KEYDOWN:
 		switch (evt.key.keysym.sym)
 		{
 		case SDLK_ESCAPE:
-			isRunning = false;
+			if (SDL_IsTextInputActive())
+			{
+				SDL_StopTextInput();
+			}
+			else
+			{
+				isRunning = false;
+			}
+			break;
+		case SDLK_BACKSPACE:
+			if (SDL_IsTextInputActive())
+			{
+				activeTextInput->pop_back();
+			}
+			break;
 		}
+
+
 	default:
 		break;
 	}
 }
 void Game::Update(double* deltaTime)
 {
-	Registry::Instance()->Update(deltaTime);
+	inputManager->Update();
+	Registry::Instance()->Update(deltaTime, this);
+	inputManager->UpdatePrevInput();
 }
 void Game::Render()
 {
@@ -158,4 +194,9 @@ void Game::Clean()
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
+}
+
+void Game::SetTextInputString(std::string* textToPutInputTo)
+{
+	activeTextInput = textToPutInputTo;
 }

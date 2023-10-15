@@ -2,6 +2,7 @@
 
 #include "SDL.h"
 #include "InputManager.h"
+#include <string>
 
 class Game
 {
@@ -19,6 +20,9 @@ public:
 
 	void Clean();
 	bool Running() { return isRunning; };
+
+	void SetTextInputString(std::string* textToPutInputTo);
+	std::string* activeTextInput;
 
 	SDL_Renderer* renderer;
 private:

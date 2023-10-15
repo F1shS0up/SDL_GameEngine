@@ -109,7 +109,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 			float m1 = c->mass;
 
 			//Update the basic velocity, acceleration is usually gravity
-			c->velocity = c->velocity + c->accelaration * *deltaTime;
+			c->velocity = c->velocity + Vector2D(*c->xAcc, *c->yAcc) * *deltaTime;
 
 			if (reg->circleColliders.count(e))
 			{

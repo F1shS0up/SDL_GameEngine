@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include "Vector2DInt.h"
 
 struct Text_Component
 {
@@ -8,9 +9,8 @@ struct Text_Component
 	const char* fontPath;
 	int fontSize;
 	SDL_Color color;
+	Vector2DInt pos;
 
-	SDL_Texture* textTexture = nullptr;
-	SDL_Rect textRect;
 	class FC_Font* font;
 };
 class Text_System

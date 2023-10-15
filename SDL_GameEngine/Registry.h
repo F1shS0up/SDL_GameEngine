@@ -6,6 +6,8 @@
 #include "Collider.h"
 #include "FluidSimulation.h"
 #include "Text.h"
+#include "TextBox.h"
+#include "SliderBox.h"
 #include <array>
 
 using Entity = std::size_t;
@@ -26,6 +28,8 @@ public:
 	std::unordered_map<Entity, LineCollider_Component> lineColliders;
 	std::unordered_map<Entity, Fluid_Component> fluids;
 	std::unordered_map<Entity, Text_Component> texts;
+	std::unordered_map<Entity, TextBox_Component> textBoxes;
+	std::unordered_map<Entity, SliderBox_Component> sliderBoxes;
 
 #pragma endregion
 
@@ -36,11 +40,13 @@ public:
 	Collider_System colliderSystem;
 	FluidSimulation_System fluidSimulationSystem;
 	Text_System textSystem;
+	TextBox_System textBoxSystem;
+	SliderBox_System sliderBoxSystem;
 
 #pragma endregion
 
 	void Init(SDL_Renderer* renderer);
-	void Update(double* deltaTime);
+	void Update(double* deltaTime, class Game* game);
 	void Draw(SDL_Renderer* renderer);
 
 private:

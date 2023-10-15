@@ -35,6 +35,10 @@ Vector2DInt InputManager::MousePos()
 {
 	return Vector2DInt(mousePos);
 }
+Vector2DInt InputManager::PrevMousePos()
+{
+	return Vector2DInt(prevMousePos);
+}
 
 bool InputManager::MouseButtonDown(MOUSE_BUTTONS button)
 {
@@ -119,6 +123,7 @@ void InputManager::Update()
 void InputManager::UpdatePrevInput()
 {
 	SDL_memcpy(previousKeyState, keyboardState, keyLength);
+	prevMousePos = mousePos;
 	prevMouseState = mouseState;
 }
 

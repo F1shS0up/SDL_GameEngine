@@ -21,6 +21,7 @@ private:
 	Uint32 mouseState;
 
 	Vector2DInt mousePos;
+	Vector2DInt prevMousePos;
 
 public:
 
@@ -36,6 +37,7 @@ public:
 	bool MouseButtonReleased(MOUSE_BUTTONS button);
 
 	Vector2DInt MousePos();
+	Vector2DInt PrevMousePos();
 
 	void Update();
 	void UpdatePrevInput();

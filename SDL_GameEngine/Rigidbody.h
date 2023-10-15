@@ -20,7 +20,8 @@ inline Layers operator|(Layers a, Layers b)
 struct Rigidbody_Component
 {
 	Vector2D velocity = Vector2D(0, 0);
-	Vector2D accelaration = Vector2D(0, 0);
+	float* xAcc;
+	float* yAcc;
 	float mass = 10.f;
 	float elasticity = 1;
 	Layers layer = A;
