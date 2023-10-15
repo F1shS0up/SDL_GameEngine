@@ -31,7 +31,6 @@ bool InputManager::KeyReleased(SDL_Scancode scanCode)
 	return previousKeyState[scanCode] && !keyboardState[scanCode];
 }
 
-
 Vector2DInt InputManager::MousePos()
 {
 	return Vector2DInt(mousePos);

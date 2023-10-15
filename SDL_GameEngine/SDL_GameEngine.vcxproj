@@ -76,13 +76,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib;SDL2_ttf.lib;SDL2_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,15 +93,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib;SDL2_ttf.lib;SDL2_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -110,13 +110,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib;SDL2_ttf.lib;SDL2_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,15 +127,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\lib\x64;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Shell32.lib;SDL2_ttf.lib;SDL2_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -147,8 +147,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="SDL_FontCache.c" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Shapes.cpp" />
+    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collider.h" />
@@ -159,8 +161,10 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Rigidbody.h" />
+    <ClInclude Include="SDL_FontCache.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vector2DInt.h" />

@@ -17,7 +17,6 @@ struct FilledRectangle_Component
 	Vector2D* position;
 };
 
-
 class Shape_System
 {
 public:

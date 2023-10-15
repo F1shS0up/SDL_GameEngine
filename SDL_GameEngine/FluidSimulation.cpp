@@ -42,14 +42,12 @@ void FluidSimulation_System::Init(Registry* reg)
 			{
 				float x = (i % particlesPerRow - particlesPerRow / 2.f + 0.5f) * spacing;
 				float y = (i / particlesPerRow - particlesPerCol / 2.f + 0.5f) * spacing;
-				
+
 				std::cout << "REACHED";
 				fluid->positions.push_back(Vector2D(x + fluid->startPos.x, y + fluid->startPos.y));
 				fluid->predictedPositions.push_back(Vector2D(x + fluid->startPos.x, y + fluid->startPos.y));
 				fluid->velocities.push_back(Vector2D(0, 0));
 				fluid->densities.push_back(fluid->targetDensity);
-
-				
 			}
 			this->fluid = fluid;
 		}
@@ -70,7 +68,6 @@ void FluidSimulation_System::Update(double* deltaTime)
 			Vector2D pressureAcc = pressureForce / fluid->densities[i];
 			fluid->velocities[i] += pressureAcc * *deltaTime;
 			std::cout << fluid->velocities[i].x << std::endl;
-
 
 			fluid->positions[i] += fluid->velocities[i] * *deltaTime;
 
@@ -106,7 +103,6 @@ void FluidSimulation_System::ResolveCollision(int i)
 		fluid->velocities[i] = Vector2D(fluid->velocities[i].x * -.1f, fluid->velocities[i].y);
 		fluid->positions[i].x -= left - fluid->boundingBox.x;
 	}
-
 }
 
 float FluidSimulation_System::CalculateDensity(Vector2D samplePoint)
@@ -149,7 +145,6 @@ float FluidSimulation_System::ConvertDensityToPressure(float density)
 	float pressure = densityError * fluid->pressureMultiplier;
 	return pressure;
 }
-
 
 void FluidSimulation_System::Draw(SDL_Renderer* renderer)
 {

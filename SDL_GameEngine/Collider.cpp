@@ -11,7 +11,6 @@ void Collider_System::Init(Registry* reg)
 		//Loop through all collider types and assign some basic variables
 		//Such as position, normal etc...
 
-
 		if (reg->circleColliders.count(e))
 		{
 			CircleCollider_Component* c = &reg->circleColliders[e];
@@ -48,7 +47,6 @@ void Collider_System::Init(Registry* reg)
 #ifdef _DEBUG
 void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 {
-
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->lineColliders.count(e))
@@ -75,19 +73,12 @@ void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 					{
 						ShapesRendering::DrawFilledCircle(renderer, intersection.x, intersection.y, 20, SDL_Color{ 255, 255, 0, 1 });
 					}
-
 				}
 			}
 		}
 	}
 }
 #endif // _DEBUG
-
-
-
-
-
-
 
 inline double Dot(const Vector2D& a, const Vector2D& b) { return (a.x * b.x) + (a.y * b.y); }
 inline double PerpDot(const Vector2D& a, const Vector2D& b) { return (a.y * b.x) - (a.x * b.y); }
@@ -110,8 +101,6 @@ inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)
 	point x = std::conj(Pr) * Bt + point(A.x, A.y);
 	return Vector2D(x.real(), x.imag());
 }
-
-
 
 bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA)
 {
@@ -187,7 +176,6 @@ bool ColliderFunctions::FrameIndependentCircleWithLineIntersection(LineCollider_
 		return true;
 	}
 
-	
 	return false;
 }
 
@@ -197,8 +185,7 @@ bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radius
 	float distance = difference.length();
 
 	*penetration = radiusA + radiusB - distance;
-	
-	
+
 	return distance < radiusA + radiusB;
 }
 
@@ -303,7 +290,6 @@ Vector2D ColliderFunctions::ReflectionNormal(const LineCollider_Component* lineC
 	float lengthA = (normalA - point).length();
 	float lengthB = (normalB - point).length();
 
-
 	return (lengthA < lengthB) ? lineColliders->normal : Vector2D(-lineColliders->normal.x, -lineColliders->normal.y);
 }
 
@@ -319,7 +305,6 @@ Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* nor
 {
 	Vector2D reflection = reflect(newPos, lc->a, lc->b);
 	return reflection;
-
 }
 
 Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint)

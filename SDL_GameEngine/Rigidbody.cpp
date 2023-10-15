@@ -9,9 +9,9 @@
 
 void Rigidbody_Component::ApplyForce(Vector2D force)
 {
-	if(!isStatic)
+	if (!isStatic)
 	{
-		//Use GetMass() and GetMoment() here in case we ever need them to do something more than just return their values 
+		//Use GetMass() and GetMoment() here in case we ever need them to do something more than just return their values
 		//Calculate the object's acceleration
 		Vector2D acceleration = force / mass;
 		//Add acceleration to object's velocity
@@ -20,7 +20,6 @@ void Rigidbody_Component::ApplyForce(Vector2D force)
 }
 
 #pragma region System
-
 
 void Rigidbody_System::Init(Registry* reg)
 {
@@ -41,7 +40,6 @@ void Rigidbody_System::Init(Registry* reg)
 #ifdef _DEBUG
 void Rigidbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 {
-	
 }
 #endif
 
@@ -110,15 +108,13 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 			Vector2D x1 = *c->position;
 			float m1 = c->mass;
 
-
 			//Update the basic velocity, acceleration is usually gravity
 			c->velocity = c->velocity + c->accelaration * *deltaTime;
-
 
 			if (reg->circleColliders.count(e))
 			{
 				CircleCollider_Component* cc = &reg->circleColliders[e];
-				
+
 				for (int e2 = e + 1; e2 <= EntityManager::Instance()->num_entities; e2++)
 				{
 					if (reg->rigidbodies.count(e2))
@@ -129,7 +125,6 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
 						float m2 = c2->mass;
-
 
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
@@ -184,7 +179,6 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 								if (ColliderFunctions::CircleWithRectangleIntersection(x1, cc->radius, x2, ac->width, ac->height))
 								{
 									ResolveCollision(c, c2, x2 - x1);
-
 								}
 							}
 						}
@@ -239,7 +233,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 					}
 				}
 			}
-			
+
 			*c->position = *c->position + c->velocity * *deltaTime;
 		}
 	}
