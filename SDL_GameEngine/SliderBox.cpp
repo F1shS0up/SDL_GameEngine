@@ -14,6 +14,7 @@ void SliderBox_System::Init(Registry* reg, SDL_Renderer* renderer)
 			SliderBox_Component* c = &reg->sliderBoxes[e];
 			reg->textBoxes[e] = TextBox_Component{ "", c->fontPath, c->fontSize, c->color, c->boxColor, c->txtRect, c->boxRect, false};
 			c->txtComp = &reg->textBoxes[e];
+			c->txtComp->message = std::to_string(c->value);
 
 			reg->texts[e] = Text_Component{ c->startName.c_str(), c->fontPath, c->fontSize, c->startNameColor, c->startNamePos};
 		}
