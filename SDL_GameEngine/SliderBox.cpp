@@ -45,6 +45,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 
 			if (c->pressedInside)
 			{
+				//Difference between the starting position when clicked on element and current mouse position
 				float difference = c->onXAxis ? InputManager::Instance()->MousePos().x - c->startPoint.x : InputManager::Instance()->MousePos().y - c->startPoint.y;
 
 				c->value = c->startValue + difference * coefficient;
