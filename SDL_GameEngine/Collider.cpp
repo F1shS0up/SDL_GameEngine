@@ -218,7 +218,7 @@ bool ColliderFunctions::RectangleWithLineIntersection(float width, float height,
 	return false;
 }
 
-bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal)
+bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal, float* penetration)
 {
 	if (posA.x < posB.x + widthB &&
 		posA.x + widthA > posB.x &&
@@ -236,21 +236,25 @@ bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float h
 			{
 				//B on right
 				*normal = Vector2D(1, 0);
+				if (penetration)*penetration = x_overlap;
 			}
 			if (y_overlap > x_overlap && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
 			{
 				//B on left
 				*normal = Vector2D(-1, 0);
+				if (penetration)*penetration = x_overlap;
 			}
 			if (y_overlap < x_overlap && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
 			{
 				//B on bottom
 				*normal = Vector2D(0, 1);
+				if(penetration)*penetration = y_overlap;
 			}
 			if (y_overlap < x_overlap && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
 			{
 				//B on top
 				*normal = Vector2D(0, -1);
+				if (penetration)*penetration = y_overlap;
 			}
 		}
 

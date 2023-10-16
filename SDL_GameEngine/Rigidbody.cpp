@@ -29,6 +29,7 @@ void Rigidbody_System::Init(Registry* reg)
 		{
 			Rigidbody_Component* c = &reg->rigidbodies[e];
 
+			c->inverseMass = 1 / c->mass;
 			if (reg->transforms.count(e))
 			{
 				Transform_Component* cT = &reg->transforms[e];
@@ -88,11 +89,9 @@ void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Compon
 	}
 }
 
-void Rigidbody_System::CorrectPosition(Rigidbody_Component* A, Rigidbody_Component* B, float* penetration)
+void Rigidbody_System::PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, float penetration, Vector2D collisionNormal)
 {
-	Vector2D normal = *B->position - *A->position;
-	*A->position += normal * *penetration * -1;
-	*B->position += normal * *penetration;
+	*A->position += collisionNormal * std::abs(penetration);
 }
 
 void Rigidbody_System::Update(Registry* reg, double* deltaTime)
@@ -106,6 +105,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 			//Rigidbody properties to make it look better
 			Vector2D v1 = c->velocity;
 			Vector2D x1 = *c->position;
+			Vector2D upcomingX1 = x1 + v1 * *deltaTime;
 			float m1 = c->mass;
 
 			//Update the basic velocity, acceleration is usually gravity
@@ -124,6 +124,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						//Basic rigidbody properties again for pretty look
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
+						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
 						float m2 = c2->mass;
 
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
@@ -168,6 +169,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
+						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
 						float m2 = c2->mass;
 
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
@@ -216,6 +218,7 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 						//Basic rigidbody properties again for pretty look
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
+						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
 						float m2 = c2->mass;
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
@@ -223,10 +226,12 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 							{
 								AABBCollider_Component* ac2 = &reg->AABBColliders[e2];
 								Vector2D normal;
-								if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, x1, ac2->width, ac2->height, x2, &normal))
+								float penetration;
+								if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, upcomingX1, ac2->width, ac2->height, upcomingX2, &normal, &penetration))
 								{
 									ResolveCollision(c, c2, normal);
-									std::cout << normal.x << " " << normal.y << std::endl;
+
+									return;
 								}
 							}
 						}

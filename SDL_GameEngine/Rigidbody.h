@@ -30,6 +30,7 @@ struct Rigidbody_Component
 	bool isStatic = false;
 
 	Vector2D* position;
+	float inverseMass;
 
 	void ApplyForce(Vector2D force);
 };
@@ -43,8 +44,8 @@ public:
 #endif //  _DEBUG
 
 	Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
+	void PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, float penetration, Vector2D collisionNormal);
 	void ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B, Vector2D normal);
-	void CorrectPosition(Rigidbody_Component* A, Rigidbody_Component* B, float* penetration);
 
 	void Update(class Registry* reg, double* deltaTime);
 };

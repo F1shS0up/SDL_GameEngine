@@ -47,7 +47,7 @@ namespace ColliderFunctions
 	//Check if rectangle intersects line, only works with non rotated rectangles
 	bool RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
 
-	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal = 0);
+	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal = 0, float* penetration = 0);
 
 	//It does the same except but if it fails it checks from middle to middle
 	bool FrameIndependentCircleWithLineIntersection(LineCollider_Component* lineColliders, const CircleCollider_Component* circleColliders, Vector2D nextFramePosToAdd, Vector2D* intersectionPoint);
