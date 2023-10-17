@@ -71,18 +71,21 @@ void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Compon
 	if (A->isStatic && !B->isStatic)
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / (1 / B->mass);
+		std::cout << j << std::endl;
 		force = normal * j;
 		B->ApplyForce(force);
 	}
 	else if (B->isStatic && !A->isStatic)
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass));
+		std::cout << j << std::endl;
 		force = normal * j;
 		A->ApplyForce(force * -1);
 	}
 	else
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass) + (1 / B->mass));
+		std::cout << j << std::endl;
 		force = normal * j;
 		A->ApplyForce(force * -1);
 		B->ApplyForce(force);
@@ -93,9 +96,9 @@ void Rigidbody_System::PositionalCorrection(Rigidbody_Component* A, Rigidbody_Co
 {
 	*A->position += collisionNormal * std::abs(penetration);
 }
-
 void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 {
+int x = 0;
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->rigidbodies.count(e))
@@ -231,7 +234,6 @@ void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 								{
 									ResolveCollision(c, c2, normal);
 
-									return;
 								}
 							}
 						}

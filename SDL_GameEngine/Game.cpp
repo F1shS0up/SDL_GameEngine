@@ -38,7 +38,8 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	Entity e = EntityManager::Instance()->CreateEntity();
 
 	std::string font = assetPath + "Fonts/consola.ttf";
-	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 3 };
+	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, 
+		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 3 };
 	gravityY = &Registry::Instance()->sliderBoxes[e].value;
 
 	Entity line1 = EntityManager::Instance()->CreateEntity();

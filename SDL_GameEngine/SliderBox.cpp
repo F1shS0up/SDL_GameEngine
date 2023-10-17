@@ -28,20 +28,38 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 		if (reg->sliderBoxes.count(e))
 		{
 			SliderBox_Component* c = &reg->sliderBoxes[e];
-			if (InputManager::Instance()->MouseButtonPressed(InputManager::left))
+			if (Registry::Instance()->textBoxSystem.IsVectorInBox(c->txtComp, InputManager::Instance()->MousePos()) == SDL_TRUE)
 			{
-				if (Registry::Instance()->textBoxSystem.IsVectorInBox(c->txtComp, InputManager::Instance()->MousePos()) == SDL_TRUE)
+				if (!c->pressedInside)
 				{
+					c->txtComp->boxColor = c->boxColorHovered;
+					SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+					SDL_SetCursor(cursor);
+				}
+				if (InputManager::Instance()->MouseButtonPressed(InputManager::left))
+				{
+					
 					c->pressedInside = true;
 					c->startPoint = InputManager::Instance()->MousePos();
 					c->startValue = c->value;
+					c->txtComp->boxColor = c->boxColorPressed;
+					SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+					SDL_SetCursor(cursor);
 					
 				}
 			}
 			else if (InputManager::Instance()->MouseButtonReleased(InputManager::left))
 			{
 				c->pressedInside = false;
+				c->txtComp->boxColor = c->boxColor;
+				SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+				SDL_SetCursor(cursor);
 			}
+			else if(!c->pressedInside)
+			{
+				c->txtComp->boxColor = c->boxColor;
+			}
+			
 
 			if (c->pressedInside)
 			{
@@ -51,6 +69,8 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 				c->value = c->startValue + difference * coefficient;
 				c->txtComp->message = std::to_string(c->value);
 			}
+
+
 		}
 	}
 }

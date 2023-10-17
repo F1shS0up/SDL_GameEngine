@@ -10,7 +10,7 @@ struct SliderBox_Component
 
 	const char* fontPath;
 	int fontSize;
-	SDL_Color color, boxColor;
+	SDL_Color color, boxColor, boxColorHovered, boxColorPressed;
 	SDL_Rect txtRect, boxRect;
 	bool onXAxis;
 	float value;

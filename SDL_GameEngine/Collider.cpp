@@ -220,41 +220,36 @@ bool ColliderFunctions::RectangleWithLineIntersection(float width, float height,
 
 bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal, float* penetration)
 {
-	if (posA.x < posB.x + widthB &&
-		posA.x + widthA > posB.x &&
-		posA.y < posB.y + heightB &&
-		posA.y + heightA > posB.y)
+	SDL_Rect rA = { posA.x, posA.y, widthA, heightA };
+	SDL_Rect rB = { posB.x, posB.y, widthB, heightB };
+	SDL_Rect result;
+	if (SDL_IntersectRect(&rA, &rB, &result))
 	{
 		if (normal)
 		{
-			Vector2D n = posB - posA;
-
-			float x_overlap = widthA / 2 + widthB / 2 - abs(n.x);
-			float y_overlap = heightA / 2 + heightB / 2 - abs(n.y);
-
-			if (y_overlap > x_overlap && posA.x + widthA > posB.x && posA.x + widthA < posB.x + widthB)
+			if (result.h > result.w && posA.x + widthA > posB.x && posA.x + widthA < posB.x + widthB)
 			{
 				//B on right
 				*normal = Vector2D(1, 0);
-				if (penetration)*penetration = x_overlap;
+				if (penetration)*penetration = result.w;
 			}
-			if (y_overlap > x_overlap && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
+			if (result.h > result.w && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
 			{
 				//B on left
 				*normal = Vector2D(-1, 0);
-				if (penetration)*penetration = x_overlap;
+				if (penetration)*penetration = result.w;
 			}
-			if (y_overlap < x_overlap && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
+			if (result.h < result.w && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
 			{
 				//B on bottom
 				*normal = Vector2D(0, 1);
-				if(penetration)*penetration = y_overlap;
+				if(penetration)*penetration = result.h;
 			}
-			if (y_overlap < x_overlap && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
+			if (result.h < result.w && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
 			{
 				//B on top
 				*normal = Vector2D(0, -1);
-				if (penetration)*penetration = y_overlap;
+				if (penetration)*penetration = result.h;
 			}
 		}
 
