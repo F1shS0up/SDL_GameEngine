@@ -133,6 +133,23 @@ bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D&
 		*outA = aa;
 	return true;
 }
+bool LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY)
+{
+	return (A->y > infLineY && B->y < infLineY) || (A->y < infLineY && B->y > infLineY);
+}
+Vector2D ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P)
+{
+	Vector2D a2p = *P - *A;
+	Vector2D a2b = *B - *A;
+
+	float a2b2 = a2b.x * a2b.x + a2b.y * a2b.y;
+
+	float dot = Vector2D::DotProduct(a2p, a2b);
+
+	float dist = dot / a2b2;
+
+	return Vector2D(A->x + a2b.x * dist, A->y + a2b.y * dist);
+}
 
 bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint)
 {

@@ -101,15 +101,18 @@ int x = 0;
 		if (reg->rigidbodies.count(e))
 		{
 			Rigidbody_Component* c = &reg->rigidbodies[e];
+			c->force = Vector2D(0, 0);
+			c->force.y = *c->gravity;
 
 			//Rigidbody properties to make it look better
+			float m1 = c->mass;
+			c->velocity = c->velocity + c->force * *deltaTime;
+
 			Vector2D v1 = c->velocity;
 			Vector2D x1 = *c->position;
 			Vector2D upcomingX1 = x1 + v1 * *deltaTime;
-			float m1 = c->mass;
 
 			//Update the basic velocity, acceleration is usually gravity
-			c->velocity = c->velocity + Vector2D(*c->xAcc, *c->yAcc) * *deltaTime;
 
 			if (reg->circleColliders.count(e))
 			{

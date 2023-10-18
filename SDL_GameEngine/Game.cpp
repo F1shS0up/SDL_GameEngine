@@ -14,8 +14,7 @@
 
 const int rectangleLineThickness = 10;
 const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
-float* gravityY;
-float* gravityX;
+float* gravity;
 std::string assetPath = "";
 
 Game::Game()
@@ -32,15 +31,14 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	assetPath = SDL_GetBasePath();
 	assetPath += "Assets/";
 
-	gravityX = new float(0);
-	gravityY = new float(0);
+	gravity = new float(0);
 
 	Entity e = EntityManager::Instance()->CreateEntity();
 
 	std::string font = assetPath + "Fonts/consola.ttf";
 	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, 
 		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 3 };
-	gravityY = &Registry::Instance()->sliderBoxes[e].value;
+	gravity = &Registry::Instance()->sliderBoxes[e].value;
 
 	Entity line1 = EntityManager::Instance()->CreateEntity();
 	Entity line2 = EntityManager::Instance()->CreateEntity();
@@ -61,21 +59,21 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 	Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
 	Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 1000) };
-	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravityX, gravityY , 200 };
+	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravity, 200 };
 	Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 200, 200 };
 
 	Entity circle = EntityManager::Instance()->CreateEntity();
 
 	Registry::Instance()->filledCircles[circle] = FilledCircle_Component{ 50, {255, 255, 255, 1} };
 	Registry::Instance()->transforms[circle] = Transform_Component{ Vector2D(2000, 200) };
-	Registry::Instance()->rigidbodies[circle] = Rigidbody_Component{ Vector2D(-500, 600), gravityX, gravityY , 50 };
+	Registry::Instance()->rigidbodies[circle] = Rigidbody_Component{ Vector2D(-500, 600), gravity, 50 };
 	Registry::Instance()->circleColliders[circle] = CircleCollider_Component{ 50 };
 
 	Entity circle2 = EntityManager::Instance()->CreateEntity();
 
 	Registry::Instance()->filledCircles[circle2] = FilledCircle_Component{ 100, {255, 255, 255, 1} };
 	Registry::Instance()->transforms[circle2] = Transform_Component{ Vector2D(1700, 200) };
-	Registry::Instance()->rigidbodies[circle2] = Rigidbody_Component{ Vector2D(-100, 600), gravityX, gravityY , 100 };
+	Registry::Instance()->rigidbodies[circle2] = Rigidbody_Component{ Vector2D(-100, 600), gravity, 100 };
 	Registry::Instance()->circleColliders[circle2] = CircleCollider_Component{ 100 };
 
 	inputManager = InputManager::Instance();
