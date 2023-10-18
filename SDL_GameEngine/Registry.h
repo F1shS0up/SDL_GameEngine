@@ -8,6 +8,7 @@
 #include "Text.h"
 #include "TextBox.h"
 #include "SliderBox.h"
+#include "Softbody.h"
 #include <array>
 
 using Entity = std::size_t;
@@ -30,6 +31,7 @@ public:
 	std::unordered_map<Entity, Text_Component> texts;
 	std::unordered_map<Entity, TextBox_Component> textBoxes;
 	std::unordered_map<Entity, SliderBox_Component> sliderBoxes;
+	std::unordered_map<Entity, Softbody_Component> softbodies;
 
 #pragma endregion
 
@@ -42,6 +44,7 @@ public:
 	Text_System textSystem;
 	TextBox_System textBoxSystem;
 	SliderBox_System sliderBoxSystem;
+	Softbody_System softbodySystem;
 
 #pragma endregion
 

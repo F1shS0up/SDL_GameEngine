@@ -155,6 +155,7 @@
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="SliderBox.cpp" />
+    <ClCompile Include="Softbody.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="SliderBox.h" />
+    <ClInclude Include="Softbody.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="Transform.h" />

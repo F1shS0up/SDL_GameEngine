@@ -21,6 +21,7 @@ void Registry::Init(SDL_Renderer* renderer)
 	sliderBoxSystem.Init(this, renderer);
 	textSystem.Init(this, renderer);
 	textBoxSystem.Init(this, renderer);
+	softbodySystem.Init(this);
 }
 
 void Registry::Update(double* deltaTime, Game* game)
@@ -29,6 +30,7 @@ void Registry::Update(double* deltaTime, Game* game)
 	fluidSimulationSystem.Update(deltaTime);
 	textBoxSystem.Update(this, deltaTime, game);
 	sliderBoxSystem.Update(this, deltaTime, game);
+	softbodySystem.Update(this, deltaTime);
 }
 
 void Registry::Draw(SDL_Renderer* renderer)
@@ -41,4 +43,5 @@ void Registry::Draw(SDL_Renderer* renderer)
 	rigidbodySystem.Draw(this, renderer);
 	colliderSystem.Draw(this, renderer);
 #endif // _DEBUG
+	softbodySystem.Draw(this, renderer);
 }

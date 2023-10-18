@@ -63,6 +63,9 @@
     <ClCompile Include="SliderBox.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Softbody.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="SliderBox.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Softbody.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

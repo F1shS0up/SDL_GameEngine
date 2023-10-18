@@ -36,7 +36,13 @@ public:
 namespace ColliderFunctions
 {
 	//Check collision between two lines and return true if they collide/intersect
-	bool LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA = 0);
+	bool LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection = 0, float* outA = 0);
+
+	bool LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY);
+
+	bool LineIntersectsHorizontalLine(const Vector2D* A, const Vector2D* B, const Vector2D* A2, const Vector2D* B2);
+
+	Vector2D ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P);
 
 	//Calculates the furthest and nerest point in the circle and if it intersects with line.
 	bool CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint);

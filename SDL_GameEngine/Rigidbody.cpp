@@ -184,7 +184,6 @@ int x = 0;
 								if (ColliderFunctions::CircleWithRectangleIntersection(upcomingX1, cc->radius, upcomingX2, ac->width, ac->height))
 								{
 									ResolveCollision(c, c2, (upcomingX2 + Vector2D(ac->width / 2, ac->height / 2) - upcomingX1).normalize());
-									std::cout << (upcomingX2 - upcomingX1).normalize().x << " " << (upcomingX2 - upcomingX1).normalize().y << std::endl;
 								}
 							}
 						}

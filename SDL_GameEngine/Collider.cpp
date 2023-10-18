@@ -133,11 +133,15 @@ bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D&
 		*outA = aa;
 	return true;
 }
-bool LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY)
+bool ColliderFunctions::LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY)
 {
 	return (A->y > infLineY && B->y < infLineY) || (A->y < infLineY && B->y > infLineY);
 }
-Vector2D ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P)
+bool ColliderFunctions::LineIntersectsHorizontalLine(const Vector2D* A, const Vector2D* B, const Vector2D* A2, const Vector2D* B2)
+{
+	return ((A->y > A2->y && B->y < A2->y) || (A->y < A2->y && B->y > A2->y)) && ((A->x > A2->x && A->x < B2->x) || (A->x < A2->x && A->x > B2->x) || (B->x > A2->x && B->x < B2->x) || (B->x < A2->x && B->x > B2->x));
+}
+Vector2D ColliderFunctions::ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P)
 {
 	Vector2D a2p = *P - *A;
 	Vector2D a2b = *B - *A;
