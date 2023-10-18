@@ -71,21 +71,18 @@ void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Compon
 	if (A->isStatic && !B->isStatic)
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / (1 / B->mass);
-		std::cout << j << std::endl;
 		force = normal * j;
 		B->ApplyForce(force);
 	}
 	else if (B->isStatic && !A->isStatic)
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass));
-		std::cout << j << std::endl;
 		force = normal * j;
 		A->ApplyForce(force * -1);
 	}
 	else
 	{
 		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass) + (1 / B->mass));
-		std::cout << j << std::endl;
 		force = normal * j;
 		A->ApplyForce(force * -1);
 		B->ApplyForce(force);
@@ -138,9 +135,9 @@ int x = 0;
 
 								float penetration = 0;
 
-								if (ColliderFunctions::CircleWithCircleIntersection(x2 + v2 * *deltaTime, cc2->radius, x1 + v1 * *deltaTime, cc->radius, &penetration))
+								if (ColliderFunctions::CircleWithCircleIntersection(upcomingX1, cc2->radius, upcomingX2, cc->radius, &penetration))
 								{
-									ResolveCollision(c, c2, x2 - x1);
+									ResolveCollision(c, c2, (upcomingX2 - upcomingX1).normalize());
 								}
 							}
 						}
@@ -153,7 +150,7 @@ int x = 0;
 						LineCollider_Component* cl = &reg->lineColliders[e2];
 
 						Vector2D pointOfIntersection;
-						bool intersects = ColliderFunctions::FrameIndependentCircleWithLineIntersection(cl, cc, v1 * *deltaTime, &pointOfIntersection);
+						bool intersects = ColliderFunctions::CircleWithLineIntersection(cl, *cc->position, cc->radius, &pointOfIntersection);
 						if (intersects)
 						{
 							//Collided with line
@@ -181,9 +178,10 @@ int x = 0;
 							{
 								AABBCollider_Component* ac = &reg->AABBColliders[e2];
 
-								if (ColliderFunctions::CircleWithRectangleIntersection(x1, cc->radius, x2, ac->width, ac->height))
+								if (ColliderFunctions::CircleWithRectangleIntersection(upcomingX1, cc->radius, upcomingX2, ac->width, ac->height))
 								{
-									ResolveCollision(c, c2, x2 - x1);
+									ResolveCollision(c, c2, (upcomingX2 + Vector2D(ac->width / 2, ac->height / 2) - upcomingX1).normalize());
+									std::cout << (upcomingX2 - upcomingX1).normalize().x << " " << (upcomingX2 - upcomingX1).normalize().y << std::endl;
 								}
 							}
 						}

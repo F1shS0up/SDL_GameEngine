@@ -1,6 +1,7 @@
 #ifndef __VECTOR_2D_H__
 #define __VECTOR_2D_H__
 #include<math.h>
+#include <algorithm>
 
 class Vector2D
 {
@@ -21,6 +22,13 @@ public:
 	Vector2D operator+(const Vector2D& v2) const
 	{
 		return Vector2D(x + v2.x, y + v2.y);
+	}
+
+
+	bool operator== (const Vector2D& v2)
+	{
+		return (x == v2.x &&
+			y == v2.y);
 	}
 
 	friend Vector2D& operator+=(Vector2D& v1, const Vector2D& v2)
@@ -74,9 +82,17 @@ public:
 		return *this;
 	}
 
+	static Vector2D Clamp(const Vector2D& v, const Vector2D& min, const Vector2D& max)
+	{
+		return Vector2D(std::clamp(v.x, min.x, max.x), std::clamp(v.y, min.y, max.y));
+	}
 	static float DotProduct(Vector2D v1, Vector2D v2)
 	{
 		return v1.x * v2.x + v1.y * v2.y;
+	}
+	static float PerpDotProduct(Vector2D v1, Vector2D v2)
+	{
+		return (v1.y * v2.x) - (v1.x * v2.y);
 	}
 };
 

@@ -59,17 +59,24 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 	Entity square = EntityManager::Instance()->CreateEntity();
 
-	Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 100, 100, {255, 255, 255, 1} };
+	Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
 	Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 1000) };
-	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravityX, gravityY , 100 };
-	Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 100, 100 };
+	Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravityX, gravityY , 200 };
+	Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 200, 200 };
 
-	Entity square2 = EntityManager::Instance()->CreateEntity();
+	Entity circle = EntityManager::Instance()->CreateEntity();
 
-	Registry::Instance()->filledRectangles[square2] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
-	Registry::Instance()->transforms[square2] = Transform_Component{ Vector2D(1400, 200) };
-	Registry::Instance()->rigidbodies[square2] = Rigidbody_Component{ Vector2D(-500, 600), gravityX, gravityY , 200 };
-	Registry::Instance()->AABBColliders[square2] = AABBCollider_Component{ 200, 200 };
+	Registry::Instance()->filledCircles[circle] = FilledCircle_Component{ 50, {255, 255, 255, 1} };
+	Registry::Instance()->transforms[circle] = Transform_Component{ Vector2D(2000, 200) };
+	Registry::Instance()->rigidbodies[circle] = Rigidbody_Component{ Vector2D(-500, 600), gravityX, gravityY , 50 };
+	Registry::Instance()->circleColliders[circle] = CircleCollider_Component{ 50 };
+
+	Entity circle2 = EntityManager::Instance()->CreateEntity();
+
+	Registry::Instance()->filledCircles[circle2] = FilledCircle_Component{ 100, {255, 255, 255, 1} };
+	Registry::Instance()->transforms[circle2] = Transform_Component{ Vector2D(1700, 200) };
+	Registry::Instance()->rigidbodies[circle2] = Rigidbody_Component{ Vector2D(-100, 600), gravityX, gravityY , 100 };
+	Registry::Instance()->circleColliders[circle2] = CircleCollider_Component{ 100 };
 
 	inputManager = InputManager::Instance();
 

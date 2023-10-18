@@ -80,9 +80,6 @@ void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 }
 #endif // _DEBUG
 
-inline double Dot(const Vector2D& a, const Vector2D& b) { return (a.x * b.x) + (a.y * b.y); }
-inline double PerpDot(const Vector2D& a, const Vector2D& b) { return (a.y * b.x) - (a.x * b.y); }
-
 //Reflect point around the A and B line
 inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)
 {
@@ -107,13 +104,13 @@ bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D&
 	Vector2D a(A2 - A1);
 	Vector2D b(B2 - B1);
 
-	double f = PerpDot(a, b);
+	double f = Vector2D::PerpDotProduct(a, b);
 	if (!f)      // lines are parallel
 		return false;
 
 	Vector2D c(B2 - A2);
-	double aa = PerpDot(a, c);
-	double bb = PerpDot(b, c);
+	double aa = Vector2D::PerpDotProduct(a, c);
+	double bb = Vector2D::PerpDotProduct(b, c);
 
 	if (f < 0)
 	{
@@ -263,8 +260,8 @@ bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, float radi
 {
 	Vector2D circleDistance;
 	Vector2D rectMid = pos2 + Vector2D(width / 2, height / 2);
-	circleDistance.x = abs(pos.x - rectMid.x);
-	circleDistance.y = abs(pos.y - rectMid.y);
+	circleDistance.x = std::abs(rectMid.x - pos.x);
+	circleDistance.y = std::abs(rectMid.y - pos.y);
 
 	if (circleDistance.x > (width / 2 + radius)) { return false; }
 	if (circleDistance.y > (height / 2 + radius)) { return false; }
