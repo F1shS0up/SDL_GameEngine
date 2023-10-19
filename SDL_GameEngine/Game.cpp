@@ -37,7 +37,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 	std::string font = assetPath + "Fonts/consola.ttf";
 	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, 
-		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 1200 };
+		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 0 };
 	gravity = &Registry::Instance()->sliderBoxes[e].value;
 
 	Entity line1 = EntityManager::Instance()->CreateEntity();
@@ -85,7 +85,8 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	//Registry::Instance()->circleColliders[circle2] = CircleCollider_Component{ 100 };
 
 	Entity softbody = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody] = Softbody_Component{{MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1500, 1500), 1}}, gravity};
+	Registry::Instance()->softbodies[softbody] = Softbody_Component{{MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1400, 1500), 1}, MassPoint{Vector2D(1500, 1500), 1}, MassPoint{Vector2D(1500, 1400), 1}},
+		{Spring{0, 1, 500, 100, 1}, Spring{1, 2, 500, 100, 1}, Spring{2, 3, 500, 100, 1}, Spring{3, 0, 500, 100, 1} },gravity};
 
 
 	inputManager = InputManager::Instance();
@@ -196,9 +197,6 @@ void Game::Render()
 {
 	SDL_RenderClear(renderer);
 
-	SDL_RenderSetScale(renderer, rectangleLineThickness, rectangleLineThickness);
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
-	SDL_RenderDrawRect(renderer, &rect);
 	SDL_RenderSetScale(renderer, 1, 1);
 
 	Registry::Instance()->Draw(renderer);
