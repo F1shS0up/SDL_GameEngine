@@ -4,6 +4,11 @@
 #include "Shapes.h"
 #include <algorithm>
 
+#define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
+{\
+	float length = (x1 - x2).length(); \
+	*out = v1 - Vector2D((2 * m2 / (m1 + m2)) * Vector2D::DotProduct(v1 - v2, x1 - x2) / ((length == 0 ? 1 : length) * (length == 0 ? 1 : length))* (x1 - x2).x, (2 * m2 / (m1 + m2)) * Vector2D::DotProduct(v1 - v2, x1 - x2) / ((length == 0 ? 1 : length) * (length == 0 ? 1 : length))* (x1 - x2).y);\
+}\
 
 void MassPoint::ApplyForce(Vector2D force)
 {
@@ -24,6 +29,18 @@ void Softbody_System::Init(Registry* reg)
 	{
 		if (reg->softbodies.count(e))
 		{
+			if (reg->softbodies[e].springs.size() <= 0)
+			{
+				for (int x = 0; x < reg->softbodies[e].massPoints.size(); x++)
+				{
+					for (int y = x + 1; y < reg->softbodies[e].massPoints.size(); y++)
+					{
+						float dist = (reg->softbodies[e].massPoints[y].position - reg->softbodies[e].massPoints[x].position).length();
+						reg->softbodies[e].springs.push_back(Spring{ x, y, reg->softbodies[e].defaultStiffness, dist, reg->softbodies[e].defaultDampingFactor });
+					}
+				}
+			}
+
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
 				reg->softbodies[e].massPoints[p].velocity = Vector2D(0, 0);
@@ -174,7 +191,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 							}
 
 							Vector2D closestPointThis = ColliderFunctions::ClosestPointToLine(X, Y, &reg->softbodies[e].massPoints[p].position);
-							float dist = closestPoint.x * closestPoint.x + closestPoint.y * closestPoint.y;
+							Vector2D dir = closestPointThis - reg->softbodies[e].massPoints[p].position;
+							float dist = dir.x * dir.x + dir.y * dir.y;
 							if (currentDistanceFromClosest > dist || i == 0)
 							{
 								currentDistanceFromClosest = dist;
@@ -183,31 +201,31 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 								lineTwo = &reg->softbodies[e2].massPoints[nextIndex];
 							}
 
-							if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position, reg->softbodies[e].massPoints[p].position + Vector2D(100000, 0), *X, *Y))
+							if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position, reg->softbodies[e].massPoints[p].position + Vector2D(1000000, 0), *X, *Y))
 							{
 								intersectionCount++;
 							}
 						}
 						if (intersectionCount % 2 != 0)
 						{
-							/*Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
+							Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
 							Vector2D x2 = reg->softbodies[e].massPoints[p].position + reversedNormal;
 							Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
-							ResolveCollision(lineOne, lineTwo, &reg->softbodies[e].massPoints[p], reversedNormal * -1);*/
+
+							Vector2D newV1, newV2;
+							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 1, 1, &newV1);
+							ComputeVelocityForCircles(v2, reg->softbodies[e].massPoints[p].velocity, x2, reg->softbodies[e].massPoints[p].position, 1, 1, &newV2);
+
+							reg->softbodies[e].massPoints[p].velocity = newV1;
+							if(!lineOne->isStatic)lineOne->velocity = newV2;
+							if(!lineTwo->isStatic)lineTwo->velocity = newV2;
 
 							
 
-							if (lineOne->isStatic || lineTwo->isStatic)
-							{
-								reg->softbodies[e].massPoints[p].position = closestPoint;
-							}
-							else
-							{
-								Vector2D halfToMove = closestPoint - reg->softbodies[e].massPoints[p].position;
-								reg->softbodies[e].massPoints[p].position += halfToMove;
-								lineOne->position -= halfToMove;
-								lineTwo->position -= halfToMove;
-							}
+							
+							std::cout << reg->softbodies[e].massPoints[p].velocity.x << " " << reg->softbodies[e].massPoints[p].velocity.y << std::endl;
+							reg->softbodies[e].massPoints[p].position = closestPoint;
+							
 							
 						}
 					}
@@ -232,18 +250,20 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 				reg->softbodies[e].massPoints[p].force += dragForce;
 
 				reg->softbodies[e].massPoints[p].velocity += reg->softbodies[e].massPoints[p].force * *deltaTime;
-				std::cout << p << ":     " << reg->softbodies[e].massPoints[p].velocity.x << " " << reg->softbodies[e].massPoints[p].velocity.y << std::endl;
+				
 				reg->softbodies[e].massPoints[p].position += reg->softbodies[e].massPoints[p].velocity * *deltaTime;
 			}
 		}
 	}
 }
-float f1;
 void Softbody_System::CalculateSpringForce(Spring * s, Softbody_Component * c,  Vector2D* forceA, Vector2D* forceB, double* deltaTime)
 {
 	float length = (c->massPoints[s->B].position - c->massPoints[s->A].position).length();
 	float f = s->stiffness * (length - s->restLength);
-	f1 = length;
+#ifdef _DEBUG
+	s->f = f;
+#endif // _DEBUG
+
 
 	Vector2D normalizedDir = (c->massPoints[s->B].position - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
 	Vector2D velDif = c->massPoints[s->B].velocity - c->massPoints[s->A].velocity;
@@ -252,7 +272,6 @@ void Softbody_System::CalculateSpringForce(Spring * s, Softbody_Component * c,  
 	float damp = dot * s->dampingFactor;
 
 	float fullForce = f + damp;
-
 
 	*forceA = normalizedDir * fullForce;
 	*forceB = normalizedDir * -1 * fullForce ;
@@ -280,18 +299,24 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 	{
 		if (reg->softbodies.count(e))
 		{
-			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
-			{
-				ShapesRendering::DrawFilledCircle(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, SDL_Color{ 255, 0, 0, 1 });
-			}
+#ifdef _DEBUG
 			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
 			{
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
+				
+
+
+				SDL_SetRenderDrawColor(renderer, std::clamp<float>(reg->softbodies[e].springs[s].f, 0, 255), 0, 0, 1);
+				
 				SDL_RenderSetScale(renderer, 2, 2);
 				SDL_RenderDrawLine(renderer, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].position.x / 2, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].position.y / 2,
 					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].position.x / 2, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].position.y / 2);
 				SDL_RenderSetScale(renderer, 1, 1);
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+			}
+#endif // _DEBUG
+			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+			{
+				ShapesRendering::DrawFilledCircle(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, SDL_Color{ 255, 0, 0, 1 });
 			}
 		}
 	}

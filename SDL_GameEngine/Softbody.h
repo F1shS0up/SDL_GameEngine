@@ -14,6 +14,7 @@ struct MassPoint
 	Vector2D velocity;
 	Vector2D force;
 	void ApplyForce(Vector2D force);
+
 };
 
 struct Spring
@@ -24,6 +25,9 @@ struct Spring
 	float dampingFactor;
 
 	Vector2D springVelA, springVelB;
+#ifdef _DEBUG
+	float f;
+#endif // _DEBUG
 };
 
 struct Softbody_Component
@@ -32,6 +36,8 @@ struct Softbody_Component
 	std::vector<Spring> springs;
 	float* gravity;
 	float* dragCoeficient;
+	float defaultStiffness;
+	float defaultDampingFactor;
 };
 
 class Softbody_System

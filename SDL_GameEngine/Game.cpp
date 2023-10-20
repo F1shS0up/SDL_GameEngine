@@ -65,29 +65,43 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	//Registry::Instance()->AABBColliders[line4] = AABBCollider_Component{ 2000, 80 };
 	//Registry::Instance()->filledRectangles[line4] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
 	//Registry::Instance()->transforms[line4] = Transform_Component{ Vector2D(920, 2080) };
+	Entity softbody = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[softbody] = Softbody_Component{ 
+		{
+			/*MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1450, 1400), 1}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1550, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1}, 
+			MassPoint{Vector2D(1400, 1450), 1}, MassPoint{Vector2D(1450, 1450), 1}, MassPoint{Vector2D(1500, 1450), 1}, MassPoint{Vector2D(1550, 1450), 1}, MassPoint{Vector2D(1600, 1450), 1},
+			MassPoint{Vector2D(1400, 1500), 1}, MassPoint{Vector2D(1450, 1500), 1}, MassPoint{Vector2D(1500, 1500), 1}, MassPoint{Vector2D(1550, 1500), 1}, MassPoint{Vector2D(1600, 1500), 1},
+			MassPoint{Vector2D(1400, 1550), 1}, MassPoint{Vector2D(1450, 1550), 1}, MassPoint{Vector2D(1500, 1550), 1}, MassPoint{Vector2D(1550, 1550), 1}, MassPoint{Vector2D(1600, 1550), 1},
+			MassPoint{Vector2D(1400, 1600), 1}, MassPoint{Vector2D(1450, 1600), 1}, MassPoint{Vector2D(1500, 1600), 1}, MassPoint{Vector2D(1550, 1600), 1}, MassPoint{Vector2D(1600, 1600), 1}*/
+			MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1450, 1400), 1}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1550, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1},
+			MassPoint{Vector2D(1600, 1450), 1}, MassPoint{Vector2D(1600, 1500), 1},MassPoint{Vector2D(1600, 1550), 1}, MassPoint{Vector2D(1600, 1600), 1},
+			MassPoint{Vector2D(1550, 1600), 1}, MassPoint{Vector2D(1500, 1600), 1},MassPoint{Vector2D(1450, 1600), 1}, MassPoint{Vector2D(1400, 1600), 1},
+			MassPoint{Vector2D(1400, 1550), 1}, 
+			MassPoint{Vector2D(1400, 1500), 1},
+			MassPoint{Vector2D(1400, 1450), 1}
+		},
+		{ },gravity, dragCoeficient, 100, .5 };
+
+	x = softbody;
+
 	Entity ground = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[ground] = Softbody_Component{ 
 		{
-			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1, true}, MassPoint{Vector2D(1320, 1680), 1, true}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
-			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1, true}, MassPoint{Vector2D(2720, 1680), 1, true},MassPoint{Vector2D(2920, 1680), 1, true},
-			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1, true}, MassPoint{Vector2D(2520, 1880), 1, true}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1}, 
-			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1, true}, MassPoint{Vector2D(1120, 1880), 1, true},MassPoint{Vector2D(920, 1880), 1, true}
+			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1}, MassPoint{Vector2D(1320, 1680), 1}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
+			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1}, MassPoint{Vector2D(2720, 1680), 1},MassPoint{Vector2D(2920, 1680), 1, true},
+			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1}, MassPoint{Vector2D(2520, 1880), 1}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1},
+			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
 		},
 
 
 
-		{Spring{0, 1, 100, 100, 5}, Spring{1, 2, 100, 100, 5}, Spring{2, 3, 100, 100, 5}, Spring{3, 4, 100, 100, 5}, Spring{4, 5, 100, 100, 5},
+		{/*Spring{0, 1, 100, 100, 5}, Spring{1, 2, 100, 100, 5}, Spring{2, 3, 100, 100, 5}, Spring{3, 4, 100, 100, 5}, Spring{4, 5, 100, 100, 5},
 		Spring{5, 6, 100, 100, 5}, Spring{6, 7, 100, 100, 5}, Spring{7, 8, 100, 100, 5}, Spring{8, 9, 100, 100, 5}, Spring{9, 10, 100, 100, 5},
 		Spring{10, 11, 100, 100, 5}, Spring{11, 12, 100, 100, 5}, Spring{12, 13, 100, 100, 5}, Spring{13, 14, 100, 100, 5}, Spring{14, 15, 100, 100, 5},
-		Spring{15, 16, 100, 100, 5}, Spring{16, 17, 100, 100, 5}, Spring{17, 18, 100, 100, 5}, Spring{18, 19, 100, 100, 5}, Spring{19, 20, 100, 100, 5}, Spring{20, 21, 100, 100, 5}, Spring{21, 0, 100, 100, 5}},
-		gravity, dragCoeficient };
+		Spring{15, 16, 100, 100, 5}, Spring{16, 17, 100, 100, 5}, Spring{17, 18, 100, 100, 5}, Spring{18, 19, 100, 100, 5}, Spring{19, 20, 100, 100, 5}, Spring{20, 21, 100, 100, 5}, Spring{21, 0, 100, 100, 5}*/},
+		gravity, dragCoeficient, 1000, .5 };
 
 
-	Entity softbody = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody] = Softbody_Component{{MassPoint{Vector2D(1400, 1400), 1, true}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1500, 1500), 1}, MassPoint{Vector2D(1400, 1500), 1}},
-		{Spring{0, 1, 500, 100, 5}, Spring{2, 1, 500, 100, 5}, Spring{2, 3, 500, 100, 5}, Spring{3, 0, 500, 100, 5}, Spring{3, 1, 500, 141.4, 5}, Spring{2, 0, 500, 141.4, 5} },gravity, dragCoeficient};
-
-	x = softbody;
 
 
 	/*Entity fluidSim = EntityManager::Instance()->CreateEntity();
