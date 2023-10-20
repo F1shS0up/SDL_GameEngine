@@ -3,8 +3,6 @@
 #include "Entity.h"
 #include "InputManager.h"
 
-const float coefficient = 1;
-
 void SliderBox_System::Init(Registry* reg, SDL_Renderer* renderer)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -48,7 +46,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 					
 				}
 			}
-			else if (InputManager::Instance()->MouseButtonReleased(InputManager::left))
+			if (InputManager::Instance()->MouseButtonReleased(InputManager::left))
 			{
 				c->pressedInside = false;
 				c->txtComp->boxColor = c->boxColor;
@@ -66,7 +64,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 				//Difference between the starting position when clicked on element and current mouse position
 				float difference = c->onXAxis ? InputManager::Instance()->MousePos().x - c->startPoint.x : InputManager::Instance()->MousePos().y - c->startPoint.y;
 
-				c->value = c->startValue + difference * coefficient;
+				c->value = std::clamp <float>(c->startValue + difference * c->coefficient, c->min, c->max);
 				c->txtComp->message = std::to_string(c->value);
 			}
 

@@ -15,7 +15,10 @@
 const int rectangleLineThickness = 10;
 const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
 float* gravity;
+float* dragCoeficient;
 std::string assetPath = "";
+
+int x;
 
 Game::Game()
 {
@@ -32,32 +35,60 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	assetPath += "Assets/";
 
 	gravity = new float(0);
+	dragCoeficient = new float(0);
 
 	Entity e = EntityManager::Instance()->CreateEntity();
 
 	std::string font = assetPath + "Fonts/consola.ttf";
 	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, 
-		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 0 };
+		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 0 , 100, -100000, 100000};
 	gravity = &Registry::Instance()->sliderBoxes[e].value;
 
-	Entity line1 = EntityManager::Instance()->CreateEntity();
-	Entity line2 = EntityManager::Instance()->CreateEntity();
-	Entity line3 = EntityManager::Instance()->CreateEntity();
-	Entity line4 = EntityManager::Instance()->CreateEntity();
-	Entity line5 = EntityManager::Instance()->CreateEntity();
+	Entity coef = EntityManager::Instance()->CreateEntity();
 
-	Registry::Instance()->AABBColliders[line2] = AABBCollider_Component{ 920, 2000 };
-	Registry::Instance()->filledRectangles[line2] = FilledRectangle_Component{ 920, 2000, SDL_Color{255, 255, 255, 1} };
-	Registry::Instance()->transforms[line2] = Transform_Component{ Vector2D(0, 80) };
-	Registry::Instance()->AABBColliders[line1] = AABBCollider_Component{ 920, 2000 };
-	Registry::Instance()->filledRectangles[line1] = FilledRectangle_Component{ 920, 2000, SDL_Color{255, 255, 255, 1} };
-	Registry::Instance()->transforms[line1] = Transform_Component{ Vector2D(2920, 80) };
-	Registry::Instance()->AABBColliders[line3] = AABBCollider_Component{ 2000, 80 };
-	Registry::Instance()->filledRectangles[line3] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
-	Registry::Instance()->transforms[line3] = Transform_Component{ Vector2D(920, 0) };
-	Registry::Instance()->AABBColliders[line4] = AABBCollider_Component{ 2000, 80 };
-	Registry::Instance()->filledRectangles[line4] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
-	Registry::Instance()->transforms[line4] = Transform_Component{ Vector2D(920, 2080) };
+	Registry::Instance()->sliderBoxes[coef] = SliderBox_Component{ "Drag:",Vector2DInt(50,200), SDL_Color{255, 255, 255, 255}, font.c_str(), 40,
+	SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 200, 350, 350}, SDL_Rect{240, 190, 360, 50}, true, 0 , 0.0001f, 0, 1};
+	dragCoeficient = &Registry::Instance()->sliderBoxes[coef].value;
+
+	//Entity line1 = EntityManager::Instance()->CreateEntity();
+	//Entity line2 = EntityManager::Instance()->CreateEntity();
+	//Entity line3 = EntityManager::Instance()->CreateEntity();
+	//Entity line4 = EntityManager::Instance()->CreateEntity();
+	//Entity line5 = EntityManager::Instance()->CreateEntity();
+
+	//Registry::Instance()->AABBColliders[line1] = AABBCollider_Component{ 920, 2000 };
+	//Registry::Instance()->filledRectangles[line1] = FilledRectangle_Component{ 920, 2000, SDL_Color{255, 255, 255, 1} };
+	//Registry::Instance()->transforms[line1] = Transform_Component{ Vector2D(2920, 80) };
+	//Registry::Instance()->AABBColliders[line3] = AABBCollider_Component{ 2000, 80 };
+	//Registry::Instance()->filledRectangles[line3] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
+	//Registry::Instance()->transforms[line3] = Transform_Component{ Vector2D(920, 0) };
+	//Registry::Instance()->AABBColliders[line4] = AABBCollider_Component{ 2000, 80 };
+	//Registry::Instance()->filledRectangles[line4] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
+	//Registry::Instance()->transforms[line4] = Transform_Component{ Vector2D(920, 2080) };
+	Entity ground = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[ground] = Softbody_Component{ 
+		{
+			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1, true}, MassPoint{Vector2D(1320, 1680), 1, true}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
+			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1, true}, MassPoint{Vector2D(2720, 1680), 1, true},MassPoint{Vector2D(2920, 1680), 1, true},
+			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1, true}, MassPoint{Vector2D(2520, 1880), 1, true}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1}, 
+			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1, true}, MassPoint{Vector2D(1120, 1880), 1, true},MassPoint{Vector2D(920, 1880), 1, true}
+		},
+
+
+
+		{Spring{0, 1, 100, 100, 5}, Spring{1, 2, 100, 100, 5}, Spring{2, 3, 100, 100, 5}, Spring{3, 4, 100, 100, 5}, Spring{4, 5, 100, 100, 5},
+		Spring{5, 6, 100, 100, 5}, Spring{6, 7, 100, 100, 5}, Spring{7, 8, 100, 100, 5}, Spring{8, 9, 100, 100, 5}, Spring{9, 10, 100, 100, 5},
+		Spring{10, 11, 100, 100, 5}, Spring{11, 12, 100, 100, 5}, Spring{12, 13, 100, 100, 5}, Spring{13, 14, 100, 100, 5}, Spring{14, 15, 100, 100, 5},
+		Spring{15, 16, 100, 100, 5}, Spring{16, 17, 100, 100, 5}, Spring{17, 18, 100, 100, 5}, Spring{18, 19, 100, 100, 5}, Spring{19, 20, 100, 100, 5}, Spring{20, 21, 100, 100, 5}, Spring{21, 0, 100, 100, 5}},
+		gravity, dragCoeficient };
+
+
+	Entity softbody = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[softbody] = Softbody_Component{{MassPoint{Vector2D(1400, 1400), 1, true}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1500, 1500), 1}, MassPoint{Vector2D(1400, 1500), 1}},
+		{Spring{0, 1, 500, 100, 5}, Spring{2, 1, 500, 100, 5}, Spring{2, 3, 500, 100, 5}, Spring{3, 0, 500, 100, 5}, Spring{3, 1, 500, 141.4, 5}, Spring{2, 0, 500, 141.4, 5} },gravity, dragCoeficient};
+
+	x = softbody;
+
 
 	/*Entity fluidSim = EntityManager::Instance()->CreateEntity();
 
@@ -66,7 +97,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	//Entity square = EntityManager::Instance()->CreateEntity();
 
 	//Registry::Instance()->filledRectangles[square] = FilledRectangle_Component{ 200, 200, {255, 255, 255, 1} };
-	//Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 1000) };
+	//Registry::Instance()->transforms[square] = Transform_Component{ Vector2D(2000, 100) };
 	//Registry::Instance()->rigidbodies[square] = Rigidbody_Component{ Vector2D(200, -400), gravity, 200 };
 	//Registry::Instance()->AABBColliders[square] = AABBCollider_Component{ 200, 200 };
 
@@ -84,9 +115,6 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	//Registry::Instance()->rigidbodies[circle2] = Rigidbody_Component{ Vector2D(-100, 600), gravity, 100 };
 	//Registry::Instance()->circleColliders[circle2] = CircleCollider_Component{ 100 };
 
-	Entity softbody = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody] = Softbody_Component{{MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1400, 1500), 1}, MassPoint{Vector2D(1500, 1500), 1}, MassPoint{Vector2D(1500, 1400), 1}},
-		{Spring{0, 1, 500, 100, 1}, Spring{1, 2, 500, 100, 1}, Spring{2, 3, 500, 100, 1}, Spring{3, 0, 500, 100, 1} },gravity};
 
 
 	inputManager = InputManager::Instance();
@@ -105,7 +133,6 @@ void Game::InitSDL(bool fullscreen, const char* title, SDL_Rect& windowSize)
 	if (fullscreen)
 	{
 		flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
-		flags += SDL_WINDOW_ALLOW_HIGHDPI;
 	}
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
@@ -191,6 +218,18 @@ void Game::Update(double* deltaTime)
 {
 	inputManager->Update();
 	Registry::Instance()->Update(deltaTime, this);
+	if (InputManager::Instance()->MouseButtonPressed(InputManager::right))
+	{
+		Registry::Instance()->softbodies[x].massPoints[0].Lock();
+	}
+	else if (InputManager::Instance()->MouseButtonDown(InputManager::right))
+	{
+		Registry::Instance()->softbodies[x].massPoints[0].position = Vector2D(InputManager::Instance()->MousePos().x, InputManager::Instance()->MousePos().y);
+	}
+	else if (InputManager::Instance()->MouseButtonReleased(InputManager::right))
+	{
+		Registry::Instance()->softbodies[x].massPoints[0].Unlock();
+	}
 	inputManager->UpdatePrevInput();
 }
 void Game::Render()

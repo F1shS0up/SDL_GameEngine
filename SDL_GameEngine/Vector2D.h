@@ -24,7 +24,6 @@ public:
 		return Vector2D(x + v2.x, y + v2.y);
 	}
 
-
 	bool operator== (const Vector2D& v2)
 	{
 		return (x == v2.x &&

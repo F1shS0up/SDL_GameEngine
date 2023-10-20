@@ -8,9 +8,12 @@ struct MassPoint
 	Vector2D position;
 	float mass;
 	bool isStatic;
+	void Lock() { isStatic = true; }
+	void Unlock() { isStatic = false; }
 
 	Vector2D velocity;
 	Vector2D force;
+	void ApplyForce(Vector2D force);
 };
 
 struct Spring
@@ -28,6 +31,7 @@ struct Softbody_Component
 	std::vector<MassPoint> massPoints;
 	std::vector<Spring> springs;
 	float* gravity;
+	float* dragCoeficient;
 };
 
 class Softbody_System
@@ -35,6 +39,7 @@ class Softbody_System
 public:
 	void Init(class Registry* reg);
 	void Update(class Registry* reg, double* deltaTime);
-	Vector2D CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
+	void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
+	void ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal);
 	void Draw(class Registry* reg, SDL_Renderer* renderer);
 };

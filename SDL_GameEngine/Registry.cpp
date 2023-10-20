@@ -35,7 +35,6 @@ void Registry::Update(double* deltaTime, Game* game)
 
 void Registry::Draw(SDL_Renderer* renderer)
 {
-	shapeSystem.Draw(this, renderer);
 	fluidSimulationSystem.Draw(renderer);
 	textSystem.Draw(this, renderer);
 	textBoxSystem.Draw(this, renderer);
@@ -44,4 +43,5 @@ void Registry::Draw(SDL_Renderer* renderer)
 	colliderSystem.Draw(this, renderer);
 #endif // _DEBUG
 	softbodySystem.Draw(this, renderer);
+	shapeSystem.Draw(this, renderer);
 }

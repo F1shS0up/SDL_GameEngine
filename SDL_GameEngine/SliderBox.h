@@ -14,6 +14,8 @@ struct SliderBox_Component
 	SDL_Rect txtRect, boxRect;
 	bool onXAxis;
 	float value;
+	float coefficient;
+	float min, max;
 
 	bool pressedInside;
 	Vector2DInt startPoint;
