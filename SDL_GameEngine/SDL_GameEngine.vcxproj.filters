@@ -66,6 +66,9 @@
     <ClCompile Include="Softbody.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SDL2_gfxPrimitives.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="Softbody.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2_gfxPrimitives.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

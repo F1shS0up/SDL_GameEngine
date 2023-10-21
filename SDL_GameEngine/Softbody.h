@@ -32,13 +32,18 @@ struct Spring
 
 struct Softbody_Component
 {
+	int massPointsN;
 	std::vector<MassPoint> massPoints;
 	std::vector<Spring> springs;
 	float* gravity;
 	float* dragCoeficient;
 	float defaultStiffness;
 	float defaultDampingFactor;
+
+	Sint16* x;
+	Sint16* y;
 };
+
 
 class Softbody_System
 {

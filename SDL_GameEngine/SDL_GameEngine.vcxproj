@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -151,6 +151,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="SDL2_gfxPrimitives.c" />
     <ClCompile Include="SDL_FontCache.c" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Shapes.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Rigidbody.h" />
+    <ClInclude Include="SDL2_gfxPrimitives.h" />
     <ClInclude Include="SDL_FontCache.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Shapes.h" />

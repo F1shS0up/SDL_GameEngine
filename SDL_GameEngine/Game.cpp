@@ -66,7 +66,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	//Registry::Instance()->filledRectangles[line4] = FilledRectangle_Component{ 2000, 80, SDL_Color{255, 255, 255, 1} };
 	//Registry::Instance()->transforms[line4] = Transform_Component{ Vector2D(920, 2080) };
 	Entity softbody = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody] = Softbody_Component{ 
+	Registry::Instance()->softbodies[softbody] = Softbody_Component{ 16,
 		{
 			/*MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1450, 1400), 1}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1550, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1}, 
 			MassPoint{Vector2D(1400, 1450), 1}, MassPoint{Vector2D(1450, 1450), 1}, MassPoint{Vector2D(1500, 1450), 1}, MassPoint{Vector2D(1550, 1450), 1}, MassPoint{Vector2D(1600, 1450), 1},
@@ -85,12 +85,12 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	x = softbody;
 
 	Entity ground = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[ground] = Softbody_Component{ 
+	Registry::Instance()->softbodies[ground] = Softbody_Component{ 22,
 		{
-			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1}, MassPoint{Vector2D(1320, 1680), 1}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
-			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1}, MassPoint{Vector2D(2720, 1680), 1},MassPoint{Vector2D(2920, 1680), 1, true},
-			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1}, MassPoint{Vector2D(2520, 1880), 1}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1},
-			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
+			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1, true}, MassPoint{Vector2D(1320, 1680), 1, true}, MassPoint{Vector2D(1520, 1680), 1, true}, MassPoint{Vector2D(1720, 1680), 1, true}, MassPoint{Vector2D(1920, 1680), 1, true},
+			MassPoint{Vector2D(2120, 1680), 1, true}, MassPoint{Vector2D(2320, 1680), 1, true}, MassPoint{Vector2D(2520, 1680), 1, true}, MassPoint{Vector2D(2720, 1680), 1, true},MassPoint{Vector2D(2920, 1680), 1, true},
+			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1, true}, MassPoint{Vector2D(2520, 1880), 1, true}, MassPoint{Vector2D(2320, 1880), 1, true}, MassPoint{Vector2D(2120, 1880), 1, true}, MassPoint{Vector2D(1920, 1880), 1, true},
+			MassPoint{Vector2D(1720, 1880), 1, true}, MassPoint{Vector2D(1520, 1880), 1, true}, MassPoint{Vector2D(1320, 1880), 1, true}, MassPoint{Vector2D(1120, 1880), 1, true},MassPoint{Vector2D(920, 1880), 1, true}
 		},
 
 
@@ -253,6 +253,7 @@ void Game::Render()
 	SDL_RenderSetScale(renderer, 1, 1);
 
 	Registry::Instance()->Draw(renderer);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderPresent(renderer);
 }
 

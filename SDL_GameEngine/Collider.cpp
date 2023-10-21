@@ -4,6 +4,7 @@
 #include "Shapes.h"
 #include <numeric>
 #include <complex>
+#include "SDL2_gfxPrimitives.h"
 void Collider_System::Init(Registry* reg)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -71,7 +72,7 @@ void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
 					bool inter = ColliderFunctions::LineLineIntersection(*cc->position + cl->normal * cc->radius, *cc->position - cl->normal * cc->radius, cl->a, cl->b, &intersection);
 					if (inter)
 					{
-						ShapesRendering::DrawFilledCircle(renderer, intersection.x, intersection.y, 20, SDL_Color{ 255, 255, 0, 1 });
+						filledCircleRGBA(renderer, intersection.x, intersection.y, 20, 255, 255, 0, 1 );
 					}
 				}
 			}

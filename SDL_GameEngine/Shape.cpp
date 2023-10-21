@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Shapes.h"
 #include "Registry.h"
+#include "SDL2_gfxPrimitives.h"
 
 void Shape_System::Init(Registry* reg)
 {
@@ -24,7 +25,7 @@ void Shape_System::Draw(Registry* reg, SDL_Renderer* renderer)
 	{
 		if (reg->filledCircles.count(e))
 		{
-			ShapesRendering::DrawFilledCircle(renderer, (*reg->filledCircles[e].position).x, (*reg->filledCircles[e].position).y, reg->filledCircles[e].radius, reg->filledCircles[e].color);
+			filledCircleRGBA(renderer, (*reg->filledCircles[e].position).x, (*reg->filledCircles[e].position).y, reg->filledCircles[e].radius, reg->filledCircles[e].color.r, reg->filledCircles[e].color.g, reg->filledCircles[e].color.b, reg->filledCircles[e].color.a);
 		}
 		if (reg->filledRectangles.count(e))
 		{

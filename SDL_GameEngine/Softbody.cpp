@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Shapes.h"
 #include <algorithm>
+#include "SDL2_gfxPrimitives.h"
 
 #define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
 {\
@@ -29,6 +30,9 @@ void Softbody_System::Init(Registry* reg)
 	{
 		if (reg->softbodies.count(e))
 		{
+			reg->softbodies[e].x = new Sint16[reg->softbodies[e].massPointsN];
+			reg->softbodies[e].y = new Sint16[reg->softbodies[e].massPointsN];
+
 			if (reg->softbodies[e].springs.size() <= 0)
 			{
 				for (int x = 0; x < reg->softbodies[e].massPoints.size(); x++)
@@ -213,17 +217,11 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 							Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
 
 							Vector2D newV1, newV2;
-							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 1, 1, &newV1);
-							ComputeVelocityForCircles(v2, reg->softbodies[e].massPoints[p].velocity, x2, reg->softbodies[e].massPoints[p].position, 1, 1, &newV2);
-
-							reg->softbodies[e].massPoints[p].velocity = newV1;
-							if(!lineOne->isStatic)lineOne->velocity = newV2;
-							if(!lineTwo->isStatic)lineTwo->velocity = newV2;
-
+							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 10, 1, &reg->softbodies[e].massPoints[p].velocity);
 							
 
+						
 							
-							std::cout << reg->softbodies[e].massPoints[p].velocity.x << " " << reg->softbodies[e].massPoints[p].velocity.y << std::endl;
 							reg->softbodies[e].massPoints[p].position = closestPoint;
 							
 							
@@ -241,17 +239,22 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 			}
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
-				if (reg->softbodies[e].massPoints[p].isStatic) continue;
+				if (!reg->softbodies[e].massPoints[p].isStatic)
+				{
 
-				float velLength = reg->softbodies[e].massPoints[p].velocity.length();
-				
-				Vector2D dragForce = reg->softbodies[e].massPoints[p].velocity / (velLength == 0 ? 1 : velLength) * -1 * *reg->softbodies[e].dragCoeficient * velLength * velLength;
+					float velLength = reg->softbodies[e].massPoints[p].velocity.length();
 
-				reg->softbodies[e].massPoints[p].force += dragForce;
+					Vector2D dragForce = reg->softbodies[e].massPoints[p].velocity / (velLength == 0 ? 1 : velLength) * -1 * *reg->softbodies[e].dragCoeficient * velLength * velLength;
 
-				reg->softbodies[e].massPoints[p].velocity += reg->softbodies[e].massPoints[p].force * *deltaTime;
-				
-				reg->softbodies[e].massPoints[p].position += reg->softbodies[e].massPoints[p].velocity * *deltaTime;
+					reg->softbodies[e].massPoints[p].force += dragForce;
+
+					reg->softbodies[e].massPoints[p].velocity += reg->softbodies[e].massPoints[p].force * *deltaTime;
+
+					reg->softbodies[e].massPoints[p].position += reg->softbodies[e].massPoints[p].velocity * *deltaTime;
+				}
+
+				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x;
+				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y;
 			}
 		}
 	}
@@ -295,29 +298,19 @@ void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P,
 
 void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 {
+#ifdef _DEBUG
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
 		{
-#ifdef _DEBUG
-			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
-			{
-				
+			
+			filledPolygonRGBA(renderer, reg->softbodies[e].x, reg->softbodies[e].y, reg->softbodies[e].massPointsN, 255, 0, 0, 255);
 
-
-				SDL_SetRenderDrawColor(renderer, std::clamp<float>(reg->softbodies[e].springs[s].f, 0, 255), 0, 0, 1);
-				
-				SDL_RenderSetScale(renderer, 2, 2);
-				SDL_RenderDrawLine(renderer, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].position.x / 2, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].position.y / 2,
-					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].position.x / 2, reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].position.y / 2);
-				SDL_RenderSetScale(renderer, 1, 1);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
-			}
-#endif // _DEBUG
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
-				ShapesRendering::DrawFilledCircle(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, SDL_Color{ 255, 0, 0, 1 });
+				filledCircleRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, 255, 0, 0, 1 );
 			}
 		}
 	}
+#endif // _DEBUG
 }

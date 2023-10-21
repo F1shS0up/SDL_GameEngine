@@ -5,6 +5,7 @@
 #include <math.h>
 #include <algorithm>
 #include <random>
+#include "SDL2_gfxPrimitives.h"
 
 const float smoothingRadius = 200;
 const float mass = 1;
@@ -152,7 +153,7 @@ void FluidSimulation_System::Draw(SDL_Renderer* renderer)
 	{
 		for (int i = 0; i < fluid->particleCount; i++)
 		{
-			ShapesRendering::DrawFilledCircle(renderer, fluid->positions[i].x, fluid->positions[i].y, fluid->particleRadius, SDL_Color{ 255, 255, 255, 1 });
+			filledCircleRGBA(renderer, fluid->positions[i].x, fluid->positions[i].y, fluid->particleRadius, 255, 255, 255, 1 );
 		}
 	}
 }
