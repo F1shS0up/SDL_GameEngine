@@ -84,14 +84,18 @@ void Softbody_System::Init(Registry* reg)
 //		B->ApplyForce(force);
 //	}
 //}
+Vector2D closestPointX;
 void Softbody_System::Update(Registry* reg, double* deltaTime)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
 		{
+			reg->softbodies[e].closestPoints.clear();
+
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
+
 				if (reg->softbodies[e].massPoints[p].isStatic) continue;
 
 				reg->softbodies[e].massPoints[p].force = Vector2D(0, 0);
@@ -173,6 +177,7 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 
 					if (reg->softbodies.count(e2))
 					{
+
 						int intersectionCount = 0;
 						float currentDistanceFromClosest = 0;
 						Vector2D closestPoint;
@@ -195,6 +200,7 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 							}
 
 							Vector2D closestPointThis = ColliderFunctions::ClosestPointToLine(X, Y, &reg->softbodies[e].massPoints[p].position);
+							reg->softbodies[e].closestPoints.push_back(closestPointThis);
 							Vector2D dir = closestPointThis - reg->softbodies[e].massPoints[p].position;
 							float dist = dir.x * dir.x + dir.y * dir.y;
 							if (currentDistanceFromClosest > dist || i == 0)
@@ -205,9 +211,10 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 								lineTwo = &reg->softbodies[e2].massPoints[nextIndex];
 							}
 
-							if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position, reg->softbodies[e].massPoints[p].position + Vector2D(1000000, 0), *X, *Y))
+							if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(1000000, 0), *X, *Y))
 							{
 								intersectionCount++;
+								
 							}
 						}
 						if (intersectionCount % 2 != 0)
@@ -217,14 +224,41 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 							Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
 
 							Vector2D newV1, newV2;
-							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 10, 1, &reg->softbodies[e].massPoints[p].velocity);
+							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 1, 1, &newV1);
+							ComputeVelocityForCircles(v2, reg->softbodies[e].massPoints[p].velocity, x2, reg->softbodies[e].massPoints[p].position, 1, 1, &newV2);
 							
-
+							reg->softbodies[e].massPoints[p].velocity = newV1;
+							if(!lineOne->isStatic)lineOne->velocity = newV2;
+							if(!lineTwo->isStatic)lineTwo->velocity = newV2;
 						
-							
-							reg->softbodies[e].massPoints[p].position = closestPoint;
-							
-							
+							if (!lineOne->isStatic && !lineTwo->isStatic)
+							{
+								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+								reg->softbodies[e].massPoints[p].position += dir;
+								float dist = (lineTwo->position - lineOne->position).length();
+								float distDif = (closestPoint - lineOne->position).length();
+								float per = distDif / dist;
+								std::cout << per << " " << 1 - per << std::endl;
+								
+								lineOne->position -= dir * (1 - per);
+								lineTwo->position -= dir * per;
+							}
+							else if (lineOne->isStatic && !lineTwo->isStatic)
+							{
+								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+								reg->softbodies[e].massPoints[p].position += dir;
+								lineTwo->position -= dir;
+							}
+							else if (!lineOne->isStatic && lineTwo->isStatic)
+							{
+								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+								reg->softbodies[e].massPoints[p].position += dir;
+								lineOne->position -= dir;
+							}
+							else
+							{
+								reg->softbodies[e].massPoints[p].position = closestPoint;
+							}
 						}
 					}
 				}
@@ -299,6 +333,8 @@ void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P,
 void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 {
 #ifdef _DEBUG
+
+
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
@@ -306,9 +342,10 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 			
 			filledPolygonRGBA(renderer, reg->softbodies[e].x, reg->softbodies[e].y, reg->softbodies[e].massPointsN, 255, 0, 0, 255);
 
+
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
-				filledCircleRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, 255, 0, 0, 1 );
+				filledCircleRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, 255, 0, 0, 255 );
 			}
 		}
 	}

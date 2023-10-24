@@ -80,17 +80,20 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1400, 1500), 1},
 			MassPoint{Vector2D(1400, 1450), 1}
 		},
-		{ },gravity, dragCoeficient, 100, .5 };
+		{ },gravity, dragCoeficient, 500, .8 };
 
 	x = softbody;
 
+
+	
+	float d = 0;
 	Entity ground = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[ground] = Softbody_Component{ 22,
 		{
-			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1, true}, MassPoint{Vector2D(1320, 1680), 1, true}, MassPoint{Vector2D(1520, 1680), 1, true}, MassPoint{Vector2D(1720, 1680), 1, true}, MassPoint{Vector2D(1920, 1680), 1, true},
-			MassPoint{Vector2D(2120, 1680), 1, true}, MassPoint{Vector2D(2320, 1680), 1, true}, MassPoint{Vector2D(2520, 1680), 1, true}, MassPoint{Vector2D(2720, 1680), 1, true},MassPoint{Vector2D(2920, 1680), 1, true},
-			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1, true}, MassPoint{Vector2D(2520, 1880), 1, true}, MassPoint{Vector2D(2320, 1880), 1, true}, MassPoint{Vector2D(2120, 1880), 1, true}, MassPoint{Vector2D(1920, 1880), 1, true},
-			MassPoint{Vector2D(1720, 1880), 1, true}, MassPoint{Vector2D(1520, 1880), 1, true}, MassPoint{Vector2D(1320, 1880), 1, true}, MassPoint{Vector2D(1120, 1880), 1, true},MassPoint{Vector2D(920, 1880), 1, true}
+			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1}, MassPoint{Vector2D(1320, 1680), 1}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
+			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1}, MassPoint{Vector2D(2720, 1680), 1},MassPoint{Vector2D(2920, 1680), 1, true},
+			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1}, MassPoint{Vector2D(2520, 1880), 1}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1},
+			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
 		},
 
 
@@ -99,7 +102,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 		Spring{5, 6, 100, 100, 5}, Spring{6, 7, 100, 100, 5}, Spring{7, 8, 100, 100, 5}, Spring{8, 9, 100, 100, 5}, Spring{9, 10, 100, 100, 5},
 		Spring{10, 11, 100, 100, 5}, Spring{11, 12, 100, 100, 5}, Spring{12, 13, 100, 100, 5}, Spring{13, 14, 100, 100, 5}, Spring{14, 15, 100, 100, 5},
 		Spring{15, 16, 100, 100, 5}, Spring{16, 17, 100, 100, 5}, Spring{17, 18, 100, 100, 5}, Spring{18, 19, 100, 100, 5}, Spring{19, 20, 100, 100, 5}, Spring{20, 21, 100, 100, 5}, Spring{21, 0, 100, 100, 5}*/},
-		gravity, dragCoeficient, 1000, .5 };
+		gravity, dragCoeficient, 500, 10 };
 
 
 
@@ -228,21 +231,36 @@ void Game::HandleEvents()
 		break;
 	}
 }
+int massPointI;
 void Game::Update(double* deltaTime)
 {
 	inputManager->Update();
 	Registry::Instance()->Update(deltaTime, this);
 	if (InputManager::Instance()->MouseButtonPressed(InputManager::right))
 	{
-		Registry::Instance()->softbodies[x].massPoints[0].Lock();
+		float dist = 0;
+		for (int i = 0; i < Registry::Instance()->softbodies[x].massPoints.size(); i++)
+		{
+			Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[x].massPoints[i].position.x - InputManager::Instance()->MousePos().x, Registry::Instance()->softbodies[x].massPoints[i].position.y - InputManager::Instance()->MousePos().y);
+			float currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
+			if (dist > currentDist || i == 0)
+			{
+				dist = currentDist;
+				massPointI = i;
+			}
+		}
+		
+		Registry::Instance()->softbodies[x].massPoints[massPointI].Lock();
 	}
 	else if (InputManager::Instance()->MouseButtonDown(InputManager::right))
 	{
-		Registry::Instance()->softbodies[x].massPoints[0].position = Vector2D(InputManager::Instance()->MousePos().x, InputManager::Instance()->MousePos().y);
+		
+		Registry::Instance()->softbodies[x].massPoints[massPointI].position = Vector2D(InputManager::Instance()->MousePos().x, InputManager::Instance()->MousePos().y);
 	}
 	else if (InputManager::Instance()->MouseButtonReleased(InputManager::right))
 	{
-		Registry::Instance()->softbodies[x].massPoints[0].Unlock();
+		
+		Registry::Instance()->softbodies[x].massPoints[massPointI].Unlock();
 	}
 	inputManager->UpdatePrevInput();
 }

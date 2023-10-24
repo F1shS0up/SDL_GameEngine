@@ -40,6 +40,7 @@ struct Softbody_Component
 	float defaultStiffness;
 	float defaultDampingFactor;
 
+	std::vector<Vector2D> closestPoints;
 	Sint16* x;
 	Sint16* y;
 };

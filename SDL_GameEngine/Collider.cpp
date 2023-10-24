@@ -144,16 +144,17 @@ bool ColliderFunctions::LineIntersectsHorizontalLine(const Vector2D* A, const Ve
 }
 Vector2D ColliderFunctions::ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P)
 {
-	Vector2D a2p = *P - *A;
-	Vector2D a2b = *B - *A;
 
-	float a2b2 = a2b.x * a2b.x + a2b.y * a2b.y;
+	//Get heading
+	Vector2D heading = (*B - *A);
+	float magnitudeMax = heading.length();
+	heading.normalize();
 
-	float dot = Vector2D::DotProduct(a2p, a2b);
-
-	float dist = dot / a2b2;
-
-	return Vector2D(A->x + a2b.x * dist, A->y + a2b.y * dist);
+	//Do projection from the point but clamp it
+	Vector2D lhs = *P - *A;
+	float dotP = Vector2D::DotProduct(lhs, heading);
+	dotP = std::clamp<float>(dotP, 0, magnitudeMax);
+	return *A + heading * dotP;
 }
 
 bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint)
