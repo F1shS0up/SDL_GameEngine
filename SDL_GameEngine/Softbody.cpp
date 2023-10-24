@@ -4,6 +4,7 @@
 #include "Shapes.h"
 #include <algorithm>
 #include "SDL2_gfxPrimitives.h"
+#include <cmath>
 
 #define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
 {\
@@ -33,6 +34,12 @@ void Softbody_System::Init(Registry* reg)
 			reg->softbodies[e].x = new Sint16[reg->softbodies[e].massPointsN];
 			reg->softbodies[e].y = new Sint16[reg->softbodies[e].massPointsN];
 
+			if (reg->softbodies[e].hardShapeMatching)
+			{
+				reg->softbodies[e].xFrame = new Sint16[reg->softbodies[e].massPointsN];
+				reg->softbodies[e].yFrame = new Sint16[reg->softbodies[e].massPointsN];
+			}
+
 			if (reg->softbodies[e].springs.size() <= 0)
 			{
 				for (int x = 0; x < reg->softbodies[e].massPoints.size(); x++)
@@ -48,6 +55,18 @@ void Softbody_System::Init(Registry* reg)
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
 				reg->softbodies[e].massPoints[p].velocity = Vector2D(0, 0);
+				if (reg->softbodies[e].hardShapeMatching)
+				{
+
+					Vector2D averagePosition = Vector2D(0, 0); //Position of the hard frame
+					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					{
+						averagePosition += reg->softbodies[e].massPoints[p].position;
+					}
+					averagePosition = averagePosition / reg->softbodies[e].massPoints.size();
+					reg->softbodies[e].originalPositionsOfMassPoints.push_back(reg->softbodies[e].massPoints[p].position - averagePosition);
+					reg->softbodies[e].springsForFrame.push_back(Spring{ p, p, reg->softbodies[e].defaultStiffness / 20, 0, reg->softbodies[e].defaultDampingFactor });
+				}
 			}
 			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
 			{
@@ -84,6 +103,11 @@ void Softbody_System::Init(Registry* reg)
 //		B->ApplyForce(force);
 //	}
 //}
+inline float lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
 Vector2D closestPointX;
 void Softbody_System::Update(Registry* reg, double* deltaTime)
 {
@@ -92,6 +116,9 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 		if (reg->softbodies.count(e))
 		{
 			reg->softbodies[e].closestPoints.clear();
+			reg->softbodies[e].finalPositionsOfHardFrame.clear();
+
+#pragma region Collision
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
@@ -238,7 +265,6 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 								float dist = (lineTwo->position - lineOne->position).length();
 								float distDif = (closestPoint - lineOne->position).length();
 								float per = distDif / dist;
-								std::cout << per << " " << 1 - per << std::endl;
 								
 								lineOne->position -= dir * (1 - per);
 								lineTwo->position -= dir * per;
@@ -263,6 +289,47 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 					}
 				}
 			}
+
+#pragma endregion
+
+			
+#pragma region ShapeMatching
+	
+			if (reg->softbodies[e].hardShapeMatching)
+			{
+				Vector2D averagePosition = Vector2D(0, 0); //Position of the hard frame
+				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+				{
+					averagePosition += reg->softbodies[e].massPoints[p].position;
+					
+				}
+				averagePosition = averagePosition / reg->softbodies[e].massPoints.size();
+
+				float averageAngle = 0;
+				std::vector<Vector2D> positionsNotAngled;
+				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+				{
+					positionsNotAngled.push_back(reg->softbodies[e].originalPositionsOfMassPoints[p]);
+					averageAngle = std::atan2(reg->softbodies[e].originalPositionsOfMassPoints[p].y - reg->softbodies[e].massPoints[p].position.y - averagePosition.y,
+						reg->softbodies[e].massPoints[p].position.x - averagePosition.x - reg->softbodies[e].originalPositionsOfMassPoints[p].x);
+				}
+				std::cout << averageAngle << std::endl;
+
+				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+				{
+					reg->softbodies[e].finalPositionsOfHardFrame.push_back(Vector2D(cos(0.1)* reg->softbodies[e].originalPositionsOfMassPoints[p].x - sin(0.1) * reg->softbodies[e].originalPositionsOfMassPoints[p].y,
+						cos(0.1) * reg->softbodies[e].originalPositionsOfMassPoints[p].y + sin(0.1) * reg->softbodies[e].originalPositionsOfMassPoints[p].x) + averagePosition);
+					reg->softbodies[e].xFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].x;
+					reg->softbodies[e].yFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].y;
+				}
+				
+				reg->softbodies[e].lastFrameAngle = averageAngle;
+			}
+
+#pragma endregion
+
+#pragma region SpringForce
+
 			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
 			{
 				
@@ -271,6 +338,18 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 				reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].force += forceA;
 				reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].force += forceB;
 			}
+			for (int s = 0; s < reg->softbodies[e].springsForFrame.size(); s++)
+			{
+
+				Vector2D forceA;
+				CalculateSpringForceForFrame(&reg->softbodies[e].springsForFrame[s], &reg->softbodies[e], &forceA, deltaTime, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].springsForFrame[s].A]);
+				reg->softbodies[e].massPoints[reg->softbodies[e].springsForFrame[s].A].force += forceA;
+			}
+
+#pragma endregion
+
+#pragma region AddAllForcesTogetherWithDragForce
+
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
 				if (!reg->softbodies[e].massPoints[p].isStatic)
@@ -290,6 +369,9 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x;
 				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y;
 			}
+
+#pragma endregion
+
 		}
 	}
 }
@@ -316,6 +398,27 @@ void Softbody_System::CalculateSpringForce(Spring * s, Softbody_Component * c,  
 	s->springVelA += *forceA * *deltaTime;
 	s->springVelB += *forceB * *deltaTime;
 }
+void Softbody_System::CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition)
+{
+	float length = (framePosition - c->massPoints[s->A].position).length();
+	float f = s->stiffness * (length - s->restLength);
+#ifdef _DEBUG
+	s->f = f;
+#endif // _DEBUG
+
+
+	Vector2D normalizedDir = (framePosition - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
+	Vector2D velDif = Vector2D(0, 0) - c->massPoints[s->A].velocity;
+
+	float dot = Vector2D::DotProduct(normalizedDir, velDif);
+	float damp = dot * s->dampingFactor;
+
+	float fullForce = f + damp;
+
+	*forceA = normalizedDir * fullForce;
+
+	s->springVelA += *forceA * *deltaTime;
+}
 void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal)
 {
 	//Calculate relative velocity between two objects -- improve by determining total velocity (linear + rotational velocity)
@@ -341,6 +444,10 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 		{
 			
 			filledPolygonRGBA(renderer, reg->softbodies[e].x, reg->softbodies[e].y, reg->softbodies[e].massPointsN, 255, 0, 0, 255);
+			if (reg->softbodies[e].hardShapeMatching)
+			{
+				polygonRGBA(renderer, reg->softbodies[e].xFrame, reg->softbodies[e].yFrame, reg->softbodies[e].massPointsN, 0, 255, 0, 255);
+			}
 
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)

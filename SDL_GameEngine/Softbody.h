@@ -19,7 +19,7 @@ struct MassPoint
 
 struct Spring
 {
-	int A, B; // indexes of masspoints
+	int A, B; // indexes of masspoints or framePoints
 	float stiffness;
 	float restLength;
 	float dampingFactor;
@@ -39,10 +39,15 @@ struct Softbody_Component
 	float* dragCoeficient;
 	float defaultStiffness;
 	float defaultDampingFactor;
+	bool hardShapeMatching = true;
 
 	std::vector<Vector2D> closestPoints;
-	Sint16* x;
-	Sint16* y;
+	std::vector<Vector2D> originalPositionsOfMassPoints;
+	std::vector<Spring> springsForFrame;
+	std::vector<Vector2D> finalPositionsOfHardFrame;
+	float lastFrameAngle = 0;
+	Sint16* x,* xFrame;
+	Sint16* y,* yFrame;
 };
 
 
@@ -52,6 +57,7 @@ public:
 	void Init(class Registry* reg);
 	void Update(class Registry* reg, double* deltaTime);
 	void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
+	void CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition);
 	void ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal);
 	void Draw(class Registry* reg, SDL_Renderer* renderer);
 };
