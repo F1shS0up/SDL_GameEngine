@@ -1868,11 +1868,8 @@ int filledCircleRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rad, Uin
 /* Detect 64bit and use intrinsic version */
 #ifdef _M_X64
 #include <emmintrin.h>
-static __inline long
-lrint(float f)
-{
-	return _mm_cvtss_si32(_mm_load_ss(&f));
-}
+
+
 #elif defined(_M_IX86)
 __inline long int
 lrint(double flt)
@@ -3640,6 +3637,64 @@ int texturedPolygon(SDL_Renderer* renderer, const Sint16* vx, const Sint16* vy, 
 	* Draw
 	*/
 	return (texturedPolygonMT(renderer, vx, vy, n, texture, texture_dx, texture_dy, NULL, NULL));
+}
+
+int thickLineRGBA(SDL_Renderer* renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 width, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	int wh;
+	double dx, dy, dx1, dy1, dx2, dy2;
+	double l, wl2, nx, ny, ang, adj;
+	Sint16 px[4], py[4];
+
+	if (renderer == NULL)
+	{
+		return -1;
+	}
+
+	if (width < 1)
+	{
+		return -1;
+	}
+
+	/* Special case: thick "point" */
+	if ((x1 == x2) && (y1 == y2))
+	{
+		wh = width / 2;
+		return boxRGBA(renderer, x1 - wh, y1 - wh, x2 + width, y2 + width, r, g, b, a);
+	}
+
+	/* Special case: width == 1 */
+	if (width == 1)
+	{
+		return lineRGBA(renderer, x1, y1, x2, y2, r, g, b, a);
+	}
+
+	/* Calculate offsets for sides */
+	dx = (double)(x2 - x1);
+	dy = (double)(y2 - y1);
+	l = SDL_sqrt(dx * dx + dy * dy);
+	ang = SDL_atan2(dx, dy);
+	adj = 0.1 + 0.9 * SDL_fabs(SDL_cos(2.0 * ang));
+	wl2 = ((double)width - adj) / (2.0 * l);
+	nx = dx * wl2;
+	ny = dy * wl2;
+
+	/* Build polygon */
+	dx1 = (double)x1;
+	dy1 = (double)y1;
+	dx2 = (double)x2;
+	dy2 = (double)y2;
+	px[0] = (Sint16)(dx1 + ny);
+	px[1] = (Sint16)(dx1 - ny);
+	px[2] = (Sint16)(dx2 - ny);
+	px[3] = (Sint16)(dx2 + ny);
+	py[0] = (Sint16)(dy1 - nx);
+	py[1] = (Sint16)(dy1 + nx);
+	py[2] = (Sint16)(dy2 + nx);
+	py[3] = (Sint16)(dy2 - nx);
+
+	/* Draw polygon */
+	return filledPolygonRGBA(renderer, px, py, 4, r, g, b, a);
 }
 
 /* ---- Character */

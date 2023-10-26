@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FluidSimulation.cpp" />
@@ -159,8 +160,10 @@
     <ClCompile Include="Softbody.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="TiledSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ComponentType.h" />
     <ClInclude Include="Entity.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Softbody.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="TiledSprite.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vector2DInt.h" />

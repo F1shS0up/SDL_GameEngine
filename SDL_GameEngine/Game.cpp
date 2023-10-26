@@ -7,18 +7,12 @@
 #include <random>
 #include <SDL_ttf.h>
 #include "SDL_filesystem.h"
+#include <functional>
 
 #define HandleError() \
 	std::cout << SDL_GetError() << std::endl; \
 	isRunning = false;
 
-const int rectangleLineThickness = 10;
-const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
-float* gravity;
-float* dragCoeficient;
-std::string assetPath = "";
-
-int x;
 
 Game::Game()
 {
@@ -26,10 +20,17 @@ Game::Game()
 Game::~Game()
 {
 }
-TextBox_Component* txt;
+
+void StartStop(Game* game)
+{
+	game->stopSimulation = !game->stopSimulation;
+}
+
 void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int renderHeight, bool fullscreen)
 {
 	InitSDL(fullscreen, title, windowSize);
+
+	stopSimulation = true;
 
 	assetPath = SDL_GetBasePath();
 	assetPath += "Assets/";
@@ -37,18 +38,31 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	gravity = new float(0);
 	dragCoeficient = new float(0);
 
-	Entity e = EntityManager::Instance()->CreateEntity();
 
 	std::string font = assetPath + "Fonts/consola.ttf";
-	Registry::Instance()->sliderBoxes[e] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40, 
-		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 0 , 100, -100000, 100000};
-	gravity = &Registry::Instance()->sliderBoxes[e].value;
+	std::string img = assetPath + "Textures/BackGround.png";
 
-	Entity coef = EntityManager::Instance()->CreateEntity();
+	Entity gravityEntity = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->sliderBoxes[gravityEntity] = SliderBox_Component{ "Gravity:",Vector2DInt(50,100), SDL_Color{255, 255, 255, 255}, font.c_str(), 40,
+		SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 100, 350, 350}, SDL_Rect{240, 90, 360, 50}, true, 3500 , 100, -100000, 100000};
+	gravity = &Registry::Instance()->sliderBoxes[gravityEntity].value;
 
-	Registry::Instance()->sliderBoxes[coef] = SliderBox_Component{ "Drag:",Vector2DInt(50,200), SDL_Color{255, 255, 255, 255}, font.c_str(), 40,
-	SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 200, 350, 350}, SDL_Rect{240, 190, 360, 50}, true, 0 , 0.0001f, 0, 1};
-	dragCoeficient = &Registry::Instance()->sliderBoxes[coef].value;
+
+	Entity dragEntity = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->sliderBoxes[dragEntity] = SliderBox_Component{ "Drag:",Vector2DInt(50,200), SDL_Color{255, 255, 255, 255}, font.c_str(), 40,
+	SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255}, SDL_Rect{250, 200, 350, 350}, SDL_Rect{240, 190, 360, 50}, true, 0.0001 , 0.0001f, 0, 1};
+	dragCoeficient = &Registry::Instance()->sliderBoxes[dragEntity].value;
+
+
+	Entity startButtonEntity = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->buttons[startButtonEntity] = Button_Component{ "Start/Stop",  font.c_str() , 40, SDL_Color{255, 255, 255, 255}, SDL_Color{60, 60, 60, 255}, SDL_Color{80, 80, 80, 255}, SDL_Color{150, 150, 150, 255},
+		SDL_Rect{250, 300, 350, 350}, SDL_Rect{240, 290, 360, 50}, &StartStop};
+
+	Entity t = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->tiledSprites[t] = TiledSprite_Component{img.c_str(), 3840, 2560};
+	Registry::Instance()->transforms[t] = Transform_Component{ };
+
+
 
 	Entity softbody = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[softbody] = Softbody_Component{ 16,
@@ -60,13 +74,33 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1400, 1500), 1},
 			MassPoint{Vector2D(1400, 1450), 1}
 		},
-		{ },gravity, dragCoeficient, 200, .8, true, true, 500, 0.8f };
+		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 1, SDL_Color{131, 156, 169, 255} };
 
-	x = softbody;
+	Entity softbody2 = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[softbody2] = Softbody_Component{ 16,
+		{
+			MassPoint{Vector2D(1400, 1000), 1}, MassPoint{Vector2D(1500, 1000), 1}, MassPoint{Vector2D(1600, 1000), 1}, MassPoint{Vector2D(1700, 1000), 1}, MassPoint{Vector2D(1800, 1000), 1},
+			MassPoint{Vector2D(1800, 1100), 1}, MassPoint{Vector2D(1800, 1200), 1},MassPoint{Vector2D(1800, 1300), 1}, MassPoint{Vector2D(1800, 1400), 1},
+			MassPoint{Vector2D(1700, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1},MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1400, 1400), 1},
+			MassPoint{Vector2D(1400, 1300), 1},
+			MassPoint{Vector2D(1400, 1200), 1},
+			MassPoint{Vector2D(1400, 1100), 1}
+		},
+		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 1, SDL_Color{160, 94, 94, 255} };
+
+	Entity softbody3 = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[softbody3] = Softbody_Component{ 12,
+		{
+			MassPoint{Vector2D(2000, 1000), 1}, MassPoint{Vector2D(2066, 966), 1}, MassPoint{Vector2D(2133, 966), 1},
+			MassPoint{Vector2D(2200, 1000), 1}, MassPoint{Vector2D(2233, 1066), 1}, MassPoint{Vector2D(2233, 1133), 1},
+			MassPoint{Vector2D(2200, 1200), 1}, MassPoint{Vector2D(2133, 1233), 1}, MassPoint{Vector2D(2066, 1233), 1},
+			MassPoint{Vector2D(2000, 1200), 1}, MassPoint{Vector2D(1966, 1133), 1}, MassPoint{Vector2D(1966, 1066), 1}
+		},
+		{ },gravity, dragCoeficient, 500, .5, true, true, 100, 0.5f, 60, 2, SDL_Color{200, 126, 126, 255} };
+
 
 
 	
-	float d = 0;
 	Entity ground = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[ground] = Softbody_Component{ 22,
 		{
@@ -76,7 +110,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
 		},
 		{ },
-		gravity, dragCoeficient, 500, 10, true, false, 800, 0.8f };
+		gravity, dragCoeficient, 800, 4, true, false, 800, 0.8f, 60, 1.2, SDL_Color{111, 139, 110, 255} };
 
 
 
@@ -206,21 +240,30 @@ void Game::HandleEvents()
 	}
 }
 int massPointI;
+int x = 0;
 void Game::Update(double* deltaTime)
 {
 	inputManager->Update();
 	Registry::Instance()->Update(deltaTime, this);
 	if (InputManager::Instance()->MouseButtonPressed(InputManager::right))
 	{
-		float dist = 0;
-		for (int i = 0; i < Registry::Instance()->softbodies[x].massPoints.size(); i++)
+		x = 0;
+		float dist = 1000000000000000000;
+		for (int y = 1; y <= EntityManager::Instance()->num_entities; y++)
 		{
-			Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[x].massPoints[i].position.x - InputManager::Instance()->MousePos().x, Registry::Instance()->softbodies[x].massPoints[i].position.y - InputManager::Instance()->MousePos().y);
-			float currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
-			if (dist > currentDist || i == 0)
+			if (Registry::Instance()->softbodies.count(y))
 			{
-				dist = currentDist;
-				massPointI = i;
+				for (int i = 0; i < Registry::Instance()->softbodies[y].massPoints.size(); i++)
+				{
+					Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[y].massPoints[i].position.x - InputManager::Instance()->MousePos().x, Registry::Instance()->softbodies[y].massPoints[i].position.y - InputManager::Instance()->MousePos().y);
+					float currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
+					if (dist > currentDist)
+					{
+						x = y;
+						dist = currentDist;
+						massPointI = i;
+					}
+				}
 			}
 		}
 		
@@ -240,6 +283,7 @@ void Game::Update(double* deltaTime)
 }
 void Game::Render()
 {
+	SDL_SetRenderDrawColor(renderer, backroundColor.r, backroundColor.g, backroundColor.b, backroundColor.a);
 	SDL_RenderClear(renderer);
 
 	SDL_RenderSetScale(renderer, 1, 1);

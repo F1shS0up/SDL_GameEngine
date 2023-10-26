@@ -8,8 +8,11 @@ struct MassPoint
 	Vector2D position;
 	float mass;
 	bool isStatic;
+
 	void Lock() { isStatic = true; }
 	void Unlock() { isStatic = false; }
+
+
 
 	Vector2D velocity;
 	Vector2D force;
@@ -43,6 +46,9 @@ struct Softbody_Component
 	bool rotateHardFrame = true;
 	float shapeMatchingStiffness;
 	float shapeMatchingDampingFactor;
+	float outlineThickness = 0;
+	float friction;
+	SDL_Color color;
 
 	std::vector<Vector2D> closestPoints;
 	std::vector<Vector2D> originalPositionsOfMassPoints;
@@ -59,7 +65,7 @@ class Softbody_System
 {
 public:
 	void Init(class Registry* reg);
-	void Update(class Registry* reg, double* deltaTime);
+	void Update(class Registry* reg, double* deltaTime, class Game* game);
 	void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
 	void CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition);
 	void ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal);

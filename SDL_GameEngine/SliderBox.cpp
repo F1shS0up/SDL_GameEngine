@@ -46,6 +46,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 					
 				}
 			}
+
 			if (InputManager::Instance()->MouseButtonReleased(InputManager::left))
 			{
 				c->pressedInside = false;
@@ -53,7 +54,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 				SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 				SDL_SetCursor(cursor);
 			}
-			else if(!c->pressedInside)
+			else if(!c->pressedInside && Registry::Instance()->textBoxSystem.IsVectorInBox(c->txtComp, InputManager::Instance()->MousePos()) != SDL_TRUE)
 			{
 				c->txtComp->boxColor = c->boxColor;
 			}

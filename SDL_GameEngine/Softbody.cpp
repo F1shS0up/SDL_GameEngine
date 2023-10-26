@@ -4,10 +4,10 @@
 #include "Shapes.h"
 #include <algorithm>
 #include "SDL2_gfxPrimitives.h"
+#include "Sdl_image.h"
 #include <cmath>
+#include "Game.h"
 
-const float minAngleChange = -0.034906585;
-const float maxAngleChange = 0.034906585;
 
 #define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
 {\
@@ -94,271 +94,285 @@ inline float get_angle_2points(Vector2D p1, Vector2D p2)
 }
 
 Vector2D closestPointX;
-void Softbody_System::Update(Registry* reg, double* deltaTime)
+void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
 		{
-			reg->softbodies[e].closestPoints.clear();
-			reg->softbodies[e].finalPositionsOfHardFrame.clear();
+			if (!game->stopSimulation)
+			{
+				reg->softbodies[e].closestPoints.clear();
+				reg->softbodies[e].finalPositionsOfHardFrame.clear();
+
+				if (reg->transforms.count(e) || reg->softbodies[e].hardShapeMatching)
+				{
+					reg->softbodies[e].averagePosition = Vector2D(0, 0); //Position of the hard frame
+					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					{
+						reg->softbodies[e].averagePosition += reg->softbodies[e].massPoints[p].position;
+
+					}
+					reg->softbodies[e].averagePosition = reg->softbodies[e].averagePosition / reg->softbodies[e].massPoints.size();
+
+					if(reg->transforms.count(e)) reg->transforms[e].position = reg->softbodies[e].averagePosition;
+				}
 
 #pragma region Collision
 
-			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
-			{
-
-				if (reg->softbodies[e].massPoints[p].isStatic) continue;
-
-				reg->softbodies[e].massPoints[p].force = Vector2D(0, 0);
-				reg->softbodies[e].massPoints[p].force.y += *reg->softbodies[e].gravity;
-
-				
-
-				SDL_Point A = { reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y };
-				
-				for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
-				{
-					
-					if (reg->AABBColliders.count(e2))
-					{
-						SDL_Rect r = { reg->AABBColliders[e2].position->x, reg->AABBColliders[e2].position->y, reg->AABBColliders[e2].width, reg->AABBColliders[e2].height };
-						if (SDL_PointInRect(&A, &r))
-						{
-							Vector2D min = *reg->AABBColliders[e2].position;
-							Vector2D max = *reg->AABBColliders[e2].position + Vector2D(reg->AABBColliders[e2].width, reg->AABBColliders[e2].height);
-
-							float yTop = std::abs(A.y - min.y);
-							float yDown = std::abs(A.y - max.y);
-							float xRight = std::abs(A.x - max.y);
-							float xLeft = std::abs(A.x - min.y);
-
-							
-
-							if (xRight < xLeft)
-							{
-								if (yTop < yDown)
-								{
-									if (xRight < yTop)
-										//Right
-										reg->softbodies[e].massPoints[p].position.x = max.x;
-									else
-										//Top
-										reg->softbodies[e].massPoints[p].position.y = min.y;
-								}
-								else
-								{
-									if (xRight < yDown)
-										//Right
-										reg->softbodies[e].massPoints[p].position.x = max.x;
-									else
-										//Top
-										reg->softbodies[e].massPoints[p].position.y = max.y;
-								}
-							}
-							else
-							{
-								if (yTop < yDown)
-								{
-									if (xLeft < yTop)
-										//Right
-										reg->softbodies[e].massPoints[p].position.x = min.x;
-									else
-										//Top
-										reg->softbodies[e].massPoints[p].position.y = min.y;
-								}
-								else
-								{
-									if (xLeft < yDown)
-										//Right
-										reg->softbodies[e].massPoints[p].position.x = min.x;
-									else
-										//Top
-										reg->softbodies[e].massPoints[p].position.y = max.y;
-								}
-							}
-							
-						}
-					}
-
-
-				}
-				for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
-				{
-					if (e == e2) continue;
-
-					if (reg->softbodies.count(e2))
-					{
-
-						int intersectionCount = 0;
-						float currentDistanceFromClosest = 0;
-						Vector2D closestPoint;
-						MassPoint* lineOne = nullptr;
-						MassPoint* lineTwo = nullptr;
-						for (int i = 0; i < reg->softbodies[e2].massPoints.size(); i++)
-						{
-							Vector2D* X = &reg->softbodies[e2].massPoints[i].position;
-							Vector2D* Y;
-							int nextIndex = 0;
-							if (i == reg->softbodies[e2].massPoints.size() - 1)
-							{
-								Y = &reg->softbodies[e2].massPoints[0].position;
-								nextIndex = 0;
-							}
-							else
-							{
-								Y = &reg->softbodies[e2].massPoints[i + 1].position;
-								nextIndex = i + 1;
-							}
-
-							Vector2D closestPointThis = ColliderFunctions::ClosestPointToLine(X, Y, &reg->softbodies[e].massPoints[p].position);
-							reg->softbodies[e].closestPoints.push_back(closestPointThis);
-							Vector2D dir = closestPointThis - reg->softbodies[e].massPoints[p].position;
-							float dist = dir.x * dir.x + dir.y * dir.y;
-							if (currentDistanceFromClosest > dist || i == 0)
-							{
-								currentDistanceFromClosest = dist;
-								closestPoint = closestPointThis;
-								lineOne = &reg->softbodies[e2].massPoints[i];
-								lineTwo = &reg->softbodies[e2].massPoints[nextIndex];
-							}
-
-							if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(1000000, 0), *X, *Y))
-							{
-								intersectionCount++;
-								
-							}
-						}
-						if (intersectionCount % 2 != 0)
-						{
-							Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
-							Vector2D x2 = reg->softbodies[e].massPoints[p].position + reversedNormal;
-							Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
-
-							Vector2D newV1, newV2;
-							ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 1, 1, &newV1);
-							ComputeVelocityForCircles(v2, reg->softbodies[e].massPoints[p].velocity, x2, reg->softbodies[e].massPoints[p].position, 1, 1, &newV2);
-							
-							reg->softbodies[e].massPoints[p].velocity = newV1;
-							if(!lineOne->isStatic)lineOne->velocity = newV2;
-							if(!lineTwo->isStatic)lineTwo->velocity = newV2;
-						
-							if (!lineOne->isStatic && !lineTwo->isStatic)
-							{
-								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
-								reg->softbodies[e].massPoints[p].position += dir;
-								float dist = (lineTwo->position - lineOne->position).length();
-								float distDif = (closestPoint - lineOne->position).length();
-								float per = distDif / dist;
-								
-								lineOne->position -= dir * (1 - per);
-								lineTwo->position -= dir * per;
-							}
-							else if (lineOne->isStatic && !lineTwo->isStatic)
-							{
-								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
-								reg->softbodies[e].massPoints[p].position += dir;
-								lineTwo->position -= dir;
-							}
-							else if (!lineOne->isStatic && lineTwo->isStatic)
-							{
-								Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
-								reg->softbodies[e].massPoints[p].position += dir;
-								lineOne->position -= dir;
-							}
-							else
-							{
-								reg->softbodies[e].massPoints[p].position = closestPoint;
-							}
-						}
-					}
-				}
-			}
-
-#pragma endregion
-	
-#pragma region ShapeMatching
-	
-			if (reg->softbodies[e].hardShapeMatching)
-			{
-				reg->softbodies[e].averagePosition = Vector2D(0, 0); //Position of the hard frame
 				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 				{
-					reg->softbodies[e].averagePosition += reg->softbodies[e].massPoints[p].position;
-					
-				}
-				reg->softbodies[e].averagePosition = reg->softbodies[e].averagePosition / reg->softbodies[e].massPoints.size();
 
-				if (reg->softbodies[e].rotateHardFrame)
+					if (reg->softbodies[e].massPoints[p].isStatic) continue;
+
+					reg->softbodies[e].massPoints[p].force = Vector2D(0, 0);
+					reg->softbodies[e].massPoints[p].force.y += *reg->softbodies[e].gravity;
+
+
+
+					SDL_Point A = { reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y };
+
+					for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
+					{
+
+						if (reg->AABBColliders.count(e2))
+						{
+							SDL_Rect r = { reg->AABBColliders[e2].position->x, reg->AABBColliders[e2].position->y, reg->AABBColliders[e2].width, reg->AABBColliders[e2].height };
+							if (SDL_PointInRect(&A, &r))
+							{
+								Vector2D min = *reg->AABBColliders[e2].position;
+								Vector2D max = *reg->AABBColliders[e2].position + Vector2D(reg->AABBColliders[e2].width, reg->AABBColliders[e2].height);
+
+								float yTop = std::abs(A.y - min.y);
+								float yDown = std::abs(A.y - max.y);
+								float xRight = std::abs(A.x - max.y);
+								float xLeft = std::abs(A.x - min.y);
+
+
+
+								if (xRight < xLeft)
+								{
+									if (yTop < yDown)
+									{
+										if (xRight < yTop)
+											//Right
+											reg->softbodies[e].massPoints[p].position.x = max.x;
+										else
+											//Top
+											reg->softbodies[e].massPoints[p].position.y = min.y;
+									}
+									else
+									{
+										if (xRight < yDown)
+											//Right
+											reg->softbodies[e].massPoints[p].position.x = max.x;
+										else
+											//Top
+											reg->softbodies[e].massPoints[p].position.y = max.y;
+									}
+								}
+								else
+								{
+									if (yTop < yDown)
+									{
+										if (xLeft < yTop)
+											//Right
+											reg->softbodies[e].massPoints[p].position.x = min.x;
+										else
+											//Top
+											reg->softbodies[e].massPoints[p].position.y = min.y;
+									}
+									else
+									{
+										if (xLeft < yDown)
+											//Right
+											reg->softbodies[e].massPoints[p].position.x = min.x;
+										else
+											//Top
+											reg->softbodies[e].massPoints[p].position.y = max.y;
+									}
+								}
+
+							}
+						}
+
+
+					}
+					for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
+					{
+						if (e == e2) continue;
+
+						if (reg->softbodies.count(e2))
+						{
+
+							int intersectionCount = 0;
+							float currentDistanceFromClosest = 0;
+							Vector2D closestPoint;
+							MassPoint* lineOne = nullptr;
+							MassPoint* lineTwo = nullptr;
+							for (int i = 0; i < reg->softbodies[e2].massPoints.size(); i++)
+							{
+								Vector2D* X = &reg->softbodies[e2].massPoints[i].position;
+								Vector2D* Y;
+								int nextIndex = 0;
+								if (i == reg->softbodies[e2].massPoints.size() - 1)
+								{
+									Y = &reg->softbodies[e2].massPoints[0].position;
+									nextIndex = 0;
+								}
+								else
+								{
+									Y = &reg->softbodies[e2].massPoints[i + 1].position;
+									nextIndex = i + 1;
+								}
+
+								Vector2D closestPointThis = ColliderFunctions::ClosestPointToLine(X, Y, &reg->softbodies[e].massPoints[p].position);
+								reg->softbodies[e].closestPoints.push_back(closestPointThis);
+								Vector2D dir = closestPointThis - reg->softbodies[e].massPoints[p].position;
+								float dist = dir.x * dir.x + dir.y * dir.y;
+								if (currentDistanceFromClosest > dist || i == 0)
+								{
+									currentDistanceFromClosest = dist;
+									closestPoint = closestPointThis;
+									lineOne = &reg->softbodies[e2].massPoints[i];
+									lineTwo = &reg->softbodies[e2].massPoints[nextIndex];
+								}
+
+								if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(1000000, 0), *X, *Y))
+								{
+									intersectionCount++;
+
+								}
+							}
+							if (intersectionCount % 2 != 0)
+							{
+								Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
+								Vector2D x2 = reg->softbodies[e].massPoints[p].position + reversedNormal;
+								Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
+
+								Vector2D newV1, newV2;
+								ComputeVelocityForCircles(reg->softbodies[e].massPoints[p].velocity, v2, reg->softbodies[e].massPoints[p].position, x2, 1, 1, &newV1);
+								ComputeVelocityForCircles(v2, reg->softbodies[e].massPoints[p].velocity, x2, reg->softbodies[e].massPoints[p].position, 1, 1, &newV2);
+
+								float higherFriction = std::max<float>(reg->softbodies[e].friction, reg->softbodies[e2].friction);
+
+								reg->softbodies[e].massPoints[p].velocity = newV1 / (higherFriction == 0 ? 1 : higherFriction);
+								if (!lineOne->isStatic)lineOne->velocity = newV2 / (higherFriction == 0 ? 1 : higherFriction);
+								if (!lineTwo->isStatic)lineTwo->velocity = newV2 / (higherFriction == 0 ? 1 : higherFriction);
+
+								if (!lineOne->isStatic && !lineTwo->isStatic)
+								{
+									Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+									reg->softbodies[e].massPoints[p].position += dir;
+									float dist = (lineTwo->position - lineOne->position).length();
+									float distDif = (closestPoint - lineOne->position).length();
+									float per = distDif / dist;
+
+									lineOne->position -= dir * (1 - per);
+									lineTwo->position -= dir * per;
+								}
+								else if (lineOne->isStatic && !lineTwo->isStatic)
+								{
+									Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+									reg->softbodies[e].massPoints[p].position += dir;
+									lineTwo->position -= dir;
+								}
+								else if (!lineOne->isStatic && lineTwo->isStatic)
+								{
+									Vector2D dir = (closestPoint - reg->softbodies[e].massPoints[p].position) / 2;
+									reg->softbodies[e].massPoints[p].position += dir;
+									lineOne->position -= dir;
+								}
+								else
+								{
+									reg->softbodies[e].massPoints[p].position = closestPoint;
+								}
+							}
+						}
+					}
+				}
+
+#pragma endregion
+
+#pragma region ShapeMatching
+
+				if (reg->softbodies[e].hardShapeMatching)
 				{
+					if (reg->softbodies[e].rotateHardFrame)
+					{
 
-					float averageAngleCos = 0;
-					float averageAngleSin = 0;
-					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
-					{
-						std::cout << "P" << p << ":    " << get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition)) * 180 / M_PI << "     ";
-						float angle = get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition));
-						averageAngleCos += cos(angle);
-						averageAngleSin += sin(angle);
-					}
-					float averageAngle = atan2(averageAngleSin, averageAngleCos);
-					std::cout << averageAngle * 180 / M_PI << std::endl;
+						float averageAngleCos = 0;
+						float averageAngleSin = 0;
+						for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+						{
+							std::cout << "P" << p << ":    " << get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition)) * 180 / M_PI << "     ";
+							float angle = get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition));
+							averageAngleCos += cos(angle);
+							averageAngleSin += sin(angle);
+						}
+						float averageAngle = atan2(averageAngleSin, averageAngleCos);
 
-					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
-					{
-						reg->softbodies[e].finalPositionsOfHardFrame.push_back(Vector2D(cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x - sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y,
-							cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y + sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x) + reg->softbodies[e].averagePosition);
-						reg->softbodies[e].xFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].x;
-						reg->softbodies[e].yFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].y;
+						std::cout << averageAngle * 180 / M_PI << std::endl;
+
+						for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+						{
+							reg->softbodies[e].finalPositionsOfHardFrame.push_back(Vector2D(cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x - sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y,
+								cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y + sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x) + reg->softbodies[e].averagePosition);
+							reg->softbodies[e].xFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].x;
+							reg->softbodies[e].yFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].y;
+						}
+						reg->softbodies[e].lastFrameAverageAngle = averageAngle;
 					}
-					reg->softbodies[e].lastFrameAverageAngle = averageAngle;
-				}
-				else
-				{
-					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					else
 					{
-						reg->softbodies[e].finalPositionsOfHardFrame.push_back(reg->softbodies[e].originalPositionsOfMassPoints[p] + reg->softbodies[e].averagePosition);
+						for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+						{
+							reg->softbodies[e].finalPositionsOfHardFrame.push_back(reg->softbodies[e].originalPositionsOfMassPoints[p] + reg->softbodies[e].averagePosition);
+						}
 					}
 				}
-			}
 
 #pragma endregion
 
 #pragma region SpringForce
 
-			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
-			{
-				
-				Vector2D forceA, forceB;
-				CalculateSpringForce(&reg->softbodies[e].springs[s], &reg->softbodies[e], &forceA, &forceB, deltaTime);
-				reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].force += forceA;
-				reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].force += forceB;
-			}
-			for (int s = 0; s < reg->softbodies[e].springsForFrame.size(); s++)
-			{
-				Vector2D forceA;
-				CalculateSpringForceForFrame(&reg->softbodies[e].springsForFrame[s], &reg->softbodies[e], &forceA, deltaTime, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].springsForFrame[s].A]);
-				reg->softbodies[e].massPoints[reg->softbodies[e].springsForFrame[s].A].force += forceA;
-			}
+				for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
+				{
+
+					Vector2D forceA, forceB;
+					CalculateSpringForce(&reg->softbodies[e].springs[s], &reg->softbodies[e], &forceA, &forceB, deltaTime);
+					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].force += forceA;
+					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].force += forceB;
+				}
+				for (int s = 0; s < reg->softbodies[e].springsForFrame.size(); s++)
+				{
+					Vector2D forceA;
+					CalculateSpringForceForFrame(&reg->softbodies[e].springsForFrame[s], &reg->softbodies[e], &forceA, deltaTime, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].springsForFrame[s].A]);
+					reg->softbodies[e].massPoints[reg->softbodies[e].springsForFrame[s].A].force += forceA;
+				}
 
 #pragma endregion
+			}
 
 #pragma region AddAllForcesTogetherWithDragForce
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
-				if (!reg->softbodies[e].massPoints[p].isStatic)
+				if (!game->stopSimulation)
 				{
+					if (!reg->softbodies[e].massPoints[p].isStatic)
+					{
 
-					float velLength = reg->softbodies[e].massPoints[p].velocity.length();
+						float velLength = reg->softbodies[e].massPoints[p].velocity.length();
 
-					Vector2D dragForce = reg->softbodies[e].massPoints[p].velocity / (velLength == 0 ? 1 : velLength) * -1 * *reg->softbodies[e].dragCoeficient * velLength * velLength;
+						Vector2D dragForce = reg->softbodies[e].massPoints[p].velocity / (velLength == 0 ? 1 : velLength) * -1 * *reg->softbodies[e].dragCoeficient * velLength * velLength;
 
-					reg->softbodies[e].massPoints[p].force += dragForce;
+						reg->softbodies[e].massPoints[p].force += dragForce;
 
-					reg->softbodies[e].massPoints[p].velocity += reg->softbodies[e].massPoints[p].force * *deltaTime;
+						reg->softbodies[e].massPoints[p].velocity += reg->softbodies[e].massPoints[p].force * *deltaTime;
 
-					reg->softbodies[e].massPoints[p].position += reg->softbodies[e].massPoints[p].velocity * *deltaTime;
+						reg->softbodies[e].massPoints[p].position += reg->softbodies[e].massPoints[p].velocity * *deltaTime;
+					}
 				}
 
 				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x;
@@ -430,7 +444,7 @@ void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P,
 
 void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 {
-#ifdef _DEBUG
+
 
 
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -438,28 +452,38 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 		if (reg->softbodies.count(e))
 		{
 			
-			filledPolygonRGBA(renderer, reg->softbodies[e].x, reg->softbodies[e].y, reg->softbodies[e].massPointsN, 255, 0, 0, 255);
-			if (reg->softbodies[e].hardShapeMatching)
+			filledPolygonRGBA(renderer, reg->softbodies[e].x, reg->softbodies[e].y, reg->softbodies[e].massPointsN, reg->softbodies[e].color.r, reg->softbodies[e].color.g, reg->softbodies[e].color.b, reg->softbodies[e].color.a);
+		/*	if (reg->softbodies[e].hardShapeMatching)
 			{
-				polygonRGBA(renderer, reg->softbodies[e].xFrame, reg->softbodies[e].yFrame, reg->softbodies[e].massPointsN, 0, 255, 0, 255);
-			}
-
+				polygonRGBA(renderer, reg->softbodies[e].xFrame, reg->softbodies[e].yFrame, reg->softbodies[e].massPointsN, 93, 147, 123, 255);
+			}*/
+			
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
-				filledCircleRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, 255, 0, 0, 255);
+				/*filledCircleRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, 10, 255, 0, 0, 255);*/
+				int nextIndex = 0;
+				if (p == reg->softbodies[e].massPoints.size() - 1)
+				{
+					nextIndex = 0;
+				}
+				else
+				{
+					nextIndex = p + 1;
+				}
+				thickLineRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, reg->softbodies[e].massPoints[nextIndex].position.x, reg->softbodies[e].massPoints[nextIndex].position.y, 10, 0, 0, 0, 255);
 			}
 
-			if (reg->softbodies[e].hardShapeMatching)
-			{
-				filledCircleRGBA(renderer, reg->softbodies[e].massPoints[reg->softbodies[e].massPoints.size() - 1].position.x, reg->softbodies[e].massPoints[reg->softbodies[e].massPoints.size() - 1].position.y, 10, 0, 0, 255, 255);
-				filledCircleRGBA(renderer, reg->softbodies[e].averagePosition.x, reg->softbodies[e].averagePosition.y, 10, 0, 255, 0, 255);
-				filledCircleRGBA(renderer, reg->softbodies[e].originalPositionsOfMassPoints[reg->softbodies[e].originalPositionsOfMassPoints.size() - 1].x + reg->softbodies[e].averagePosition.x, reg->softbodies[e].originalPositionsOfMassPoints[reg->softbodies[e].originalPositionsOfMassPoints.size() - 1].y + reg->softbodies[e].averagePosition.y, 10, 0, 255, 0, 255);
-				filledCircleRGBA(renderer, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].finalPositionsOfHardFrame.size() - 1].x, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].finalPositionsOfHardFrame.size() - 1].y, 10, 0, 255, 0, 255);
-			}
+			//if (reg->softbodies[e].hardShapeMatching)
+			//{
+			//	filledCircleRGBA(renderer, reg->softbodies[e].massPoints[reg->softbodies[e].massPoints.size() - 1].position.x, reg->softbodies[e].massPoints[reg->softbodies[e].massPoints.size() - 1].position.y, 10, 0, 0, 255, 255);
+			//	filledCircleRGBA(renderer, reg->softbodies[e].averagePosition.x, reg->softbodies[e].averagePosition.y, 10, 0, 255, 0, 255);
+			//	filledCircleRGBA(renderer, reg->softbodies[e].originalPositionsOfMassPoints[reg->softbodies[e].originalPositionsOfMassPoints.size() - 1].x + reg->softbodies[e].averagePosition.x, reg->softbodies[e].originalPositionsOfMassPoints[reg->softbodies[e].originalPositionsOfMassPoints.size() - 1].y + reg->softbodies[e].averagePosition.y, 10, 0, 255, 0, 255);
+			//	filledCircleRGBA(renderer, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].finalPositionsOfHardFrame.size() - 1].x, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].finalPositionsOfHardFrame.size() - 1].y, 10, 0, 255, 0, 255);
+			//}
 			
 			
 		}
 	}
-#endif // _DEBUG
+
 }

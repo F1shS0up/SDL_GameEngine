@@ -19,22 +19,29 @@ void Registry::Init(SDL_Renderer* renderer)
 	shapeSystem.Init(this);
 	colliderSystem.Init(this);
 	sliderBoxSystem.Init(this, renderer);
+	buttonSystem.Init(this, renderer);
 	textSystem.Init(this, renderer);
 	textBoxSystem.Init(this, renderer);
 	softbodySystem.Init(this);
+	tiledSpriteSystem.Init(this, renderer);
 }
 
 void Registry::Update(double* deltaTime, Game* game)
 {
-	rigidbodySystem.Update(this, deltaTime);
-	fluidSimulationSystem.Update(deltaTime);
+	if (!game->stopSimulation)
+	{
+		rigidbodySystem.Update(this, deltaTime);
+		fluidSimulationSystem.Update(deltaTime);
+	}
+	softbodySystem.Update(this, deltaTime, game);
 	textBoxSystem.Update(this, deltaTime, game);
 	sliderBoxSystem.Update(this, deltaTime, game);
-	softbodySystem.Update(this, deltaTime);
+	buttonSystem.Update(this, deltaTime, game);
 }
 
 void Registry::Draw(SDL_Renderer* renderer)
 {
+	tiledSpriteSystem.Draw(this, renderer);
 	fluidSimulationSystem.Draw(renderer);
 	textSystem.Draw(this, renderer);
 	textBoxSystem.Draw(this, renderer);
