@@ -40,6 +40,7 @@ struct Softbody_Component
 	float defaultStiffness;
 	float defaultDampingFactor;
 	bool hardShapeMatching = true;
+	bool rotateHardFrame = true;
 	float shapeMatchingStiffness;
 	float shapeMatchingDampingFactor;
 
@@ -48,7 +49,7 @@ struct Softbody_Component
 	std::vector<Spring> springsForFrame;
 	std::vector<Vector2D> finalPositionsOfHardFrame;
 	Vector2D averagePosition;
-	float lastFrameAngle = 0;
+	float lastFrameAverageAngle = 0;
 	Sint16* x,* xFrame;
 	Sint16* y,* yFrame;
 };

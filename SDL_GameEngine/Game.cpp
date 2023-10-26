@@ -60,7 +60,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1400, 1500), 1},
 			MassPoint{Vector2D(1400, 1450), 1}
 		},
-		{ },gravity, dragCoeficient, 500, .8, true, 800, 0.8f };
+		{ },gravity, dragCoeficient, 200, .8, true, true, 500, 0.8f };
 
 	x = softbody;
 
@@ -76,7 +76,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
 		},
 		{ },
-		gravity, dragCoeficient, 500, 10, true, 800, 0.8f };
+		gravity, dragCoeficient, 500, 10, true, false, 800, 0.8f };
 
 
 

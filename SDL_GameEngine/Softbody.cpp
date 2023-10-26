@@ -6,6 +6,9 @@
 #include "SDL2_gfxPrimitives.h"
 #include <cmath>
 
+const float minAngleChange = -0.034906585;
+const float maxAngleChange = 0.034906585;
+
 #define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
 {\
 	float length = (x1 - x2).length(); \
@@ -286,25 +289,37 @@ void Softbody_System::Update(Registry* reg, double* deltaTime)
 				}
 				reg->softbodies[e].averagePosition = reg->softbodies[e].averagePosition / reg->softbodies[e].massPoints.size();
 
-				float averageAngle = 0;
-				std::vector<Vector2D> positionsNotAngled;
-				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+				if (reg->softbodies[e].rotateHardFrame)
 				{
-					positionsNotAngled.push_back(reg->softbodies[e].originalPositionsOfMassPoints[p]);
-					averageAngle += get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition));
-				}
-				averageAngle /= reg->softbodies[e].massPoints.size();
-				std::cout << averageAngle * 180 / M_PI << std::endl;
 
-				for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
-				{
-					reg->softbodies[e].finalPositionsOfHardFrame.push_back(Vector2D(cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x - sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y,
-						cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y + sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x) + reg->softbodies[e].averagePosition);
-					reg->softbodies[e].xFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].x;
-					reg->softbodies[e].yFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].y;
+					float averageAngleCos = 0;
+					float averageAngleSin = 0;
+					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					{
+						std::cout << "P" << p << ":    " << get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition)) * 180 / M_PI << "     ";
+						float angle = get_angle_2points(reg->softbodies[e].originalPositionsOfMassPoints[p], (reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition));
+						averageAngleCos += cos(angle);
+						averageAngleSin += sin(angle);
+					}
+					float averageAngle = atan2(averageAngleSin, averageAngleCos);
+					std::cout << averageAngle * 180 / M_PI << std::endl;
+
+					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					{
+						reg->softbodies[e].finalPositionsOfHardFrame.push_back(Vector2D(cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x - sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y,
+							cos(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].y + sin(averageAngle) * reg->softbodies[e].originalPositionsOfMassPoints[p].x) + reg->softbodies[e].averagePosition);
+						reg->softbodies[e].xFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].x;
+						reg->softbodies[e].yFrame[p] = reg->softbodies[e].finalPositionsOfHardFrame[p].y;
+					}
+					reg->softbodies[e].lastFrameAverageAngle = averageAngle;
 				}
-				
-				reg->softbodies[e].lastFrameAngle = averageAngle;
+				else
+				{
+					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+					{
+						reg->softbodies[e].finalPositionsOfHardFrame.push_back(reg->softbodies[e].originalPositionsOfMassPoints[p] + reg->softbodies[e].averagePosition);
+					}
+				}
 			}
 
 #pragma endregion
