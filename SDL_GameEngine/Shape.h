@@ -4,14 +4,14 @@
 
 struct FilledCircle_Component
 {
-	float radius;
+	double radius;
 	SDL_Color color;
 
 	Vector2D* position;
 };
 struct FilledRectangle_Component
 {
-	float width, height;
+	double width, height;
 	SDL_Color color;
 
 	Vector2D* position;

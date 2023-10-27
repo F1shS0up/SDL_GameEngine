@@ -158,6 +158,8 @@
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="SliderBox.cpp" />
     <ClCompile Include="Softbody.cpp" />
+    <ClCompile Include="SoftbodyJoint.cpp" />
+    <ClCompile Include="SoftbodyRotatorMovement.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TiledSprite.cpp" />
@@ -170,6 +172,7 @@
     <ClInclude Include="FluidSimulation.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Layers.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="SDL2_gfxPrimitives.h" />
@@ -178,6 +181,8 @@
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="SliderBox.h" />
     <ClInclude Include="Softbody.h" />
+    <ClInclude Include="SoftbodyJoint.h" />
+    <ClInclude Include="SoftbodyRotatorMovement.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TiledSprite.h" />

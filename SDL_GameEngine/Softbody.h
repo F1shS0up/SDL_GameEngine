@@ -2,12 +2,14 @@
 #include "Vector2D.h"
 #include <vector>
 #include "SDL.h"
+#include "Layers.h"
 
 struct MassPoint
 {
 	Vector2D position;
-	float mass;
-	bool isStatic;
+	double mass = 1;
+	double gravityMultiplayer = 1;
+	bool isStatic = false;
 
 	void Lock() { isStatic = true; }
 	void Unlock() { isStatic = false; }
@@ -23,13 +25,13 @@ struct MassPoint
 struct Spring
 {
 	int A, B; // indexes of masspoints or framePoints
-	float stiffness;
-	float restLength;
-	float dampingFactor;
+	double stiffness;
+	double restLength;
+	double dampingFactor;
 
 	Vector2D springVelA, springVelB;
 #ifdef _DEBUG
-	float f;
+	double f;
 #endif // _DEBUG
 };
 
@@ -38,16 +40,18 @@ struct Softbody_Component
 	int massPointsN;
 	std::vector<MassPoint> massPoints;
 	std::vector<Spring> springs;
-	float* gravity;
-	float* dragCoeficient;
-	float defaultStiffness;
-	float defaultDampingFactor;
+	double* gravity;
+	double* dragCoeficient;
+	double defaultStiffness;
+	double defaultDampingFactor;
 	bool hardShapeMatching = true;
 	bool rotateHardFrame = true;
-	float shapeMatchingStiffness;
-	float shapeMatchingDampingFactor;
-	float outlineThickness = 0;
-	float friction;
+	double shapeMatchingStiffness;
+	double shapeMatchingDampingFactor;
+	double outlineThickness = 0;
+	double friction;
+	Layers layer;
+	Layers ignoreLayers;
 	SDL_Color color;
 
 	std::vector<Vector2D> closestPoints;
@@ -55,7 +59,7 @@ struct Softbody_Component
 	std::vector<Spring> springsForFrame;
 	std::vector<Vector2D> finalPositionsOfHardFrame;
 	Vector2D averagePosition;
-	float lastFrameAverageAngle = 0;
+	double lastFrameAverageAngle = 0;
 	Sint16* x,* xFrame;
 	Sint16* y,* yFrame;
 };
@@ -65,6 +69,7 @@ class Softbody_System
 {
 public:
 	void Init(class Registry* reg);
+	void StartUpdate(class Registry* reg);
 	void Update(class Registry* reg, double* deltaTime, class Game* game);
 	void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
 	void CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition);

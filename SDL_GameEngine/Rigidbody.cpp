@@ -47,7 +47,7 @@ void Rigidbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 Vector2D Rigidbody_System::ReflectionResponse(Vector2D* normal, Vector2D* velocity)
 {
 	// u = v * n * n * n
-	float dot = Vector2D::DotProduct(*velocity, *normal);
+	double dot = Vector2D::DotProduct(*velocity, *normal);
 
 	Vector2D u = Vector2D(dot * normal->x, dot * normal->y);
 	Vector2D w = *velocity - u;
@@ -70,26 +70,26 @@ void Rigidbody_System::ResolveCollision(Rigidbody_Component* A, Rigidbody_Compon
 
 	if (A->isStatic && !B->isStatic)
 	{
-		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / (1 / B->mass);
+		double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / (1 / B->mass);
 		force = normal * j;
 		B->ApplyForce(force);
 	}
 	else if (B->isStatic && !A->isStatic)
 	{
-		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass));
+		double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass));
 		force = normal * j;
 		A->ApplyForce(force * -1);
 	}
 	else
 	{
-		float j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass) + (1 / B->mass));
+		double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass) + (1 / B->mass));
 		force = normal * j;
 		A->ApplyForce(force * -1);
 		B->ApplyForce(force);
 	}
 }
 
-void Rigidbody_System::PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, float penetration, Vector2D collisionNormal)
+void Rigidbody_System::PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, double penetration, Vector2D collisionNormal)
 {
 	*A->position += collisionNormal * std::abs(penetration);
 }
@@ -105,7 +105,7 @@ int x = 0;
 			c->force.y = *c->gravity;
 
 			//Rigidbody properties to make it look better
-			float m1 = c->mass;
+			double m1 = c->mass;
 			c->velocity = c->velocity + c->force * *deltaTime;
 
 			Vector2D v1 = c->velocity;
@@ -128,7 +128,7 @@ int x = 0;
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
 						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
-						float m2 = c2->mass;
+						double m2 = c2->mass;
 
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
@@ -136,7 +136,7 @@ int x = 0;
 							{
 								CircleCollider_Component* cc2 = &reg->circleColliders[e2];
 
-								float penetration = 0;
+								double penetration = 0;
 
 								if (ColliderFunctions::CircleWithCircleIntersection(upcomingX1, cc2->radius, upcomingX2, cc->radius, &penetration))
 								{
@@ -173,7 +173,7 @@ int x = 0;
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
 						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
-						float m2 = c2->mass;
+						double m2 = c2->mass;
 
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
@@ -201,7 +201,7 @@ int x = 0;
 						LineCollider_Component* cl = &reg->lineColliders[e2];
 
 						Vector2D intersectionPoint, fromIntersectedLine, toIntersectedLine;
-						float outA;
+						double outA;
 						if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, x1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
 						{
 							Vector2D normal = ColliderFunctions::ReflectionNormal(cl, x1);
@@ -222,14 +222,14 @@ int x = 0;
 						Vector2D v2 = c2->velocity;
 						Vector2D x2 = *c2->position;
 						Vector2D upcomingX2 = x2 + v2 * *deltaTime;
-						float m2 = c2->mass;
+						double m2 = c2->mass;
 						if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 						{
 							if (reg->AABBColliders.count(e2))
 							{
 								AABBCollider_Component* ac2 = &reg->AABBColliders[e2];
 								Vector2D normal;
-								float penetration;
+								double penetration;
 								if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, upcomingX1, ac2->width, ac2->height, upcomingX2, &normal, &penetration))
 								{
 									ResolveCollision(c, c2, normal);

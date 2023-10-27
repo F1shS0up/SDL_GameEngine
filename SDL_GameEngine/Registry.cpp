@@ -24,6 +24,13 @@ void Registry::Init(SDL_Renderer* renderer)
 	textBoxSystem.Init(this, renderer);
 	softbodySystem.Init(this);
 	tiledSpriteSystem.Init(this, renderer);
+	softbodyRotatingMovementSystem.Init(this);
+	softbodyJointSystem.Init(this);
+}
+
+void Registry::StartUpdate(double* deltaTime, Game* game)
+{
+	softbodySystem.StartUpdate(this);
 }
 
 void Registry::Update(double* deltaTime, Game* game)
@@ -32,7 +39,9 @@ void Registry::Update(double* deltaTime, Game* game)
 	{
 		rigidbodySystem.Update(this, deltaTime);
 		fluidSimulationSystem.Update(deltaTime);
+		softbodyRotatingMovementSystem.Update(this, deltaTime);
 	}
+	softbodyJointSystem.Update(this, deltaTime);
 	softbodySystem.Update(this, deltaTime, game);
 	textBoxSystem.Update(this, deltaTime, game);
 	sliderBoxSystem.Update(this, deltaTime, game);

@@ -10,13 +10,13 @@ struct Fluid_Component
 	SDL_Rect boundingBox;
 
 	int particleCount;
-	float startSpacing;
-	float particleRadius;
-	float targetDensity;
-	float pressureMultiplier;
+	double startSpacing;
+	double particleRadius;
+	double targetDensity;
+	double pressureMultiplier;
 
 	std::vector<Vector2D> positions, velocities, predictedPositions;
-	std::vector<float> densities;
+	std::vector<double> densities;
 };
 class FluidSimulation_System
 {
@@ -27,8 +27,8 @@ public:
 	void Init(class Registry* reg);
 	void Update(double* deltaTime);
 	void ResolveCollision(int i);
-	float CalculateDensity(Vector2D samplePoint);
+	double CalculateDensity(Vector2D samplePoint);
 	Vector2D CalculatePressureForce(int index);
-	float ConvertDensityToPressure(float density);
+	double ConvertDensityToPressure(double density);
 	void Draw(SDL_Renderer* renderer);
 };

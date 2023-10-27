@@ -227,13 +227,13 @@ char* FC_GetStringASCII_Latin1(void)
     return U8_strdup(ASCII_LATIN_1_STRING);
 }
 
-FC_Rect FC_MakeRect(float x, float y, float w, float h)
+FC_Rect FC_MakeRect(double x, double y, double w, double h)
 {
     FC_Rect r = { x, y, w, h };
     return r;
 }
 
-FC_Scale FC_MakeScale(float x, float y)
+FC_Scale FC_MakeScale(double x, double y)
 {
     FC_Scale s = { x, y };
 
@@ -451,9 +451,9 @@ struct FC_Font
 static FC_GlyphData* FC_PackGlyphData(FC_Font* font, Uint32 codepoint, Uint16 width, Uint16 maxWidth, Uint16 maxHeight);
 
 
-static FC_Rect FC_RenderLeft(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text);
-static FC_Rect FC_RenderCenter(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text);
-static FC_Rect FC_RenderRight(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text);
+static FC_Rect FC_RenderLeft(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text);
+static FC_Rect FC_RenderCenter(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text);
+static FC_Rect FC_RenderRight(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text);
 
 
 static_inline SDL_Surface* FC_CreateSurface32(Uint32 width, Uint32 height)
@@ -609,7 +609,7 @@ void U8_strdel(char* string, int position)
 
 static_inline FC_Rect FC_RectUnion(FC_Rect A, FC_Rect B)
 {
-    float x, x2, y, y2;
+    double x, x2, y, y2;
     x = FC_MIN(A.x, B.x);
     y = FC_MIN(A.y, B.y);
     x2 = FC_MAX(A.x + A.w, B.x + B.w);
@@ -624,7 +624,7 @@ static_inline FC_Rect FC_RectUnion(FC_Rect A, FC_Rect B)
 static_inline FC_Rect FC_RectIntersect(FC_Rect A, FC_Rect B)
 {
     FC_Rect result;
-    float Amin, Amax, Bmin, Bmax;
+    double Amin, Amax, Bmin, Bmax;
 
     // Horizontal intersection
     Amin = A.x;
@@ -666,10 +666,10 @@ static_inline FC_Rect FC_RectIntersect(FC_Rect A, FC_Rect B)
 
 
 
-FC_Rect FC_DefaultRenderCallback(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, float x, float y, float xscale, float yscale)
+FC_Rect FC_DefaultRenderCallback(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, double x, double y, double xscale, double yscale)
 {
-    float w = srcrect->w * xscale;
-    float h = srcrect->h * yscale;
+    double w = srcrect->w * xscale;
+    double h = srcrect->h * yscale;
     FC_Rect result;
 
     // FIXME: Why does the scaled offset look so wrong?
@@ -705,9 +705,9 @@ FC_Rect FC_DefaultRenderCallback(FC_Image* src, FC_Rect* srcrect, FC_Target* des
     return result;
 }
 
-static FC_Rect(*fc_render_callback)(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, float x, float y, float xscale, float yscale) = &FC_DefaultRenderCallback;
+static FC_Rect(*fc_render_callback)(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, double x, double y, double xscale, double yscale) = &FC_DefaultRenderCallback;
 
-void FC_SetRenderCallback(FC_Rect(*callback)(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, float x, float y, float xscale, float yscale))
+void FC_SetRenderCallback(FC_Rect(*callback)(FC_Image* src, FC_Rect* srcrect, FC_Target* dest, double x, double y, double xscale, double yscale))
 {
     if (callback == NULL)
         fc_render_callback = &FC_DefaultRenderCallback;
@@ -928,7 +928,7 @@ static Uint8 FC_GrowGlyphCache(FC_Font* font)
         SDL_Rect prev_clip, prev_viewport;
         int prev_logicalw, prev_logicalh;
         Uint8 prev_clip_enabled;
-        float prev_scalex, prev_scaley;
+        double prev_scalex, prev_scaley;
         // only backup if previous target existed (SDL will preserve them for the default target)
         if (prev_target)
         {
@@ -1008,7 +1008,7 @@ Uint8 FC_UploadGlyphCache(FC_Font* font, int cache_level, SDL_Surface* data_surf
             SDL_Rect prev_clip, prev_viewport;
             int prev_logicalw, prev_logicalh;
             Uint8 prev_clip_enabled;
-            float prev_scalex, prev_scaley;
+            double prev_scalex, prev_scaley;
             // only backup if previous target existed (SDL will preserve them for the default target)
             if (prev_target)
             {
@@ -1523,7 +1523,7 @@ Uint8 FC_AddGlyphToCache(FC_Font* font, SDL_Surface* glyph_surface)
         SDL_Rect prev_clip, prev_viewport;
         int prev_logicalw, prev_logicalh;
         Uint8 prev_clip_enabled;
-        float prev_scalex, prev_scaley;
+        double prev_scalex, prev_scaley;
         // only backup if previous target existed (SDL will preserve them for the default target)
         if (prev_target)
         {
@@ -1677,7 +1677,7 @@ FC_GlyphData* FC_SetGlyphData(FC_Font* font, Uint32 codepoint, FC_GlyphData glyp
 
 
 // Drawing
-static FC_Rect FC_RenderLeft(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text)
+static FC_Rect FC_RenderLeft(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text)
 {
     const char* c = text;
     FC_Rect srcRect;
@@ -1687,11 +1687,11 @@ static FC_Rect FC_RenderLeft(FC_Font* font, FC_Target* dest, float x, float y, F
     FC_GlyphData glyph;
     Uint32 codepoint;
 
-    float destX = x;
-    float destY = y;
-    float destH;
-    float destLineSpacing;
-    float destLetterSpacing;
+    double destX = x;
+    double destY = y;
+    double destH;
+    double destLineSpacing;
+    double destLetterSpacing;
 
     if (font == NULL)
         return dirtyRect;
@@ -1765,7 +1765,7 @@ static void set_color_for_all_caches(FC_Font* font, SDL_Color color)
     }
 }
 
-FC_Rect FC_Draw(FC_Font* font, FC_Target* dest, float x, float y, const char* formatted_text, ...)
+FC_Rect FC_Draw(FC_Font* font, FC_Target* dest, double x, double y, const char* formatted_text, ...)
 {
     if (formatted_text == NULL || font == NULL)
         return FC_MakeRect(x, y, 0, 0);
@@ -1969,7 +1969,7 @@ static FC_StringList* FC_ExplodeAndKeep(const char* text, char delimiter)
     return head;
 }
 
-static void FC_RenderAlign(FC_Font* font, FC_Target* dest, float x, float y, int width, FC_Scale scale, FC_AlignEnum align, const char* text)
+static void FC_RenderAlign(FC_Font* font, FC_Target* dest, double x, double y, int width, FC_Scale scale, FC_AlignEnum align, const char* text)
 {
     switch (align)
     {
@@ -2210,7 +2210,7 @@ FC_Rect FC_DrawBoxEffect(FC_Font* font, FC_Target* dest, FC_Rect box, FC_Effect 
     return box;
 }
 
-FC_Rect FC_DrawColumn(FC_Font* font, FC_Target* dest, float x, float y, Uint16 width, const char* formatted_text, ...)
+FC_Rect FC_DrawColumn(FC_Font* font, FC_Target* dest, double x, double y, Uint16 width, const char* formatted_text, ...)
 {
     FC_Rect box = { x, y, width, 0 };
     int total_height;
@@ -2227,7 +2227,7 @@ FC_Rect FC_DrawColumn(FC_Font* font, FC_Target* dest, float x, float y, Uint16 w
     return FC_MakeRect(box.x, box.y, width, total_height);
 }
 
-FC_Rect FC_DrawColumnAlign(FC_Font* font, FC_Target* dest, float x, float y, Uint16 width, FC_AlignEnum align, const char* formatted_text, ...)
+FC_Rect FC_DrawColumnAlign(FC_Font* font, FC_Target* dest, double x, double y, Uint16 width, FC_AlignEnum align, const char* formatted_text, ...)
 {
     FC_Rect box = { x, y, width, 0 };
     int total_height;
@@ -2256,7 +2256,7 @@ FC_Rect FC_DrawColumnAlign(FC_Font* font, FC_Target* dest, float x, float y, Uin
     return FC_MakeRect(box.x, box.y, width, total_height);
 }
 
-FC_Rect FC_DrawColumnScale(FC_Font* font, FC_Target* dest, float x, float y, Uint16 width, FC_Scale scale, const char* formatted_text, ...)
+FC_Rect FC_DrawColumnScale(FC_Font* font, FC_Target* dest, double x, double y, Uint16 width, FC_Scale scale, const char* formatted_text, ...)
 {
     FC_Rect box = { x, y, width, 0 };
     int total_height;
@@ -2273,7 +2273,7 @@ FC_Rect FC_DrawColumnScale(FC_Font* font, FC_Target* dest, float x, float y, Uin
     return FC_MakeRect(box.x, box.y, width, total_height);
 }
 
-FC_Rect FC_DrawColumnColor(FC_Font* font, FC_Target* dest, float x, float y, Uint16 width, SDL_Color color, const char* formatted_text, ...)
+FC_Rect FC_DrawColumnColor(FC_Font* font, FC_Target* dest, double x, double y, Uint16 width, SDL_Color color, const char* formatted_text, ...)
 {
     FC_Rect box = { x, y, width, 0 };
     int total_height;
@@ -2290,7 +2290,7 @@ FC_Rect FC_DrawColumnColor(FC_Font* font, FC_Target* dest, float x, float y, Uin
     return FC_MakeRect(box.x, box.y, width, total_height);
 }
 
-FC_Rect FC_DrawColumnEffect(FC_Font* font, FC_Target* dest, float x, float y, Uint16 width, FC_Effect effect, const char* formatted_text, ...)
+FC_Rect FC_DrawColumnEffect(FC_Font* font, FC_Target* dest, double x, double y, Uint16 width, FC_Effect effect, const char* formatted_text, ...)
 {
     FC_Rect box = { x, y, width, 0 };
     int total_height;
@@ -2319,7 +2319,7 @@ FC_Rect FC_DrawColumnEffect(FC_Font* font, FC_Target* dest, float x, float y, Ui
     return FC_MakeRect(box.x, box.y, width, total_height);
 }
 
-static FC_Rect FC_RenderCenter(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text)
+static FC_Rect FC_RenderCenter(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text)
 {
     FC_Rect result = { x, y, 0, 0 };
     if (text == NULL || font == NULL)
@@ -2352,7 +2352,7 @@ static FC_Rect FC_RenderCenter(FC_Font* font, FC_Target* dest, float x, float y,
     return result;
 }
 
-static FC_Rect FC_RenderRight(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* text)
+static FC_Rect FC_RenderRight(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* text)
 {
     FC_Rect result = { x, y, 0, 0 };
     if (text == NULL || font == NULL)
@@ -2385,7 +2385,7 @@ static FC_Rect FC_RenderRight(FC_Font* font, FC_Target* dest, float x, float y, 
 
 
 
-FC_Rect FC_DrawScale(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale scale, const char* formatted_text, ...)
+FC_Rect FC_DrawScale(FC_Font* font, FC_Target* dest, double x, double y, FC_Scale scale, const char* formatted_text, ...)
 {
     if (formatted_text == NULL || font == NULL)
         return FC_MakeRect(x, y, 0, 0);
@@ -2397,7 +2397,7 @@ FC_Rect FC_DrawScale(FC_Font* font, FC_Target* dest, float x, float y, FC_Scale 
     return FC_RenderLeft(font, dest, x, y, scale, fc_buffer);
 }
 
-FC_Rect FC_DrawAlign(FC_Font* font, FC_Target* dest, float x, float y, FC_AlignEnum align, const char* formatted_text, ...)
+FC_Rect FC_DrawAlign(FC_Font* font, FC_Target* dest, double x, double y, FC_AlignEnum align, const char* formatted_text, ...)
 {
     if (formatted_text == NULL || font == NULL)
         return FC_MakeRect(x, y, 0, 0);
@@ -2426,7 +2426,7 @@ FC_Rect FC_DrawAlign(FC_Font* font, FC_Target* dest, float x, float y, FC_AlignE
     return result;
 }
 
-FC_Rect FC_DrawColor(FC_Font* font, FC_Target* dest, float x, float y, SDL_Color color, const char* formatted_text, ...)
+FC_Rect FC_DrawColor(FC_Font* font, FC_Target* dest, double x, double y, SDL_Color color, const char* formatted_text, ...)
 {
     if (formatted_text == NULL || font == NULL)
         return FC_MakeRect(x, y, 0, 0);
@@ -2439,7 +2439,7 @@ FC_Rect FC_DrawColor(FC_Font* font, FC_Target* dest, float x, float y, SDL_Color
 }
 
 
-FC_Rect FC_DrawEffect(FC_Font* font, FC_Target* dest, float x, float y, FC_Effect effect, const char* formatted_text, ...)
+FC_Rect FC_DrawEffect(FC_Font* font, FC_Target* dest, double x, double y, FC_Effect effect, const char* formatted_text, ...)
 {
     if (formatted_text == NULL || font == NULL)
         return FC_MakeRect(x, y, 0, 0);
@@ -2747,7 +2747,7 @@ SDL_Color FC_GetDefaultColor(FC_Font* font)
     return font->default_color;
 }
 
-FC_Rect FC_GetBounds(FC_Font* font, float x, float y, FC_AlignEnum align, FC_Scale scale, const char* formatted_text, ...)
+FC_Rect FC_GetBounds(FC_Font* font, double x, double y, FC_AlignEnum align, FC_Scale scale, const char* formatted_text, ...)
 {
     FC_Rect result = { x, y, 0, 0 };
 
@@ -2780,13 +2780,13 @@ FC_Rect FC_GetBounds(FC_Font* font, float x, float y, FC_AlignEnum align, FC_Sca
     return result;
 }
 
-Uint8 FC_InRect(float x, float y, FC_Rect input_rect)
+Uint8 FC_InRect(double x, double y, FC_Rect input_rect)
 {
     return (input_rect.x <= x && x <= input_rect.x + input_rect.w && input_rect.y <= y && y <= input_rect.y + input_rect.h);
 }
 
 // TODO: Make it work with alignment
-Uint16 FC_GetPositionFromOffset(FC_Font* font, float x, float y, int column_width, FC_AlignEnum align, const char* formatted_text, ...)
+Uint16 FC_GetPositionFromOffset(FC_Font* font, double x, double y, int column_width, FC_AlignEnum align, const char* formatted_text, ...)
 {
     FC_StringList* ls, * iter;
     Uint8 done = 0;

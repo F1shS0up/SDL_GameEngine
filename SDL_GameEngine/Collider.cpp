@@ -35,8 +35,8 @@ void Collider_System::Init(Registry* reg)
 		if (reg->lineColliders.count(e))
 		{
 			LineCollider_Component* c = &reg->lineColliders[e];
-			float da = c->b.x - c->a.x;
-			float db = c->b.y - c->a.y;
+			double da = c->b.x - c->a.x;
+			double db = c->b.y - c->a.y;
 
 			c->normal = Vector2D(-db, da).normalize();
 
@@ -100,7 +100,7 @@ inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)
 	return Vector2D(x.real(), x.imag());
 }
 
-bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, float* outA)
+bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, double* outA)
 {
 	Vector2D a(A2 - A1);
 	Vector2D b(B2 - B1);
@@ -134,9 +134,11 @@ bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D&
 		*outA = aa;
 	return true;
 }
-bool ColliderFunctions::LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY)
+bool ColliderFunctions::LineIntersectsHorizontalInfiniteLine(Vector2D infLine, Vector2D A, Vector2D B)
 {
-	return (A->y > infLineY && B->y < infLineY) || (A->y < infLineY && B->y > infLineY);
+	bool X = A.x > infLine.x || B.x > infLine.x;
+	bool Y = (A.y > infLine.y && B.y < infLine.y) || (A.y < infLine.y && B.y > infLine.y);
+	return X && Y;
 }
 bool ColliderFunctions::LineIntersectsHorizontalLine(const Vector2D* A, const Vector2D* B, const Vector2D* A2, const Vector2D* B2)
 {
@@ -147,17 +149,17 @@ Vector2D ColliderFunctions::ClosestPointToLine(const Vector2D* A, const Vector2D
 
 	//Get heading
 	Vector2D heading = (*B - *A);
-	float magnitudeMax = heading.length();
+	double magnitudeMax = heading.length();
 	heading.normalize();
 
 	//Do projection from the point but clamp it
 	Vector2D lhs = *P - *A;
-	float dotP = Vector2D::DotProduct(lhs, heading);
-	dotP = std::clamp<float>(dotP, 0, magnitudeMax);
+	double dotP = Vector2D::DotProduct(lhs, heading);
+	dotP = std::clamp<double>(dotP, 0, magnitudeMax);
 	return *A + heading * dotP;
 }
 
-bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint)
+bool ColliderFunctions::CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, double radius, Vector2D* intersectionPoint)
 {
 	Vector2D a1, a2, b1, b2;
 	a1 = lineColliders->a;
@@ -199,17 +201,17 @@ bool ColliderFunctions::FrameIndependentCircleWithLineIntersection(LineCollider_
 	return false;
 }
 
-bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB, float* penetration)
+bool ColliderFunctions::CircleWithCircleIntersection(Vector2D posA, double radiusA, Vector2D posB, double radiusB, double* penetration)
 {
 	Vector2D difference = Vector2D(std::abs(posB.x - posA.x), std::abs(posB.y - posA.y));
-	float distance = difference.length();
+	double distance = difference.length();
 
 	*penetration = radiusA + radiusB - distance;
 
 	return distance < radiusA + radiusB;
 }
 
-bool ColliderFunctions::RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection, Vector2D* from, Vector2D* to, float* outA)
+bool ColliderFunctions::RectangleWithLineIntersection(double width, double height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection, Vector2D* from, Vector2D* to, double* outA)
 {
 	if (ColliderFunctions::LineLineIntersection(Vector2D(pos.x, pos.y), Vector2D(pos.x + width, pos.y), A, B, intersection, outA))
 	{
@@ -238,7 +240,7 @@ bool ColliderFunctions::RectangleWithLineIntersection(float width, float height,
 	return false;
 }
 
-bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal, float* penetration)
+bool ColliderFunctions::RectangleWithRectangleIntersection(double widthA, double heightA, Vector2D posA, double widthB, double heightB, Vector2D posB, Vector2D* normal, double* penetration)
 {
 	SDL_Rect rA = { posA.x, posA.y, widthA, heightA };
 	SDL_Rect rB = { posB.x, posB.y, widthB, heightB };
@@ -279,7 +281,7 @@ bool ColliderFunctions::RectangleWithRectangleIntersection(float widthA, float h
 	return false;
 }
 
-bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, float radius, Vector2D pos2, float width, float height)
+bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, double radius, Vector2D pos2, double width, double height)
 {
 	Vector2D circleDistance;
 	Vector2D rectMid = pos2 + Vector2D(width / 2, height / 2);
@@ -292,7 +294,7 @@ bool ColliderFunctions::CircleWithRectangleIntersection(Vector2D pos, float radi
 	if (circleDistance.x <= (width / 2)) { return true; }
 	if (circleDistance.y <= (height / 2)) { return true; }
 
-	float cornerDistance_sq;
+	double cornerDistance_sq;
 	cornerDistance_sq = (circleDistance.x - width / 2) * (circleDistance.x - width / 2) +
 		(circleDistance.y - height / 2) * (circleDistance.y - height / 2);
 
@@ -306,8 +308,8 @@ Vector2D ColliderFunctions::ReflectionNormal(const LineCollider_Component* lineC
 	normalA = lineColliders->mid + lineColliders->normal;
 	normalB = lineColliders->mid - lineColliders->normal;
 
-	float lengthA = (normalA - point).length();
-	float lengthB = (normalB - point).length();
+	double lengthA = (normalA - point).length();
+	double lengthB = (normalB - point).length();
 
 	return (lengthA < lengthB) ? lineColliders->normal : Vector2D(-lineColliders->normal.x, -lineColliders->normal.y);
 }
@@ -320,13 +322,13 @@ Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* nor
 	return result + pos;
 }
 
-Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* normal, Vector2D pos, Vector2D newPos, float radius, Vector2D intersection, const LineCollider_Component* lc)
+Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* normal, Vector2D pos, Vector2D newPos, double radius, Vector2D intersection, const LineCollider_Component* lc)
 {
 	Vector2D reflection = reflect(newPos, lc->a, lc->b);
 	return reflection;
 }
 
-Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint)
+Vector2D ColliderFunctions::PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, double percentage, const Vector2D* intersectionPoint)
 {
 	//Doesn't work for rotated rectangles
 	Vector2D point = percentage > 0.5f ? to : from;

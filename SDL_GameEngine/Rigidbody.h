@@ -1,28 +1,14 @@
 #pragma once
 #include "Vector2D.h"
 #include "SDL.h"
-
-enum Layers
-{
-	A = 1,   // 0x01
-	B = 2,   // 0x02
-	C = 3,   // 0x04
-	D = 4,   // 0x08
-	E = 5,   // 0x10
-	F = 6   // 0x20A = 1<<0
-};
-
-inline Layers operator|(Layers a, Layers b)
-{
-	return static_cast<Layers>(static_cast<int>(a) | static_cast<int>(b));
-}
+#include "Layers.h"
 
 struct Rigidbody_Component
 {
 	Vector2D velocity = Vector2D(0, 0);
-	float* gravity;
-	float mass = 10.f;
-	float elasticity = 1;
+	double* gravity;
+	double mass = 10.f;
+	double elasticity = 1;
 	Layers layer = A;
 	Layers ignoreLayers;
 	bool isStatic = false;
@@ -30,7 +16,7 @@ struct Rigidbody_Component
 
 	Vector2D force;
 	Vector2D* position;
-	float inverseMass;
+	double inverseMass;
 
 	void ApplyForce(Vector2D force);
 };
@@ -44,7 +30,7 @@ public:
 #endif //  _DEBUG
 
 	Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
-	void PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, float penetration, Vector2D collisionNormal);
+	void PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, double penetration, Vector2D collisionNormal);
 	void ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B, Vector2D normal);
 
 	void Update(class Registry* reg, double* deltaTime);

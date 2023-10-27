@@ -13,13 +13,13 @@ struct SliderBox_Component
 	SDL_Color color, boxColor, boxColorHovered, boxColorPressed;
 	SDL_Rect txtRect, boxRect;
 	bool onXAxis;
-	float value;
-	float coefficient;
-	float min, max;
+	double value;
+	double coefficient;
+	double min, max;
 
 	bool pressedInside;
 	Vector2DInt startPoint;
-	float startValue;
+	double startValue;
 	TextBox_Component* txtComp;
 };
 class SliderBox_System

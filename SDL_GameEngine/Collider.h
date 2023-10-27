@@ -5,7 +5,7 @@
 
 struct CircleCollider_Component
 {
-	float radius;
+	double radius;
 
 	Vector2D* position;
 };
@@ -18,7 +18,7 @@ struct LineCollider_Component
 
 struct AABBCollider_Component
 {
-	float width, height;
+	double width, height;
 
 	Vector2D* position;
 };
@@ -36,29 +36,29 @@ public:
 namespace ColliderFunctions
 {
 	//Check collision between two lines and return true if they collide/intersect
-	bool LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection = 0, float* outA = 0);
+	bool LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection = 0, double* outA = 0);
 
-	bool LineIntersectsHorizontalInfiniteLine(const Vector2D* A, const Vector2D* B, float infLineY);
+	bool LineIntersectsHorizontalInfiniteLine(Vector2D infLine, Vector2D A, Vector2D B);
 
 	bool LineIntersectsHorizontalLine(const Vector2D* A, const Vector2D* B, const Vector2D* A2, const Vector2D* B2);
 
 	Vector2D ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P);
 
 	//Calculates the furthest and nerest point in the circle and if it intersects with line.
-	bool CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, float radius, Vector2D* intersectionPoint);
+	bool CircleWithLineIntersection(LineCollider_Component* lineColliders, Vector2D position, double radius, Vector2D* intersectionPoint);
 
 	//Check if two circles intersect
-	bool CircleWithCircleIntersection(Vector2D posA, float radiusA, Vector2D posB, float radiusB, float* penetration = 0);
+	bool CircleWithCircleIntersection(Vector2D posA, double radiusA, Vector2D posB, double radiusB, double* penetration = 0);
 
 	//Check if rectangle intersects line, only works with non rotated rectangles
-	bool RectangleWithLineIntersection(float width, float height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, float* outA = 0);
+	bool RectangleWithLineIntersection(double width, double height, Vector2D pos, Vector2D A, Vector2D B, Vector2D* intersection = 0, Vector2D* from = 0, Vector2D* to = 0, double* outA = 0);
 
-	bool RectangleWithRectangleIntersection(float widthA, float heightA, Vector2D posA, float widthB, float heightB, Vector2D posB, Vector2D* normal = 0, float* penetration = 0);
+	bool RectangleWithRectangleIntersection(double widthA, double heightA, Vector2D posA, double widthB, double heightB, Vector2D posB, Vector2D* normal = 0, double* penetration = 0);
 
 	//It does the same except but if it fails it checks from middle to middle
 	bool FrameIndependentCircleWithLineIntersection(LineCollider_Component* lineColliders, const CircleCollider_Component* circleColliders, Vector2D nextFramePosToAdd, Vector2D* intersectionPoint);
 
-	bool CircleWithRectangleIntersection(Vector2D pos, float radius, Vector2D pos2, float width, float height);
+	bool CircleWithRectangleIntersection(Vector2D pos, double radius, Vector2D pos2, double width, double height);
 
 	//Return the normal of line thats facing towards the point
 	Vector2D ReflectionNormal(const LineCollider_Component* lineColliders, Vector2D point);
@@ -67,8 +67,8 @@ namespace ColliderFunctions
 	Vector2D PositionToReturnToAfterCollision(const Vector2D* normal, const CircleCollider_Component* circleColliders, Vector2D intersection);
 
 	//Position to go to when collision was detected for circle with line but this time between frames which is useful when low frame rates are expected
-	Vector2D PositionToReturnToAfterCollision(const Vector2D* normal, Vector2D pos, Vector2D newPos, float radius, Vector2D intersection, const LineCollider_Component* lc);
+	Vector2D PositionToReturnToAfterCollision(const Vector2D* normal, Vector2D pos, Vector2D newPos, double radius, Vector2D intersection, const LineCollider_Component* lc);
 
 	//Position to go to when collision was detected for rectangle with line
-	Vector2D PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, float percentage, const Vector2D* intersectionPoint);
+	Vector2D PositionToReturnToAfterCollision(Vector2D from, Vector2D to, Vector2D pos, double percentage, const Vector2D* intersectionPoint);
 }

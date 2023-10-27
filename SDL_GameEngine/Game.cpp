@@ -35,8 +35,8 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 	assetPath = SDL_GetBasePath();
 	assetPath += "Assets/";
 
-	gravity = new float(0);
-	dragCoeficient = new float(0);
+	gravity = new double(0);
+	dragCoeficient = new double(0);
 
 
 	std::string font = assetPath + "Fonts/consola.ttf";
@@ -64,53 +64,89 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 
 
-	Entity softbody = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody] = Softbody_Component{ 16,
-		{
-			MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1450, 1400), 1}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1550, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1},
-			MassPoint{Vector2D(1600, 1450), 1}, MassPoint{Vector2D(1600, 1500), 1},MassPoint{Vector2D(1600, 1550), 1}, MassPoint{Vector2D(1600, 1600), 1},
-			MassPoint{Vector2D(1550, 1600), 1}, MassPoint{Vector2D(1500, 1600), 1},MassPoint{Vector2D(1450, 1600), 1}, MassPoint{Vector2D(1400, 1600), 1},
-			MassPoint{Vector2D(1400, 1550), 1}, 
-			MassPoint{Vector2D(1400, 1500), 1},
-			MassPoint{Vector2D(1400, 1450), 1}
-		},
-		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 1, SDL_Color{131, 156, 169, 255} };
+	//Entity softbody = EntityManager::Instance()->CreateEntity();
+	//Registry::Instance()->softbodies[softbody] = Softbody_Component{ 16,
+	//	{
+	//		MassPoint{Vector2D(1400, 1400), 1}, MassPoint{Vector2D(1450, 1400), 1}, MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1550, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1},
+	//		MassPoint{Vector2D(1600, 1450), 1}, MassPoint{Vector2D(1600, 1500), 1},MassPoint{Vector2D(1600, 1550), 1}, MassPoint{Vector2D(1600, 1600), 1},
+	//		MassPoint{Vector2D(1550, 1600), 1}, MassPoint{Vector2D(1500, 1600), 1},MassPoint{Vector2D(1450, 1600), 1}, MassPoint{Vector2D(1400, 1600), 1},
+	//		MassPoint{Vector2D(1400, 1550), 1}, 
+	//		MassPoint{Vector2D(1400, 1500), 1},
+	//		MassPoint{Vector2D(1400, 1450), 1}
+	//	},
+	//	{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 1, A, Layers(),SDL_Color{131, 156, 169, 255} };
 
-	Entity softbody2 = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody2] = Softbody_Component{ 16,
-		{
-			MassPoint{Vector2D(1400, 1000), 1}, MassPoint{Vector2D(1500, 1000), 1}, MassPoint{Vector2D(1600, 1000), 1}, MassPoint{Vector2D(1700, 1000), 1}, MassPoint{Vector2D(1800, 1000), 1},
-			MassPoint{Vector2D(1800, 1100), 1}, MassPoint{Vector2D(1800, 1200), 1},MassPoint{Vector2D(1800, 1300), 1}, MassPoint{Vector2D(1800, 1400), 1},
-			MassPoint{Vector2D(1700, 1400), 1}, MassPoint{Vector2D(1600, 1400), 1},MassPoint{Vector2D(1500, 1400), 1}, MassPoint{Vector2D(1400, 1400), 1},
-			MassPoint{Vector2D(1400, 1300), 1},
-			MassPoint{Vector2D(1400, 1200), 1},
-			MassPoint{Vector2D(1400, 1100), 1}
-		},
-		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 1, SDL_Color{160, 94, 94, 255} };
 
-	Entity softbody3 = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[softbody3] = Softbody_Component{ 12,
+	//Entity wheel2 = EntityManager::Instance()->CreateEntity();
+	//Registry::Instance()->softbodies[wheel2] = Softbody_Component{ 12,
+	//	{
+	//		MassPoint{Vector2D(2000, 1000), 1}, MassPoint{Vector2D(2033, 983), 1}, MassPoint{Vector2D(2066, 983), 1},
+	//		MassPoint{Vector2D(2100, 1000), 1}, MassPoint{Vector2D(2116, 1033), 1}, MassPoint{Vector2D(2116, 1066), 1},
+	//		MassPoint{Vector2D(2100, 1100), 1}, MassPoint{Vector2D(2066, 1116), 1}, MassPoint{Vector2D(2033, 1116), 1},
+	//		MassPoint{Vector2D(2000, 1100), 1}, MassPoint{Vector2D(1983, 1066), 1}, MassPoint{Vector2D(1983, 1033), 1}
+	//	},
+	//	{ },gravity, dragCoeficient, 500, .5, true, true, 100, 0.5f, 60, 50, SDL_Color{200, 126, 126, 255} };
+
+	//Registry::Instance()->softbodyRotatingMovements[wheel2] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel2],  new double(5000) };
+
+
+	Entity carBody = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[carBody] = Softbody_Component{ 12,
 		{
-			MassPoint{Vector2D(2000, 1000), 1}, MassPoint{Vector2D(2066, 966), 1}, MassPoint{Vector2D(2133, 966), 1},
-			MassPoint{Vector2D(2200, 1000), 1}, MassPoint{Vector2D(2233, 1066), 1}, MassPoint{Vector2D(2233, 1133), 1},
-			MassPoint{Vector2D(2200, 1200), 1}, MassPoint{Vector2D(2133, 1233), 1}, MassPoint{Vector2D(2066, 1233), 1},
-			MassPoint{Vector2D(2000, 1200), 1}, MassPoint{Vector2D(1966, 1133), 1}, MassPoint{Vector2D(1966, 1066), 1}
+			/*MassPoint{Vector2D(1400, 800), 1, 3}, MassPoint{Vector2D(1500, 800), 1, 3}, MassPoint{Vector2D(1600, 800), 1, 3}, MassPoint{Vector2D(1700, 800), 1, 3}, MassPoint{Vector2D(1800, 800), 1, 3},
+			MassPoint{Vector2D(1800, 900), 1, 3}, MassPoint{Vector2D(1800, 1000), 1, 3},
+			MassPoint{Vector2D(1700, 1000), 1, 3}, MassPoint{Vector2D(1600, 1000), 1, 3},MassPoint{Vector2D(1500, 1000), 1, 3}, MassPoint{Vector2D(1400, 1000), 1, 3},
+			MassPoint{Vector2D(1400, 900), 1, 3}*/
+			MassPoint{Vector2D(1300, 750), 1, 2},MassPoint{Vector2D(1475, 750), 1, 2}, MassPoint{Vector2D(1475, 650), 1, 2}, MassPoint{Vector2D(1650, 650), 1, 2}, MassPoint{Vector2D(1700, 750), 1, 2}, MassPoint{Vector2D(1900, 750), 1, 2}, MassPoint{Vector2D(1950, 800), 1, 2},
+			MassPoint{Vector2D(1950, 850), 1, 2}, MassPoint{Vector2D(1920, 900), 1, 2},  MassPoint{Vector2D(1850, 900), 1, 2},  MassPoint{Vector2D(1400, 900), 1, 2}, MassPoint{Vector2D(1300, 900), 1, 2}
 		},
-		{ },gravity, dragCoeficient, 500, .5, true, true, 100, 0.5f, 60, 2, SDL_Color{200, 126, 126, 255} };
+		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 0, B, C, SDL_Color{255, 195, 132, 255}};
+
+	Entity wheel1 = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[wheel1] = Softbody_Component{ 12,
+		{
+			MassPoint{Vector2D(1000, 1000), 1, 2}, MassPoint{Vector2D(1050, 975), 1, 2}, MassPoint{Vector2D(1100, 975), 1, 2},
+			MassPoint{Vector2D(1150, 1000), 1, 2}, MassPoint{Vector2D(1175, 1050), 1, 2}, MassPoint{Vector2D(1175, 1100), 1, 2},
+			MassPoint{Vector2D(1150, 1150), 1, 2}, MassPoint{Vector2D(1100, 1175), 1, 2}, MassPoint{Vector2D(1050, 1175), 1, 2},
+			MassPoint{Vector2D(1000, 1150), 1, 2}, MassPoint{Vector2D(975, 1100), 1, 2}, MassPoint{Vector2D(975, 1050), 1, 2}
+		},
+		{ },gravity, dragCoeficient, 500, .5, true, true, 6000, 0.5f, 60, 1, C, B, SDL_Color{40, 40, 40, 255}};
+
+	Entity wheel2 = EntityManager::Instance()->CreateEntity();
+	Registry::Instance()->softbodies[wheel2] = Softbody_Component{ 12,
+		{
+			MassPoint{Vector2D(2000, 1000), 1, 2}, MassPoint{Vector2D(2050, 975), 1, 2}, MassPoint{Vector2D(2100, 975), 1, 2},
+			MassPoint{Vector2D(2150, 1000), 1, 2}, MassPoint{Vector2D(2175, 1050), 1, 2}, MassPoint{Vector2D(2175, 1100), 1, 2},
+			MassPoint{Vector2D(2150, 1150), 1, 2}, MassPoint{Vector2D(2100, 1175), 1, 2}, MassPoint{Vector2D(2050, 1175), 1, 2},
+			MassPoint{Vector2D(2000, 1150), 1, 2}, MassPoint{Vector2D(1975, 1100), 1, 2}, MassPoint{Vector2D(1975, 1050), 1, 2}
+		},
+		{ },gravity, dragCoeficient, 500, .5, true, true, 6000, 0.5f, 60, 1, C, B, SDL_Color{40, 40, 40, 255} };
+	
+	Registry::Instance()->softbodyRotatingMovements[wheel1] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel1],  new double(9000) };
+	Registry::Instance()->softbodyRotatingMovements[wheel2] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel2],  new double(9000) };
+
+	
+	
+
+
+	Registry::Instance()->softbodyJoints[carBody] = SoftbodyJoint_Component{ {SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel1], {}, {&Registry::Instance()->softbodies[carBody].massPoints[10]}},
+	SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel2], {}, {&Registry::Instance()->softbodies[carBody].massPoints[9]}}} };
+
 
 
 
 	
 	Entity ground = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[ground] = Softbody_Component{ 22,
+	Registry::Instance()->softbodies[ground] = Softbody_Component{ 36,
 		{
-			MassPoint{Vector2D(920, 1680), 1, true}, MassPoint{Vector2D(1120, 1680), 1}, MassPoint{Vector2D(1320, 1680), 1}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1},
-			MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1}, MassPoint{Vector2D(2720, 1680), 1},MassPoint{Vector2D(2920, 1680), 1, true},
-			MassPoint{Vector2D(2920, 1880), 1, true}, MassPoint{Vector2D(2720, 1880), 1}, MassPoint{Vector2D(2520, 1880), 1}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1},
-			MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, true}
+			MassPoint{Vector2D(920, 1680), 1, 1, true}, MassPoint{Vector2D(1020, 1680), 1}, MassPoint{Vector2D(1120, 1680), 1}, MassPoint{Vector2D(1220, 1680), 1}, MassPoint{Vector2D(1320, 1680), 1}, MassPoint{Vector2D(1420, 1680), 1}, MassPoint{Vector2D(1520, 1680), 1}, MassPoint{Vector2D(1620, 1680), 1}, 
+			MassPoint{Vector2D(1720, 1680), 1}, MassPoint{Vector2D(1820, 1680), 1}, MassPoint{Vector2D(1920, 1680), 1}, MassPoint{Vector2D(2120, 1680), 1}, MassPoint{Vector2D(2320, 1680), 1}, MassPoint{Vector2D(2520, 1680), 1}, MassPoint{Vector2D(2720, 1680), 1},MassPoint{Vector2D(2920, 1680), 1, 1, true},
+			MassPoint{Vector2D(2920, 1880), 1, 1, true}, MassPoint{Vector2D(2820, 1880), 1}, MassPoint{Vector2D(2720, 1880), 1}, MassPoint{Vector2D(2620, 1880), 1}, MassPoint{Vector2D(2520, 1880), 1}, MassPoint{Vector2D(2420, 1880), 1}, MassPoint{Vector2D(2320, 1880), 1}, MassPoint{Vector2D(2220, 1880), 1}, 
+			MassPoint{Vector2D(2120, 1880), 1}, MassPoint{Vector2D(2020, 1880), 1}, MassPoint{Vector2D(1920, 1880), 1}, MassPoint{Vector2D(1820, 1880), 1}, MassPoint{Vector2D(1720, 1880), 1}, MassPoint{Vector2D(1620, 1880), 1}, MassPoint{Vector2D(1520, 1880), 1}, MassPoint{Vector2D(1420, 1880), 1},MassPoint{Vector2D(1320, 1880), 1}, MassPoint{Vector2D(1220, 1880), 1}, 
+			MassPoint{Vector2D(1120, 1880), 1},MassPoint{Vector2D(920, 1880), 1, 1, true}
 		},
 		{ },
-		gravity, dragCoeficient, 800, 4, true, false, 800, 0.8f, 60, 1.2, SDL_Color{111, 139, 110, 255} };
+		gravity, dragCoeficient, 800, 4, true, false, 800, 0.8f, 60, 1, A, Layers(), SDL_Color{135, 168, 137, 255}};
 
 
 
@@ -244,11 +280,12 @@ int x = 0;
 void Game::Update(double* deltaTime)
 {
 	inputManager->Update();
+	Registry::Instance()->StartUpdate(deltaTime, this);
 	Registry::Instance()->Update(deltaTime, this);
 	if (InputManager::Instance()->MouseButtonPressed(InputManager::right))
 	{
 		x = 0;
-		float dist = 1000000000000000000;
+		double dist = 1000000000000000000;
 		for (int y = 1; y <= EntityManager::Instance()->num_entities; y++)
 		{
 			if (Registry::Instance()->softbodies.count(y))
@@ -256,7 +293,7 @@ void Game::Update(double* deltaTime)
 				for (int i = 0; i < Registry::Instance()->softbodies[y].massPoints.size(); i++)
 				{
 					Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[y].massPoints[i].position.x - InputManager::Instance()->MousePos().x, Registry::Instance()->softbodies[y].massPoints[i].position.y - InputManager::Instance()->MousePos().y);
-					float currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
+					double currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
 					if (dist > currentDist)
 					{
 						x = y;

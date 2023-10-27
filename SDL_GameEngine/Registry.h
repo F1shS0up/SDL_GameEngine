@@ -12,6 +12,8 @@
 #include "Button.h"
 #include "TiledSprite.h"
 #include <array>
+#include "SoftbodyRotatorMovement.h"
+#include "SoftbodyJoint.h"
 
 using Entity = std::size_t;
 
@@ -36,6 +38,8 @@ public:
 	std::unordered_map<Entity, Softbody_Component> softbodies;
 	std::unordered_map<Entity, Button_Component> buttons;
 	std::unordered_map<Entity, TiledSprite_Component> tiledSprites;
+	std::unordered_map<Entity, SoftbodyRotatingMovement_Component> softbodyRotatingMovements;
+	std::unordered_map<Entity, SoftbodyJoint_Component> softbodyJoints;
 
 #pragma endregion
 
@@ -51,10 +55,13 @@ public:
 	Softbody_System softbodySystem;
 	Button_System buttonSystem;
 	TiledSprite_System tiledSpriteSystem;
+	SoftbodyRotatingMovement_System softbodyRotatingMovementSystem;
+	SoftbodyJoint_System softbodyJointSystem;
 
 #pragma endregion
 
 	void Init(SDL_Renderer* renderer);
+	void StartUpdate(double* deltaTime, class Game* game);
 	void Update(double* deltaTime, class Game* game);
 	void Draw(SDL_Renderer* renderer);
 

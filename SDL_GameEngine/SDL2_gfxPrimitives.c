@@ -1939,7 +1939,7 @@ int aaellipseRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 	int i;
 	int a2, b2, ds, dt, dxt, t, s, d;
 	Sint16 xp, yp, xs, ys, dyt, od, xx, yy, xc2, yc2;
-	float cp;
+	double cp;
 	double sab;
 	Uint8 weight, iweight;
 
@@ -2036,7 +2036,7 @@ int aaellipseRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		/* Calculate alpha */
 		if (s != 0)
 		{
-			cp = (float)abs(d) / (float)abs(s);
+			cp = (double)abs(d) / (double)abs(s);
 			if (cp > 1.0)
 			{
 				cp = 1.0;
@@ -2104,7 +2104,7 @@ int aaellipseRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		/* Calculate alpha */
 		if (t != 0)
 		{
-			cp = (float)abs(d) / (float)abs(t);
+			cp = (double)abs(d) / (double)abs(t);
 			if (cp > 1.0)
 			{
 				cp = 1.0;
@@ -2183,7 +2183,7 @@ int filledEllipseRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rx, Sin
 /* ----- Pie */
 
 /*!
-\brief Internal float (low-speed) pie-calc implementation by drawing polygons.
+\brief Internal double (low-speed) pie-calc implementation by drawing polygons.
 
 Note: Determines vertex array and uses polygon or filledPolygon drawing routines to render.
 

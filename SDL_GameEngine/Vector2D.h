@@ -6,18 +6,18 @@
 class Vector2D
 {
 public:
-	float x;
-	float y;
+	double x;
+	double y;
 
 	Vector2D() {};
-	Vector2D(float x, float y) : x(x), y(y) {}
-	float* getX() { return &x; }
-	float* getY() { return &y; }
+	Vector2D(double x, double y) : x(x), y(y) {}
+	double* getX() { return &x; }
+	double* getY() { return &y; }
 
-	void setX(float x) { x = x; }
-	void setY(float y) { y = y; }
+	void setX(double x) { x = x; }
+	void setY(double y) { y = y; }
 
-	float length() { return sqrt(x * x + y * y); }
+	double length() { return sqrt(x * x + y * y); }
 
 	Vector2D operator+(const Vector2D& v2) const
 	{
@@ -37,12 +37,12 @@ public:
 		return v1;
 	}
 
-	Vector2D operator*(float scalar)
+	Vector2D operator*(double scalar)
 	{
 		return Vector2D(x * scalar, y * scalar);
 	}
 
-	Vector2D& operator*=(float scalar)
+	Vector2D& operator*=(double scalar)
 	{
 		x *= scalar;
 		y *= scalar;
@@ -60,11 +60,11 @@ public:
 		return v1;
 	}
 
-	Vector2D operator/(float scalar)
+	Vector2D operator/(double scalar)
 	{
 		return Vector2D(x / scalar, y / scalar);
 	}
-	Vector2D& operator/=(float scalar)
+	Vector2D& operator/=(double scalar)
 	{
 		x /= scalar;
 		y /= scalar;
@@ -73,7 +73,7 @@ public:
 
 	Vector2D normalize()
 	{
-		float l = length();
+		double l = length();
 		if (l > 0)
 		{
 			(*this) *= 1 / l;
@@ -85,15 +85,15 @@ public:
 	{
 		return Vector2D(std::clamp(v.x, min.x, max.x), std::clamp(v.y, min.y, max.y));
 	}
-	static float DotProduct(Vector2D v1, Vector2D v2)
+	static double DotProduct(Vector2D v1, Vector2D v2)
 	{
 		return v1.x * v2.x + v1.y * v2.y;
 	}
-	static float CrossDotProduct(Vector2D v1, Vector2D v2)
+	static double CrossDotProduct(Vector2D v1, Vector2D v2)
 	{
 		return v1.x * v2.y - v1.y * v2.x;
 	}
-	static float PerpDotProduct(Vector2D v1, Vector2D v2)
+	static double PerpDotProduct(Vector2D v1, Vector2D v2)
 	{
 		return (v1.y * v2.x) - (v1.x * v2.y);
 	}
