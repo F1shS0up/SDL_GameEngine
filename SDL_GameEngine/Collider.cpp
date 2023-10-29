@@ -313,6 +313,25 @@ Vector2D ColliderFunctions::ReflectionNormal(const LineCollider_Component* lineC
 
 	return (lengthA < lengthB) ? lineColliders->normal : Vector2D(-lineColliders->normal.x, -lineColliders->normal.y);
 }
+Vector2D ColliderFunctions::ReflectionNormal(Vector2D A, Vector2D B, Vector2D point)
+{
+	Vector2D normalA, normalB;
+	double da = B.x - A.x;
+	double db = B.y - A.y;
+
+	Vector2D normal = Vector2D(-db, da).normalize();
+
+	Vector2D mid = Vector2D(A.x + (B.x - A.x) / 2, A.y + (B.y - A.y) / 2);
+	
+
+	normalA = mid + normal;
+	normalB = mid - normal;
+
+	double lengthA = (normalA - point).x * (normalA - point).x + (normalA - point).y * (normalA - point).y;
+	double lengthB = (normalB - point).x * (normalB - point).x + (normalB - point).y * (normalB - point).y;
+
+	return (lengthA < lengthB) ? normal : Vector2D(-normal.x, -normal.y);
+}
 
 Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* normal, const CircleCollider_Component* circleColliders, Vector2D intersection)
 {

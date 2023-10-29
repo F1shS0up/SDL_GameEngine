@@ -14,6 +14,7 @@
 #include <array>
 #include "SoftbodyRotatorMovement.h"
 #include "SoftbodyJoint.h"
+#include "Camera.h"
 
 using Entity = std::size_t;
 
@@ -40,6 +41,7 @@ public:
 	std::unordered_map<Entity, TiledSprite_Component> tiledSprites;
 	std::unordered_map<Entity, SoftbodyRotatingMovement_Component> softbodyRotatingMovements;
 	std::unordered_map<Entity, SoftbodyJoint_Component> softbodyJoints;
+	std::unordered_map<Entity, Camera_Component> cameras;
 
 #pragma endregion
 
@@ -57,6 +59,7 @@ public:
 	TiledSprite_System tiledSpriteSystem;
 	SoftbodyRotatingMovement_System softbodyRotatingMovementSystem;
 	SoftbodyJoint_System softbodyJointSystem;
+	Camera_System camSystem;
 
 #pragma endregion
 

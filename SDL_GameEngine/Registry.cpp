@@ -26,6 +26,7 @@ void Registry::Init(SDL_Renderer* renderer)
 	tiledSpriteSystem.Init(this, renderer);
 	softbodyRotatingMovementSystem.Init(this);
 	softbodyJointSystem.Init(this);
+	camSystem.Init(this);
 }
 
 void Registry::StartUpdate(double* deltaTime, Game* game)
@@ -46,6 +47,7 @@ void Registry::Update(double* deltaTime, Game* game)
 	textBoxSystem.Update(this, deltaTime, game);
 	sliderBoxSystem.Update(this, deltaTime, game);
 	buttonSystem.Update(this, deltaTime, game);
+	camSystem.Update(this, deltaTime);
 }
 
 void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)

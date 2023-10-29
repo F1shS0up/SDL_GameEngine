@@ -44,10 +44,12 @@ struct Softbody_Component
 	double* dragCoeficient;
 	double defaultStiffness;
 	double defaultDampingFactor;
-	bool hardShapeMatching = true;
 	bool rotateHardFrame = true;
+	bool hardShapeMatching = true;
+	bool gasShapeMatching = true;
 	double shapeMatchingStiffness;
 	double shapeMatchingDampingFactor;
+	double shapeMatchingGasAmount;
 	double outlineThickness = 0;
 	double friction;
 	Layers layer;

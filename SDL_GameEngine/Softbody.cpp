@@ -288,8 +288,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 										double distDif = (closestPoint - lineOne->position).length();
 										double per = distDif / dist;
 
-										lineOne->position -= dir * (1 - per);
-										lineTwo->position -= dir * per;
+										lineOne->position -= dir * (per);
+										lineTwo->position -= dir * (1 - per);
 									}
 									else if (lineOne->isStatic && !lineTwo->isStatic)
 									{
@@ -350,6 +350,35 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 						}
 					}
 				}
+				if (reg->softbodies[e].gasShapeMatching)
+				{
+					for (int i = 0; i < reg->softbodies[e].massPointsN; i++)
+					{
+						int nextIndex = 0;
+						if (i == reg->softbodies[e].massPointsN - 1)
+						{
+							nextIndex = 0;
+						}
+						else
+						{
+							nextIndex = i + 1;
+						}
+
+						int beforeIndex = 0;
+						if (i == 0)
+						{
+							beforeIndex = reg->softbodies[e].massPointsN - 1;
+						}
+						else
+						{
+							beforeIndex = i - 1;
+						}
+						Vector2D A = reg->softbodies[e].massPoints[beforeIndex].position;
+						Vector2D B = reg->softbodies[e].massPoints[nextIndex].position;
+						Vector2D normal = ColliderFunctions::ReflectionNormal(A, B, reg->softbodies[e].averagePosition) * -1;
+						reg->softbodies[e].massPoints[i].force += normal * reg->softbodies[e].shapeMatchingGasAmount;
+					}
+				}
 
 #pragma endregion
 
@@ -363,12 +392,16 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].A].force += forceA;
 					reg->softbodies[e].massPoints[reg->softbodies[e].springs[s].B].force += forceB;
 				}
-				for (int s = 0; s < reg->softbodies[e].springsForFrame.size(); s++)
+				if (reg->softbodies[e].hardShapeMatching)
 				{
-					Vector2D forceA;
-					CalculateSpringForceForFrame(&reg->softbodies[e].springsForFrame[s], &reg->softbodies[e], &forceA, deltaTime, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].springsForFrame[s].A]);
-					reg->softbodies[e].massPoints[reg->softbodies[e].springsForFrame[s].A].force += forceA;
+					for (int s = 0; s < reg->softbodies[e].springsForFrame.size(); s++)
+					{
+						Vector2D forceA;
+						CalculateSpringForceForFrame(&reg->softbodies[e].springsForFrame[s], &reg->softbodies[e], &forceA, deltaTime, reg->softbodies[e].finalPositionsOfHardFrame[reg->softbodies[e].springsForFrame[s].A]);
+						reg->softbodies[e].massPoints[reg->softbodies[e].springsForFrame[s].A].force += forceA;
+					}
 				}
+				
 
 #pragma endregion
 			}
@@ -399,8 +432,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 					}
 				}
 
-				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x - game->cameraRect.x;
-				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y - game->cameraRect.y;
+				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x - game->cam->resultRect.x;
+				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y - game->cam->resultRect.y;
 			}
 
 #pragma endregion

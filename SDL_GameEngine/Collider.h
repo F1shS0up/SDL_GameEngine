@@ -63,6 +63,8 @@ namespace ColliderFunctions
 	//Return the normal of line thats facing towards the point
 	Vector2D ReflectionNormal(const LineCollider_Component* lineColliders, Vector2D point);
 
+	Vector2D ReflectionNormal(Vector2D A, Vector2D B, Vector2D point);
+
 	//Position to go to when collision was detected for circle with line
 	Vector2D PositionToReturnToAfterCollision(const Vector2D* normal, const CircleCollider_Component* circleColliders, Vector2D intersection);
 

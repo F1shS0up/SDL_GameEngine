@@ -27,9 +27,7 @@ public:
 
 	SDL_Renderer* renderer;
 
-	Vector2D cameraPos = Vector2D(0, 0);
-	SDL_Rect cameraRect;
-	Vector2D lastCameraPos = Vector2D(0, 0);;
+	class Camera_Component* cam;
 
 	int w, h;
 

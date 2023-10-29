@@ -10,22 +10,47 @@ void SoftbodyJoint_System::Init(Registry* reg)
 		{
 			for (int x = 0; x < reg->softbodyJoints[e].values.size(); x++)
 			{
-				if (reg->softbodyJoints[e].values[x].moveBodyAnchorPoints.size() == 0)
+				SoftbodyJoint_Component* c = &reg->softbodyJoints[e];
+				if (reg->softbodyJoints[e].values[x].otherBodyAnchorPoints.size() == 0)
 				{
 					SoftbodyJoint_Component* c = &reg->softbodyJoints[e];
 					for (int i = 0; i < c->values[x].otherBody->massPointsN; i++)
 					{
-						c->values[x].moveBodyAnchorPoints.push_back(&c->values[x].otherBody->massPoints[i]);
+						c->values[x].otherBodyAnchorPoints.push_back(&c->values[x].otherBody->massPoints[i]);
 					}
 				}
-				if (reg->softbodyJoints[e].values[x].otherBodyAnchorPoints.size() == 0 && reg->softbodies.count(e))
+				if (reg->softbodyJoints[e].values[x].thisBodyAnchorPoints.size() == 0 && reg->softbodies.count(e))
 				{
 					SoftbodyJoint_Component* c = &reg->softbodyJoints[e];
 					for (int i = 0; i < reg->softbodies[e].massPointsN; i++)
 					{
-						c->values[x].otherBodyAnchorPoints.push_back(&reg->softbodies[e].massPoints[i]);
+						c->values[x].thisBodyAnchorPoints.push_back(&reg->softbodies[e].massPoints[i]);
 					}
 				}
+				
+				{
+					Vector2D moveAverage = Vector2D(0, 0), staticAverage = Vector2D(0, 0);
+					for (int i = 0; i < c->values[x].otherBodyAnchorPoints.size(); i++)
+					{
+						moveAverage += c->values[x].otherBodyAnchorPoints[i]->position;
+					}
+					moveAverage /= c->values[x].otherBodyAnchorPoints.size();
+
+					for (int i = 0; i < c->values[x].thisBodyAnchorPoints.size(); i++)
+					{
+						staticAverage += c->values[x].thisBodyAnchorPoints[i]->position;
+					}
+					staticAverage /= c->values[x].thisBodyAnchorPoints.size();
+					staticAverage += c->values[x].offsetFromStaticBody;
+
+					Vector2D dif = staticAverage - moveAverage;
+
+					for (int i = 0; i < c->values[x].otherBody->massPointsN; i++)
+					{
+						c->values[x].otherBody->massPoints[i].position += dif ;
+					}
+				}
+				
 			}
 		}
 	}
@@ -43,19 +68,19 @@ void SoftbodyJoint_System::Update(Registry* reg, double* deltaTime)
 				if (c->values[x].tp == StaticJoint)
 				{
 					Vector2D moveAverage = Vector2D(0, 0), staticAverage = Vector2D(0, 0);
-					for (int i = 0; i < c->values[x].moveBodyAnchorPoints.size(); i++)
-					{
-						moveAverage += c->values[x].moveBodyAnchorPoints[i]->position;
-					}
-					moveAverage /= c->values[x].moveBodyAnchorPoints.size();
-
 					for (int i = 0; i < c->values[x].otherBodyAnchorPoints.size(); i++)
 					{
-						staticAverage += c->values[x].otherBodyAnchorPoints[i]->position;
+						moveAverage += c->values[x].otherBodyAnchorPoints[i]->position;
 					}
-					staticAverage /= c->values[x].otherBodyAnchorPoints.size();
+					moveAverage /= c->values[x].otherBodyAnchorPoints.size();
 
-					Vector2D dif = staticAverage - moveAverage;
+					for (int i = 0; i < c->values[x].thisBodyAnchorPoints.size(); i++)
+					{
+						staticAverage += c->values[x].thisBodyAnchorPoints[i]->position;
+					}
+					staticAverage /= c->values[x].thisBodyAnchorPoints.size();
+
+					Vector2D dif = (staticAverage + c->values[x].offsetFromStaticBody) - moveAverage;
 
 					for (int i = 0; i < c->values[x].otherBody->massPointsN; i++)
 					{
@@ -68,17 +93,18 @@ void SoftbodyJoint_System::Update(Registry* reg, double* deltaTime)
 				else if (c->values[x].tp == SpringJoint)
 				{
 					Vector2D AAverage = Vector2D(0, 0), BAverage = Vector2D(0, 0);
-					for (int i = 0; i < c->values[x].moveBodyAnchorPoints.size(); i++)
-					{
-						AAverage += c->values[x].moveBodyAnchorPoints[i]->position;
-					}
-					AAverage /= c->values[x].moveBodyAnchorPoints.size();
-
 					for (int i = 0; i < c->values[x].otherBodyAnchorPoints.size(); i++)
 					{
-						BAverage += c->values[x].otherBodyAnchorPoints[i]->position;
+						AAverage += c->values[x].otherBodyAnchorPoints[i]->position;
 					}
-					BAverage /= c->values[x].otherBodyAnchorPoints.size();
+					AAverage /= c->values[x].otherBodyAnchorPoints.size();
+
+					for (int i = 0; i < c->values[x].thisBodyAnchorPoints.size(); i++)
+					{
+						BAverage += c->values[x].thisBodyAnchorPoints[i]->position;
+					}
+					BAverage /= c->values[x].thisBodyAnchorPoints.size();
+					BAverage += c->values[x].offsetFromStaticBody;
 
 					Vector2D averageVelocityA = Vector2D(0, 0);
 					for (int i = 0; i < c->values[x].otherBody->massPointsN; i++)
@@ -104,14 +130,14 @@ void SoftbodyJoint_System::Update(Registry* reg, double* deltaTime)
 					{
 						reg->softbodies[e].massPoints[i].force += forceB;
 					}
-					for (int i = 0; i < c->values[x].moveBodyAnchorPoints.size(); i++)
-					{
-						c->values[x].moveBodyAnchorPoints[i]->force += forceA;
-					}
-
 					for (int i = 0; i < c->values[x].otherBodyAnchorPoints.size(); i++)
 					{
-						c->values[x].otherBodyAnchorPoints[i]->force += forceB;
+						c->values[x].otherBodyAnchorPoints[i]->force += forceA;
+					}
+
+					for (int i = 0; i < c->values[x].thisBodyAnchorPoints.size(); i++)
+					{
+						c->values[x].thisBodyAnchorPoints[i]->force += forceB;
 					}
 
 				}

@@ -12,9 +12,10 @@ struct SoftbodyJoint_Values
 {
 	JointType tp;
 	class Softbody_Component* otherBody;
+	Vector2D offsetFromStaticBody;
 
-	std::vector<class MassPoint*> moveBodyAnchorPoints;
 	std::vector<class MassPoint*> otherBodyAnchorPoints;
+	std::vector<class MassPoint*> thisBodyAnchorPoints;
 	Vector2D springVel = Vector2D(0, 0);
 };
 

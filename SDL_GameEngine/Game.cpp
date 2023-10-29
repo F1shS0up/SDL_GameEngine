@@ -100,40 +100,44 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(1800, 900), 1, 3}, MassPoint{Vector2D(1800, 1000), 1, 3},
 			MassPoint{Vector2D(1700, 1000), 1, 3}, MassPoint{Vector2D(1600, 1000), 1, 3},MassPoint{Vector2D(1500, 1000), 1, 3}, MassPoint{Vector2D(1400, 1000), 1, 3},
 			MassPoint{Vector2D(1400, 900), 1, 3}*/
-			MassPoint{Vector2D(1300, 750), 1, 2},MassPoint{Vector2D(1400, 750), 1, 2}, MassPoint{Vector2D(1400, 680), 1, 2}, MassPoint{Vector2D(1550, 680), 1, 2}, MassPoint{Vector2D(1575, 750), 1, 2}, MassPoint{Vector2D(1700, 750), 1, 2}, MassPoint{Vector2D(1720, 800), 1, 2},
-			MassPoint{Vector2D(1720, 820), 1, 2}, MassPoint{Vector2D(1700, 840), 1, 2},  MassPoint{Vector2D(1650, 840), 1, 2}, MassPoint{Vector2D(1540, 840), 1, 2}, MassPoint{Vector2D(1450, 840), 1, 2},  MassPoint{Vector2D(1350, 840), 1, 2}, MassPoint{Vector2D(1300, 840), 1, 2}
+			MassPoint{Vector2D(1300, 750), 1, 1},MassPoint{Vector2D(1400, 750), 1, 1}, MassPoint{Vector2D(1400, 680), 1, 1}, MassPoint{Vector2D(1550, 680), 1, 1}, MassPoint{Vector2D(1575, 750), 1, 1}, MassPoint{Vector2D(1700, 750), 1, 1}, MassPoint{Vector2D(1720, 800), 1, 1},
+			MassPoint{Vector2D(1720, 820), 1, 1}, MassPoint{Vector2D(1700, 840), 1, 1},  MassPoint{Vector2D(1670, 840), 1, 1}, MassPoint{Vector2D(1540, 840), 1, 1}, MassPoint{Vector2D(1450, 840), 1, 1},  MassPoint{Vector2D(1350, 840), 1, 1}, MassPoint{Vector2D(1300, 840), 1, 1}
 		},
-		{ },gravity, dragCoeficient, 250, .5, true, true, 300, 0.8f, 60, 0, B, C, SDL_Color{255, 195, 132, 255}};
+		{ },gravity, dragCoeficient, 300, .5, true, true, false, 300, 0.5f, 0, 60, 0, B, C, SDL_Color{255, 195, 132, 255}};
+	Registry::Instance()->transforms[carBody] = Transform_Component{ Vector2D(0, 0) };
+	Registry::Instance()->cameras[carBody] = Camera_Component{ w, h, 100, 200,Vector2D(0, 0) };
+	cam = &Registry::Instance()->cameras[carBody];
+
 
 	Entity wheel1 = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[wheel1] = Softbody_Component{ 12,
 		{
-			MassPoint{Vector2D(1000, 1000), 1, 2}, MassPoint{Vector2D(1033, 983), 1, 2}, MassPoint{Vector2D(1066, 983), 1, 2},
-			MassPoint{Vector2D(1100, 1000), 1, 2}, MassPoint{Vector2D(1116, 1033), 1, 2}, MassPoint{Vector2D(1116, 1066), 1, 2},
-			MassPoint{Vector2D(1100, 1100), 1, 2}, MassPoint{Vector2D(1066, 1116), 1, 2}, MassPoint{Vector2D(1033, 1116), 1, 2},
-			MassPoint{Vector2D(1000, 1100), 1, 2}, MassPoint{Vector2D(983, 1066), 1, 2}, MassPoint{Vector2D(983, 1033), 1, 2}
+			MassPoint{Vector2D(1000, 1000), 1, 3}, MassPoint{Vector2D(1033, 983), 1, 3}, MassPoint{Vector2D(1066, 983), 1, 3},
+			MassPoint{Vector2D(1100, 1000), 1, 3}, MassPoint{Vector2D(1116, 1033), 1, 3}, MassPoint{Vector2D(1116, 1066), 1, 3},
+			MassPoint{Vector2D(1100, 1100), 1, 3}, MassPoint{Vector2D(1066, 1116), 1, 3}, MassPoint{Vector2D(1033, 1116), 1, 3},
+			MassPoint{Vector2D(1000, 1100), 1, 3}, MassPoint{Vector2D(983, 1066), 1, 3}, MassPoint{Vector2D(983, 1033), 1, 3}
 		},
-		{ },gravity, dragCoeficient, 700, .75, true, true, 5000, 0.5f, 60, 1, C, B, SDL_Color{40, 40, 40, 255}};
+		{ },gravity, dragCoeficient, 5000, .75, true, false, true, 700, 1, 8000, 60, 1, C, B, SDL_Color{40, 40, 40, 255} };
 
 	Entity wheel2 = EntityManager::Instance()->CreateEntity();
 	Registry::Instance()->softbodies[wheel2] = Softbody_Component{ 12,
 		{
-			MassPoint{Vector2D(2000, 1000), 1, 2}, MassPoint{Vector2D(2033, 983), 1, 2}, MassPoint{Vector2D(2066, 983), 1, 2},
-			MassPoint{Vector2D(2100, 1000), 1, 2}, MassPoint{Vector2D(2116, 1033), 1, 2}, MassPoint{Vector2D(2116, 1066), 1, 2},
-			MassPoint{Vector2D(2100, 1100), 1, 2}, MassPoint{Vector2D(2066, 1116), 1, 2}, MassPoint{Vector2D(2033, 1116), 1, 2},
-			MassPoint{Vector2D(2000, 1100), 1, 2}, MassPoint{Vector2D(1983, 1066), 1, 2}, MassPoint{Vector2D(1983, 1033), 1, 2}
+			MassPoint{Vector2D(2000, 1000), 1, 3}, MassPoint{Vector2D(2033, 983), 1, 3}, MassPoint{Vector2D(2066, 983), 1, 3},
+			MassPoint{Vector2D(2100, 1000), 1, 3}, MassPoint{Vector2D(2116, 1033), 1, 3}, MassPoint{Vector2D(2116, 1066), 1, 3},
+			MassPoint{Vector2D(2100, 1100), 1, 3}, MassPoint{Vector2D(2066, 1116), 1, 3}, MassPoint{Vector2D(2033, 1116), 1, 3},
+			MassPoint{Vector2D(2000, 1100), 1, 3}, MassPoint{Vector2D(1983, 1066), 1, 3}, MassPoint{Vector2D(1983, 1033), 1, 3}
 		},
-		{ },gravity, dragCoeficient, 700, .75, true, true, 5000, 0.5f, 60, 1, C, B, SDL_Color{40, 40, 40, 255} };
+		{ },gravity, dragCoeficient, 5000, .75, true, false, true, 700, 1, 8000, 60, 1, C, B, SDL_Color{40, 40, 40, 255} };
 	
-	Registry::Instance()->softbodyRotatingMovements[wheel1] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel1],  new double(8000) };
-	Registry::Instance()->softbodyRotatingMovements[wheel2] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel2],  new double(8000) };
+	Registry::Instance()->softbodyRotatingMovements[wheel1] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel1],  new double(9000) };
+	Registry::Instance()->softbodyRotatingMovements[wheel2] = SoftbodyRotatingMovement_Component{ &Registry::Instance()->softbodies[wheel2],  new double(9000) };
 
 	
 	
 
 
-	Registry::Instance()->softbodyJoints[carBody] = SoftbodyJoint_Component{ {SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel1], {}, {&Registry::Instance()->softbodies[carBody].massPoints[12]}},
-	SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel2], {}, {&Registry::Instance()->softbodies[carBody].massPoints[9]}}} };
+	Registry::Instance()->softbodyJoints[carBody] = SoftbodyJoint_Component{ {SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel1], Vector2D(0, 30), {}, {&Registry::Instance()->softbodies[carBody].massPoints[12]}},
+	SoftbodyJoint_Values{SpringJoint, &Registry::Instance()->softbodies[wheel2], Vector2D(0, 30), {}, {&Registry::Instance()->softbodies[carBody].massPoints[9]}}} };
 
 
 
@@ -148,7 +152,7 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 			MassPoint{Vector2D(920, 1880), 1, 1, true}
 		},
 		{ },
-		gravity, dragCoeficient, 1000, 1, true, false, 4000, 0.8f, 60, 0.5, A, Layers(), SDL_Color{135, 168, 137, 255}};
+		gravity, dragCoeficient, 2000, 40, false, true, false, 6000, 0.8f, 60, 0.5, 0, A, Layers(), SDL_Color{135, 168, 137, 255}};
 
 
 
@@ -285,15 +289,6 @@ void Game::Update(double* deltaTime)
 	Registry::Instance()->StartUpdate(deltaTime, this);
 	Registry::Instance()->Update(deltaTime, this);
 
-	lastCameraPos = cameraPos;
-
-	Vector2D newCameraPos = lastCameraPos;
-
-	newCameraPos.x = Registry::Instance()->softbodies[carBody].averagePosition.x - w / 2;
-	cameraPos.x = lastCameraPos.x + (newCameraPos.x - lastCameraPos.x) / 100;
-
-	cameraRect = SDL_Rect{ (int)cameraPos.x, (int)cameraPos.y, w, h };
-
 	if (InputManager::Instance()->MouseButtonPressed(InputManager::right))
 	{
 		x = 0;
@@ -337,7 +332,7 @@ void Game::Render()
 
 	SDL_RenderSetScale(renderer, 1, 1);
 
-	Registry::Instance()->Draw(renderer, &cameraRect);
+	Registry::Instance()->Draw(renderer, &cam->resultRect);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderPresent(renderer);
 }

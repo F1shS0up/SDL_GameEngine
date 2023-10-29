@@ -81,6 +81,9 @@
     <ClCompile Include="SoftbodyJoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Layers.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

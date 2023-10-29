@@ -64,7 +64,50 @@ void SoftbodyRotatingMovement_System::Update(Registry* reg, double* deltaTime)
 			SoftbodyRotatingMovement_Component* c = &reg->softbodyRotatingMovements[e];
 			if (InputManager::Instance()->KeyDown(SDL_SCANCODE_RIGHT))
 			{
-				UpdateDirection(c, 1);
+				float biggestX = -1000000;
+				int index = 0;
+				int rot = 1;
+				for (int i = 0; i < c->softbody->massPointsN; i++)
+				{
+					if (c->softbody->massPoints[i].position.x > biggestX)
+					{
+						biggestX = c->softbody->massPoints[i].position.x;
+						index = i;
+
+						int nextIndex = 0;
+						if (i == c->softbody->massPointsN - 1)
+						{
+							nextIndex = 0;
+						}
+						else
+						{
+							nextIndex = i + 1;
+						}
+
+						int beforeIndex = 0;
+						if (i == 0)
+						{
+							beforeIndex = c->softbody->massPointsN - 1;
+						}
+						else
+						{
+							beforeIndex = i - 1;
+						}
+
+						Vector2D dir = (c->softbody->massPoints[nextIndex].position - c->softbody->massPoints[i].position).normalize();
+						if (dir.y > 0)
+						{
+							rot = 1;
+						}
+						else if (dir.y < 0)
+						{
+							rot = -1;
+						}
+					}
+				}
+
+
+				UpdateDirection(c, rot);
 				for (int i = 0; i < c->softbody->massPointsN; i++)
 				{
 					MassPoint* m = &c->softbody->massPoints[i];
@@ -73,7 +116,49 @@ void SoftbodyRotatingMovement_System::Update(Registry* reg, double* deltaTime)
 			}
 			else if (InputManager::Instance()->KeyDown(SDL_SCANCODE_LEFT))
 			{
-				UpdateDirection(c, -1);
+				float biggestX = -1000000;
+				int index = 0;
+				int rot = 1;
+				for (int i = 0; i < c->softbody->massPointsN; i++)
+				{
+					if (c->softbody->massPoints[i].position.x > biggestX)
+					{
+						biggestX = c->softbody->massPoints[i].position.x;
+						index = i;
+
+						int nextIndex = 0;
+						if (i == c->softbody->massPointsN - 1)
+						{
+							nextIndex = 0;
+						}
+						else
+						{
+							nextIndex = i + 1;
+						}
+
+						int beforeIndex = 0;
+						if (i == 0)
+						{
+							beforeIndex = c->softbody->massPointsN - 1;
+						}
+						else
+						{
+							beforeIndex = i - 1;
+						}
+
+						Vector2D dir = (c->softbody->massPoints[nextIndex].position - c->softbody->massPoints[i].position).normalize();
+						if (dir.y > 0)
+						{
+							rot = -1;
+						}
+						else if(dir.y < 0)
+						{
+							rot = 1;
+						}
+					}
+				}
+
+				UpdateDirection(c, rot);
 				for (int i = 0; i < c->softbody->massPointsN; i++)
 				{
 					MassPoint* m = &c->softbody->massPoints[i];
