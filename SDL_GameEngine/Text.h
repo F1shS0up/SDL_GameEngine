@@ -18,6 +18,6 @@ class Text_System
 public:
 	void LoadFont(SDL_Renderer* renderer, Text_Component* comp);
 	void SetText(Text_Component* component, char* message);
-	void Draw(class Registry* reg, SDL_Renderer* renderer);
+	void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 	void Init(class Registry* reg, SDL_Renderer* renderer);
 };

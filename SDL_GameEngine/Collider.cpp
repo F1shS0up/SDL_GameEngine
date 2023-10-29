@@ -46,7 +46,7 @@ void Collider_System::Init(Registry* reg)
 }
 
 #ifdef _DEBUG
-void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer)
+void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{

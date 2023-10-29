@@ -16,7 +16,7 @@ void TextBox_System::Init(Registry* reg, SDL_Renderer* renderer)
 	}
 }
 
-void TextBox_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void TextBox_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{

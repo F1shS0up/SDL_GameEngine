@@ -399,8 +399,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 					}
 				}
 
-				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x;
-				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y;
+				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x - game->cameraRect.x;
+				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y - game->cameraRect.y;
 			}
 
 #pragma endregion
@@ -466,7 +466,7 @@ void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P,
 	A->ApplyForce(force);
 }
 
-void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 
 
@@ -495,7 +495,7 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
 				{
 					nextIndex = p + 1;
 				}
-				thickLineRGBA(renderer, reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y, reg->softbodies[e].massPoints[nextIndex].position.x, reg->softbodies[e].massPoints[nextIndex].position.y, 10, 0, 0, 0, 255);
+				thickLineRGBA(renderer, reg->softbodies[e].x[p], reg->softbodies[e].y[p], reg->softbodies[e].x[nextIndex], reg->softbodies[e].y[nextIndex], 10, 0, 0, 0, 255);
 			}
 
 			//if (reg->softbodies[e].hardShapeMatching)

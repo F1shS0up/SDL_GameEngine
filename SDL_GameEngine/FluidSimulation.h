@@ -30,5 +30,5 @@ public:
 	double CalculateDensity(Vector2D samplePoint);
 	Vector2D CalculatePressureForce(int index);
 	double ConvertDensityToPressure(double density);
-	void Draw(SDL_Renderer* renderer);
+	void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 };

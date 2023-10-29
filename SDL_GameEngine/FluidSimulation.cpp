@@ -147,13 +147,13 @@ double FluidSimulation_System::ConvertDensityToPressure(double density)
 	return pressure;
 }
 
-void FluidSimulation_System::Draw(SDL_Renderer* renderer)
+void FluidSimulation_System::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 	if (fluid)
 	{
 		for (int i = 0; i < fluid->particleCount; i++)
 		{
-			filledCircleRGBA(renderer, fluid->positions[i].x, fluid->positions[i].y, fluid->particleRadius, 255, 255, 255, 1 );
+			filledCircleRGBA(renderer, fluid->positions[i].x - cameraRect->x, fluid->positions[i].y - cameraRect->y, fluid->particleRadius, 255, 255, 255, 1 );
 		}
 	}
 }

@@ -38,7 +38,7 @@ void TiledSprite_System::Init(Registry* reg, SDL_Renderer* renderer)
 	}
 }
 
-void TiledSprite_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void TiledSprite_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
@@ -46,7 +46,7 @@ void TiledSprite_System::Draw(Registry* reg, SDL_Renderer* renderer)
 		{
 			if (reg->transforms.count(e))
 			{
-				SDL_RenderCopy(renderer, reg->tiledSprites[e].texture, nullptr, new SDL_Rect{ (int)reg->transforms[e].position.x, (int)reg->transforms[e].position.y, reg->tiledSprites[e].width, reg->tiledSprites[e].height });
+				SDL_RenderCopy(renderer, reg->tiledSprites[e].texture, nullptr, new SDL_Rect{ (int)(reg->transforms[e].position.x - (reg->tiledSprites[e].moveWithCamera ? cameraRect->x : 0)), (int)(reg->transforms[e].position.y - (reg->tiledSprites[e].moveWithCamera ? cameraRect->y : 0)), reg->tiledSprites[e].width, reg->tiledSprites[e].height});
 			}
 		}
 	}

@@ -26,7 +26,7 @@ void Text_System::SetText(Text_Component* component, char* message)
 	component->message = message;
 }
 
-void Text_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void Text_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{

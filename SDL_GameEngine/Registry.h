@@ -63,7 +63,7 @@ public:
 	void Init(SDL_Renderer* renderer);
 	void StartUpdate(double* deltaTime, class Game* game);
 	void Update(double* deltaTime, class Game* game);
-	void Draw(SDL_Renderer* renderer);
+	void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 
 private:
 

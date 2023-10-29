@@ -6,8 +6,8 @@
 #include <SDL_image.h>
 #include <chrono>
 
-const int WND_WIDTH = 1920, WND_HEIGHT = 1080;
-const int REN_WIDTH = 1920, REN_HEIGHT = 1080;
+const int WND_WIDTH = 3840, WND_HEIGHT = 2160;
+const int REN_WIDTH = 3840, REN_HEIGHT = 2160;
 const int MAX_FPS = 0;
 
 Game* game = nullptr;

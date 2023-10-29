@@ -48,16 +48,16 @@ void Registry::Update(double* deltaTime, Game* game)
 	buttonSystem.Update(this, deltaTime, game);
 }
 
-void Registry::Draw(SDL_Renderer* renderer)
+void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
-	tiledSpriteSystem.Draw(this, renderer);
-	fluidSimulationSystem.Draw(renderer);
-	textSystem.Draw(this, renderer);
-	textBoxSystem.Draw(this, renderer);
+	tiledSpriteSystem.Draw(this, renderer, cameraRect);
+	fluidSimulationSystem.Draw(renderer, cameraRect);
+	textSystem.Draw(this, renderer, cameraRect);
+	textBoxSystem.Draw(this, renderer, cameraRect);
 #ifdef _DEBUG
-	rigidbodySystem.Draw(this, renderer);
-	colliderSystem.Draw(this, renderer);
+	rigidbodySystem.Draw(this, renderer, cameraRect);
+	colliderSystem.Draw(this, renderer, cameraRect);
 #endif // _DEBUG
-	softbodySystem.Draw(this, renderer);
-	shapeSystem.Draw(this, renderer);
+	softbodySystem.Draw(this, renderer, cameraRect);
+	shapeSystem.Draw(this, renderer, cameraRect);
 }

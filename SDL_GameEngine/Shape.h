@@ -21,5 +21,5 @@ class Shape_System
 {
 public:
 	void Init(class Registry* reg);
-	void Draw(class Registry* reg, SDL_Renderer* renderer);
+	void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 };

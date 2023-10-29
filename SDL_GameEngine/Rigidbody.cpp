@@ -39,7 +39,7 @@ void Rigidbody_System::Init(Registry* reg)
 	}
 }
 #ifdef _DEBUG
-void Rigidbody_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void Rigidbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 {
 }
 #endif

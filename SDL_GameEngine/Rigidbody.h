@@ -26,7 +26,7 @@ class Rigidbody_System
 public:
 	void Init(class Registry* reg);
 #ifdef  _DEBUG
-	void Draw(class Registry* reg, SDL_Renderer* renderer);
+	void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 #endif //  _DEBUG
 
 	Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);

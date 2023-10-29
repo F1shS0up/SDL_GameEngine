@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "InputManager.h"
 #include <string>
+#include "Vector2D.h"
 
 class Game
 {
@@ -25,6 +26,12 @@ public:
 	std::string* activeTextInput;
 
 	SDL_Renderer* renderer;
+
+	Vector2D cameraPos = Vector2D(0, 0);
+	SDL_Rect cameraRect;
+	Vector2D lastCameraPos = Vector2D(0, 0);;
+
+	int w, h;
 
 	const int rectangleLineThickness = 10;
 	const SDL_Color backroundColor = SDL_Color{ 214, 206, 194, 255 };
