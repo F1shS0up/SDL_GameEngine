@@ -72,6 +72,7 @@ void Softbody_System::Init(Registry* reg)
 					reg->softbodies[e].springsForFrame.push_back(Spring{ p, p, reg->softbodies[e].shapeMatchingStiffness, 0, reg->softbodies[e].shapeMatchingDampingFactor });
 				}
 			}
+			if (reg->transforms.count(e))reg->transforms[e].position = reg->softbodies[e].averagePosition;
 			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
 			{
 				reg->softbodies[e].springs[s].springVelA = Vector2D(0, 0);
@@ -220,7 +221,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 							if (!(reg->softbodies[e2].ignoreLayers & reg->softbodies[e].layer) && !(reg->softbodies[e].ignoreLayers & reg->softbodies[e2].layer))
 							{
 
-								int intersectionCount = 0;
+								int intersectionCountX = 0;
+								int intersectionCountY = 0;
 								double currentDistanceFromClosest = 0;
 								Vector2D closestPoint;
 								MassPoint* lineOne = nullptr;
@@ -255,11 +257,14 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 
 									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(1000000, 0), *X + reg->softbodies[e2].massPoints[i].velocity * *deltaTime, *Y + reg->softbodies[e2].massPoints[nextIndex].velocity * *deltaTime))
 									{
-										intersectionCount++;
-
+										intersectionCountX++;
+									}
+									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(0, 1000000), *X + reg->softbodies[e2].massPoints[i].velocity * *deltaTime, *Y + reg->softbodies[e2].massPoints[nextIndex].velocity * *deltaTime))
+									{
+										intersectionCountY++;
 									}
 								}
-								if (intersectionCount % 2 != 0)
+								if (intersectionCountX % 2 != 0 && intersectionCountY % 2 != 0)
 								{
 									Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
 									Vector2D x2 = reg->softbodies[e].massPoints[p].position + reversedNormal;

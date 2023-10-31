@@ -15,6 +15,7 @@
 #include "SoftbodyRotatorMovement.h"
 #include "SoftbodyJoint.h"
 #include "Camera.h"
+#include "RandomSoftbodyGenerator.h".h"
 
 using Entity = std::size_t;
 
@@ -42,6 +43,7 @@ public:
 	std::unordered_map<Entity, SoftbodyRotatingMovement_Component> softbodyRotatingMovements;
 	std::unordered_map<Entity, SoftbodyJoint_Component> softbodyJoints;
 	std::unordered_map<Entity, Camera_Component> cameras;
+	std::unordered_map<Entity, RandomSoftbodyGenerator_Component> randomSoftbodyGenerators;
 
 #pragma endregion
 
@@ -60,6 +62,7 @@ public:
 	SoftbodyRotatingMovement_System softbodyRotatingMovementSystem;
 	SoftbodyJoint_System softbodyJointSystem;
 	Camera_System camSystem;
+	RandomSoftbodyGenerator_System randomSoftbodyGeneratorSystem;
 
 #pragma endregion
 

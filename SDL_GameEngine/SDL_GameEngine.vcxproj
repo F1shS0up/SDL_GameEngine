@@ -151,6 +151,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RandomSoftbodyGenerator.cpp" />
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="SDL2_gfxPrimitives.c" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Layers.h" />
+    <ClInclude Include="RandomSoftbodyGenerator.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="SDL2_gfxPrimitives.h" />

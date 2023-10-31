@@ -144,11 +144,11 @@ void Game::Init(const char* title, SDL_Rect windowSize, int renderWidth, int ren
 
 	
 	Entity ground = EntityManager::Instance()->CreateEntity();
-	Registry::Instance()->softbodies[ground] = Softbody_Component{ 13,
+	Registry::Instance()->softbodies[ground] = Softbody_Component{ 4,
 		{
-			MassPoint{Vector2D(920, 1600), 1, 1, true}, MassPoint{Vector2D(1320, 1500), 1, 1}, MassPoint{Vector2D(1720, 1400), 1, 1}, MassPoint{Vector2D(2120, 1300), 1, 1}, MassPoint{Vector2D(2520, 1200), 1, 1},
-			MassPoint{Vector2D(2920, 1100), 1, 1, true}, MassPoint{Vector2D(3200, 1100), 1, 1}, MassPoint{Vector2D(3500, 1100), 1, 1}, MassPoint{Vector2D(3750, 1100), 1, 1}, MassPoint{Vector2D(4000, 1100), 1, 1, true}, MassPoint{Vector2D(4000, 1380), 1, 1, true},
-			MassPoint{Vector2D(2920, 1380), 1, 1, true},
+			MassPoint{Vector2D(920, 1600), 1, 1, true}, /*MassPoint{Vector2D(1320, 1500), 1, 1}, MassPoint{Vector2D(1720, 1400), 1, 1}, MassPoint{Vector2D(2120, 1300), 1, 1}, MassPoint{Vector2D(2520, 1200), 1, 1},*/
+			MassPoint{Vector2D(5020, 1100), 1, 1, true}, /*MassPoint{Vector2D(3200, 1100), 1, 1}, MassPoint{Vector2D(3500, 1100), 1, 1}, MassPoint{Vector2D(3750, 1100), 1, 1}, MassPoint{Vector2D(4000, 1100), 1, 1, true}, MassPoint{Vector2D(4000, 1380), 1, 1, true},*/
+			MassPoint{Vector2D(5020, 1380), 1, 1, true},
 			MassPoint{Vector2D(920, 1880), 1, 1, true}
 		},
 		{ },
@@ -299,7 +299,7 @@ void Game::Update(double* deltaTime)
 			{
 				for (int i = 0; i < Registry::Instance()->softbodies[y].massPoints.size(); i++)
 				{
-					Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[y].massPoints[i].position.x - InputManager::Instance()->MousePos().x, Registry::Instance()->softbodies[y].massPoints[i].position.y - InputManager::Instance()->MousePos().y);
+					Vector2D dirVec = Vector2D(Registry::Instance()->softbodies[y].massPoints[i].position.x - InputManager::Instance()->MousePos().x - cam->resultRect.x, Registry::Instance()->softbodies[y].massPoints[i].position.y - InputManager::Instance()->MousePos().y - cam->resultRect.y);
 					double currentDist = dirVec.x * dirVec.x + dirVec.y * dirVec.y;
 					if (dist > currentDist)
 					{
@@ -316,7 +316,7 @@ void Game::Update(double* deltaTime)
 	else if (InputManager::Instance()->MouseButtonDown(InputManager::right))
 	{
 		
-		Registry::Instance()->softbodies[x].massPoints[massPointI].position = Vector2D(InputManager::Instance()->MousePos().x, InputManager::Instance()->MousePos().y);
+		Registry::Instance()->softbodies[x].massPoints[massPointI].position = Vector2D(InputManager::Instance()->MousePos().x + cam->resultRect.x, InputManager::Instance()->MousePos().y + cam->resultRect.y);
 	}
 	else if (InputManager::Instance()->MouseButtonReleased(InputManager::right))
 	{

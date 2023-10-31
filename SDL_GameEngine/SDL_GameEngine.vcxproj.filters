@@ -84,6 +84,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="RandomSoftbodyGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomSoftbodyGenerator.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

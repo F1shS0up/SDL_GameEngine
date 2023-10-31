@@ -14,6 +14,7 @@ Registry* Registry::Instance()
 
 void Registry::Init(SDL_Renderer* renderer)
 {
+	randomSoftbodyGeneratorSystem.Init(this);
 	fluidSimulationSystem.Init(this);
 	rigidbodySystem.Init(this);
 	shapeSystem.Init(this);
