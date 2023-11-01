@@ -35,6 +35,20 @@ void Softbody_System::Init(Registry* reg)
 	{
 		if (reg->softbodies.count(e))
 		{
+			for (int i = 0; i < reg->softbodies[e].massPoints.size(); i++)
+			{
+				Sint16 x = 32768 + reg->softbodies[e].x[i];
+				Sint16 y = 32768 + reg->softbodies[e].y[i];
+				int xIndex = std::floor(x / 512);
+				int yIndex = std::floor(x / 512);
+				grid128x128[yIndex][xIndex].push_back(&reg->softbodies[e]);
+			}
+		}
+	}
+	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
+	{
+		if (reg->softbodies.count(e))
+		{
 			reg->softbodies[e].x = new Sint16[reg->softbodies[e].massPointsN];
 			reg->softbodies[e].y = new Sint16[reg->softbodies[e].massPointsN];
 
@@ -84,6 +98,14 @@ void Softbody_System::Init(Registry* reg)
 
 void Softbody_System::StartUpdate(Registry* reg)
 {
+	for (int y = 0; y < 128; y++)
+	{
+		for (int x = 0; x < 128; x++)
+		{
+			grid128x128[y][x].clear();
+		}
+	}
+	
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
@@ -91,6 +113,13 @@ void Softbody_System::StartUpdate(Registry* reg)
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
 				reg->softbodies[e].massPoints[p].force = Vector2D(0, 0);
+				Sint16 x = 32768 + reg->softbodies[e].x[p];
+				Sint16 y = 32768 + reg->softbodies[e].y[p];
+				int xIndex = std::floor(x / 512);
+				int yIndex = std::floor(x / 512);
+				grid128x128[yIndex][xIndex].push_back(&reg->softbodies[e]);
+				reg->softbodies[e].massPoints[p].xGrid = xIndex;
+				reg->softbodies[e].massPoints[p].yGrid = yIndex;
 			}
 		}
 	}
@@ -144,7 +173,7 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 
 					SDL_Point A = { reg->softbodies[e].massPoints[p].position.x, reg->softbodies[e].massPoints[p].position.y };
 
-					for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
+					for (int e2 = 0; e2 <= EntityManager::Instance()->num_entities; e2++)
 					{
 
 						if (reg->AABBColliders.count(e2) && reg->rigidbodies.count(e2))
@@ -196,6 +225,7 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 											//Top
 											reg->softbodies[e].massPoints[p].position.y = min.y;
 									}
+
 									else
 									{
 										if (xLeft < yDown)
@@ -255,17 +285,19 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 										lineTwo = &reg->softbodies[e2].massPoints[nextIndex];
 									}
 
-									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(1000000, 0), *X + reg->softbodies[e2].massPoints[i].velocity * *deltaTime, *Y + reg->softbodies[e2].massPoints[nextIndex].velocity * *deltaTime))
+									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position, reg->softbodies[e].massPoints[p].position + Vector2D(1000000, 0), *X, *Y))
 									{
 										intersectionCountX++;
 									}
-									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime, reg->softbodies[e].massPoints[p].position + reg->softbodies[e].massPoints[p].velocity * *deltaTime + Vector2D(0, 1000000), *X + reg->softbodies[e2].massPoints[i].velocity * *deltaTime, *Y + reg->softbodies[e2].massPoints[nextIndex].velocity * *deltaTime))
+									if (ColliderFunctions::LineLineIntersection(reg->softbodies[e].massPoints[p].position, reg->softbodies[e].massPoints[p].position + Vector2D(0, 1000000), *X, *Y))
 									{
 										intersectionCountY++;
 									}
+									
 								}
 								if (intersectionCountX % 2 != 0 && intersectionCountY % 2 != 0)
 								{
+
 									Vector2D reversedNormal = ((closestPoint - reg->softbodies[e].massPoints[p].position) * -1).normalize();
 									Vector2D x2 = reg->softbodies[e].massPoints[p].position + reversedNormal;
 									Vector2D v2 = (lineOne->velocity + lineTwo->velocity) / 2;
@@ -281,9 +313,9 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 									Vector2D norm2 = reversedNormal * newV2.length();
 									Vector2D dif2 = norm2 - newV2;
 									
-									if (!reg->softbodies[e].massPoints[p].isStatic)reg->softbodies[e].massPoints[p].velocity = newV1 + dif * averageFriction;
-									if (!lineOne->isStatic)lineOne->velocity = newV2 + dif2 * averageFriction;
-									if (!lineTwo->isStatic)lineTwo->velocity = newV2 + dif2 * averageFriction;
+									if (!reg->softbodies[e].massPoints[p].isStatic)reg->softbodies[e].massPoints[p].velocity = (newV1 + dif * averageFriction) * reg->softbodies[e].bounciness;
+									if (!lineOne->isStatic)lineOne->velocity = (newV2 + dif2 * averageFriction) * reg->softbodies[e2].bounciness;
+									if (!lineTwo->isStatic)lineTwo->velocity = (newV2 + dif2 * averageFriction) * reg->softbodies[e2].bounciness;
 
 									if (!lineOne->isStatic && !lineTwo->isStatic)
 									{

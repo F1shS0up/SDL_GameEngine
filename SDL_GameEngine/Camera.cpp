@@ -4,7 +4,7 @@
 
 void Camera_System::Init(Registry* reg)
 {
-	for (int e = 1; e < EntityManager::Instance()->num_entities; e++)
+	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->cameras.count(e) && reg->transforms.count(e))
 		{
@@ -21,7 +21,7 @@ void Camera_System::Init(Registry* reg)
 
 void Camera_System::Update(Registry* reg, double* deltaTime)
 {
-	for (int e = 1; e < EntityManager::Instance()->num_entities; e++)
+	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->cameras.count(e) && reg->transforms.count(e))
 		{

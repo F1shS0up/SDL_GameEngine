@@ -10,6 +10,9 @@ struct MassPoint
 	double mass = 1;
 	double gravityMultiplayer = 1;
 	bool isStatic = false;
+	int xGrid;
+	int yGrid;
+	int gridVectorIndex;
 
 	void Lock() { isStatic = true; }
 	void Unlock() { isStatic = false; }
@@ -52,6 +55,7 @@ struct Softbody_Component
 	double shapeMatchingGasAmount;
 	double outlineThickness = 0;
 	double friction;
+	double bounciness;
 	Layers layer;
 	Layers ignoreLayers;
 	SDL_Color color;
@@ -69,6 +73,8 @@ struct Softbody_Component
 
 class Softbody_System
 {
+	std::vector<Softbody_Component*> grid128x128[128][128];
+
 public:
 	void Init(class Registry* reg);
 	void StartUpdate(class Registry* reg);

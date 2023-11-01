@@ -15,8 +15,8 @@ struct RandomSoftbodyGenerator_Component
 	int amountOfPointsDividedByTwo;
 	Vector2D pointNO1Pos;
 
-	int minX, maxX;
-	int minY, maxY;
+	Sint16 minX, maxX;
+	Sint16 minY, maxY;
 
 	bool arePointsStatic = false;
 

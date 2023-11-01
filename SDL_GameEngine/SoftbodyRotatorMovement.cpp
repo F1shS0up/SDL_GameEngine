@@ -5,7 +5,7 @@
 
 void SoftbodyRotatingMovement_System::Init(Registry* reg)
 {
-	for (int e = 1; e < EntityManager::Instance()->num_entities; e++)
+	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodyRotatingMovements.count(e))
 		{
@@ -57,7 +57,7 @@ void SoftbodyRotatingMovement_System::UpdateDirection(SoftbodyRotatingMovement_C
 
 void SoftbodyRotatingMovement_System::Update(Registry* reg, double* deltaTime)
 {
-	for (int e = 1; e < EntityManager::Instance()->num_entities; e++)
+	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodyRotatingMovements.count(e))
 		{
