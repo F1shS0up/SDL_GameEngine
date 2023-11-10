@@ -29,15 +29,11 @@ public:
 
 	class Camera_Component* cam;
 
-	int w, h;
-
-	const int rectangleLineThickness = 10;
-	const SDL_Color backroundColor = SDL_Color{ 214, 206, 194, 255 };
-	const SDL_Rect rect = { 920 / rectangleLineThickness, 80 / rectangleLineThickness , 2000 / rectangleLineThickness , 2000 / rectangleLineThickness };
 	double* gravity;
 	double* dragCoeficient;
+	double* camSize;
+
 	std::string assetPath = "";
-	bool stopSimulation = false;
 private:
 
 	bool isRunning;

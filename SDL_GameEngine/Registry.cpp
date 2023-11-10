@@ -12,9 +12,9 @@ Registry* Registry::Instance()
 	return instance;
 }
 
-void Registry::Init(SDL_Renderer* renderer)
+void Registry::Init(SDL_Renderer* renderer, const Game* game)
 {
-	randomSoftbodyGeneratorSystem.Init(this);
+	randomSoftbodyGeneratorSystem.Init(this, game);
 	fluidSimulationSystem.Init(this);
 	rigidbodySystem.Init(this);
 	shapeSystem.Init(this);
@@ -23,10 +23,10 @@ void Registry::Init(SDL_Renderer* renderer)
 	buttonSystem.Init(this, renderer);
 	textSystem.Init(this, renderer);
 	textBoxSystem.Init(this, renderer);
-	softbodySystem.Init(this);
+	softbodySystem.Init(this, game);
 	tiledSpriteSystem.Init(this, renderer);
 	softbodyRotatingMovementSystem.Init(this);
-	softbodyJointSystem.Init(this);
+	softbodyJointSystem.Init(this, game);
 	camSystem.Init(this);
 }
 
@@ -51,7 +51,7 @@ void Registry::Update(double* deltaTime, Game* game)
 	camSystem.Update(this, deltaTime);
 }
 
-void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)
 {
 	tiledSpriteSystem.Draw(this, renderer, cameraRect);
 	fluidSimulationSystem.Draw(renderer, cameraRect);
@@ -61,6 +61,6 @@ void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	rigidbodySystem.Draw(this, renderer, cameraRect);
 	colliderSystem.Draw(this, renderer, cameraRect);
 #endif // _DEBUG
-	softbodySystem.Draw(this, renderer, cameraRect);
+	softbodySystem.Draw(this, renderer, cameraRect, game);
 	shapeSystem.Draw(this, renderer, cameraRect);
 }

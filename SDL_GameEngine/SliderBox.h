@@ -12,7 +12,7 @@ struct SliderBox_Component
 	int fontSize;
 	SDL_Color color, boxColor, boxColorHovered, boxColorPressed;
 	SDL_Rect txtRect, boxRect;
-	bool onXAxis;
+	bool nextDivisionOnXAxis;
 	double value;
 	double coefficient;
 	double min, max;

@@ -66,10 +66,10 @@ public:
 
 #pragma endregion
 
-	void Init(SDL_Renderer* renderer);
+	void Init(SDL_Renderer* renderer, const Game* game);
 	void StartUpdate(double* deltaTime, class Game* game);
 	void Update(double* deltaTime, class Game* game);
-	void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+	void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game);
 
 private:
 

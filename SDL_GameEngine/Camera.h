@@ -8,6 +8,7 @@ struct Camera_Component
 	double dampingX;
 	double dampingY;
 	Vector2D offset;
+	double* size;
 
 	Vector2D lastPos;
 	Vector2D pos;

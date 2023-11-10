@@ -10,9 +10,6 @@ struct MassPoint
 	double mass = 1;
 	double gravityMultiplayer = 1;
 	bool isStatic = false;
-	int xGrid;
-	int yGrid;
-	int gridVectorIndex;
 
 	void Lock() { isStatic = true; }
 	void Unlock() { isStatic = false; }
@@ -73,14 +70,12 @@ struct Softbody_Component
 
 class Softbody_System
 {
-	std::vector<Softbody_Component*> grid128x128[128][128];
-
 public:
-	void Init(class Registry* reg);
+	void Init(class Registry* reg, const class Game* game);
 	void StartUpdate(class Registry* reg);
 	void Update(class Registry* reg, double* deltaTime, class Game* game);
 	void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
 	void CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition);
 	void ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal);
-	void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+	void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game);
 };

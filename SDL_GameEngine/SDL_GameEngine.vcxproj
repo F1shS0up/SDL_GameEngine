@@ -150,6 +150,7 @@
     <ClCompile Include="FluidSimulation.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RandomSoftbodyGenerator.cpp" />
     <ClCompile Include="Registry.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="FluidSimulation.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="KDTree.h" />
     <ClInclude Include="Layers.h" />
     <ClInclude Include="RandomSoftbodyGenerator.h" />
     <ClInclude Include="Registry.h" />

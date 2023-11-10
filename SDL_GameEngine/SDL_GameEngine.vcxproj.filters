@@ -87,6 +87,9 @@
     <ClCompile Include="RandomSoftbodyGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KDTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -166,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="RandomSoftbodyGenerator.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="KDTree.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

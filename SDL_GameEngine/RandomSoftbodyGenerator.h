@@ -26,5 +26,5 @@ struct RandomSoftbodyGenerator_Component
 class RandomSoftbodyGenerator_System
 {
 public:
-	void Init(class Registry* reg);
+	void Init(class Registry* reg, const Game* game);
 };

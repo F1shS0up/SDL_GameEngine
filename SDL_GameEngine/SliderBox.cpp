@@ -63,7 +63,7 @@ void SliderBox_System::Update(Registry* reg, double* deltaTime, Game* game)
 			if (c->pressedInside)
 			{
 				//Difference between the starting position when clicked on element and current mouse position
-				double difference = c->onXAxis ? InputManager::Instance()->MousePos().x - c->startPoint.x : InputManager::Instance()->MousePos().y - c->startPoint.y;
+				double difference = c->nextDivisionOnXAxis ? InputManager::Instance()->MousePos().x - c->startPoint.x : InputManager::Instance()->MousePos().y - c->startPoint.y;
 
 				c->value = std::clamp <double>(c->startValue + difference * c->coefficient, c->min, c->max);
 				c->txtComp->message = std::to_string(c->value);

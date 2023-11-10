@@ -22,35 +22,32 @@ void MassPoint::ApplyForce(Vector2D force)
 	{
 		//Use GetMass() and GetMoment() here in case we ever need them to do something more than just return their values
 		//Calculate the object's acceleration
-		
+
 		//Add acceleration to object's velocity
 		this->force += force;
 	}
 }
 
 
-void Softbody_System::Init(Registry* reg)
+void Softbody_System::Init(Registry* reg, const Game* game)
 {
-	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
-	{
-		if (reg->softbodies.count(e))
-		{
-			for (int i = 0; i < reg->softbodies[e].massPoints.size(); i++)
-			{
-				Sint16 x = 32768 + reg->softbodies[e].x[i];
-				Sint16 y = 32768 + reg->softbodies[e].y[i];
-				int xIndex = std::floor(x / 512);
-				int yIndex = std::floor(x / 512);
-				grid128x128[yIndex][xIndex].push_back(&reg->softbodies[e]);
-			}
-		}
-	}
+
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
 		{
 			reg->softbodies[e].x = new Sint16[reg->softbodies[e].massPointsN];
 			reg->softbodies[e].y = new Sint16[reg->softbodies[e].massPointsN];
+
+			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
+			{
+				if (game->softbodyScaleMultiplier != 1 && game->softbodyScaleMultiplier != 0)
+				{
+					reg->softbodies[e].massPoints[p].position.x = reg->softbodies[e].massPoints[p].position.x * game->softbodyScaleMultiplier + ((game->cam->w / game->softbodyScaleMultiplier - game->cam->w) / 2) * game->softbodyScaleMultiplier;
+					reg->softbodies[e].massPoints[p].position.y = reg->softbodies[e].massPoints[p].position.y * game->softbodyScaleMultiplier + ((game->cam->h / game->softbodyScaleMultiplier - game->cam->h) / 2) * game->softbodyScaleMultiplier;
+				}
+			}
+
 
 			if (reg->softbodies[e].hardShapeMatching)
 			{
@@ -72,6 +69,7 @@ void Softbody_System::Init(Registry* reg)
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
+
 				reg->softbodies[e].massPoints[p].velocity = Vector2D(0, 0);
 				if (reg->softbodies[e].hardShapeMatching)
 				{
@@ -85,6 +83,7 @@ void Softbody_System::Init(Registry* reg)
 					reg->softbodies[e].originalPositionsOfMassPoints.push_back(reg->softbodies[e].massPoints[p].position - reg->softbodies[e].averagePosition);
 					reg->softbodies[e].springsForFrame.push_back(Spring{ p, p, reg->softbodies[e].shapeMatchingStiffness, 0, reg->softbodies[e].shapeMatchingDampingFactor });
 				}
+				
 			}
 			if (reg->transforms.count(e))reg->transforms[e].position = reg->softbodies[e].averagePosition;
 			for (int s = 0; s < reg->softbodies[e].springs.size(); s++)
@@ -98,14 +97,6 @@ void Softbody_System::Init(Registry* reg)
 
 void Softbody_System::StartUpdate(Registry* reg)
 {
-	for (int y = 0; y < 128; y++)
-	{
-		for (int x = 0; x < 128; x++)
-		{
-			grid128x128[y][x].clear();
-		}
-	}
-	
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
 		if (reg->softbodies.count(e))
@@ -113,13 +104,6 @@ void Softbody_System::StartUpdate(Registry* reg)
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
 			{
 				reg->softbodies[e].massPoints[p].force = Vector2D(0, 0);
-				Sint16 x = 32768 + reg->softbodies[e].x[p];
-				Sint16 y = 32768 + reg->softbodies[e].y[p];
-				int xIndex = std::floor(x / 512);
-				int yIndex = std::floor(x / 512);
-				grid128x128[yIndex][xIndex].push_back(&reg->softbodies[e]);
-				reg->softbodies[e].massPoints[p].xGrid = xIndex;
-				reg->softbodies[e].massPoints[p].yGrid = yIndex;
 			}
 		}
 	}
@@ -138,6 +122,22 @@ inline double get_angle_2points(Vector2D p1, Vector2D p2)
 	return angleInRadians;
 }
 
+inline double areaOfPolygon(std::vector<MassPoint> points, int n)
+{
+	double area = 0.0;
+
+	// Calculate value of shoelace formula
+	int j = n - 1;
+	for (int i = 0; i < n; i++)
+	{
+		area += (points[j].position.x + points[i].position.x) * (points[j].position.y - points[i].position.y);
+		j = i;  // j is previous vertex to i
+	}
+
+	// Return absolute value
+	return abs(area / 2.0);
+}
+
 Vector2D closestPointX;
 void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 {
@@ -150,7 +150,7 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 				reg->softbodies[e].closestPoints.clear();
 				reg->softbodies[e].finalPositionsOfHardFrame.clear();
 
-				if (reg->transforms.count(e) || reg->softbodies[e].hardShapeMatching)
+				if (reg->transforms.count(e) || reg->softbodies[e].hardShapeMatching || reg->softbodies[e].gasShapeMatching)
 				{
 					reg->softbodies[e].averagePosition = Vector2D(0, 0); //Position of the hard frame
 					for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
@@ -412,8 +412,13 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 						}
 						Vector2D A = reg->softbodies[e].massPoints[beforeIndex].position;
 						Vector2D B = reg->softbodies[e].massPoints[nextIndex].position;
-						Vector2D normal = ColliderFunctions::ReflectionNormal(A, B, reg->softbodies[e].averagePosition) * -1;
-						reg->softbodies[e].massPoints[i].force += normal * reg->softbodies[e].shapeMatchingGasAmount;
+						Vector2D normal = ColliderFunctions::ReflectionNormal(A, B, reg->softbodies[e].averagePosition);
+
+						double area = areaOfPolygon(reg->softbodies[e].massPoints, reg->softbodies[e].massPointsN);
+						std::cout << "Pressure = " << area << std::endl;
+						float dist = (reg->softbodies[e].massPoints[i].position - reg->softbodies[e].averagePosition).length();
+						double p = dist * reg->softbodies[e].shapeMatchingGasAmount * (1.0f / area);
+						reg->softbodies[e].massPoints[i].force += normal * p;
 					}
 				}
 
@@ -442,7 +447,6 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 
 #pragma endregion
 			}
-
 #pragma region AddAllForcesTogetherWithDragForce
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
@@ -469,8 +473,8 @@ void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 					}
 				}
 
-				reg->softbodies[e].x[p] = reg->softbodies[e].massPoints[p].position.x - game->cam->resultRect.x;
-				reg->softbodies[e].y[p] = reg->softbodies[e].massPoints[p].position.y - game->cam->resultRect.y;
+				reg->softbodies[e].x[p] = (reg->softbodies[e].massPoints[p].position.x - game->cam->resultRect.x) / *game->cam->size + ((game->cam->w * *game->cam->size - game->cam->w) / 2) / *game->cam->size;
+				reg->softbodies[e].y[p] = (reg->softbodies[e].massPoints[p].position.y - game->cam->resultRect.y) / *game->cam->size + ((game->cam->h * *game->cam->size - game->cam->h) / 2) / *game->cam->size;
 			}
 
 #pragma endregion
@@ -488,7 +492,7 @@ void Softbody_System::CalculateSpringForce(Spring * s, Softbody_Component * c,  
 
 
 	Vector2D normalizedDir = (c->massPoints[s->B].position - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
-	Vector2D velDif = c->massPoints[s->B].velocity - c->massPoints[s->A].velocity;
+	Vector2D velDif = c->massPoints[s->B].velocity + normalizedDir * f * -1 * *deltaTime - c->massPoints[s->A].velocity + normalizedDir * f * *deltaTime;
 
 	double dot = Vector2D::DotProduct(normalizedDir, velDif);
 	double damp = dot * s->dampingFactor;
@@ -511,7 +515,7 @@ void Softbody_System::CalculateSpringForceForFrame(Spring* s, Softbody_Component
 
 
 	Vector2D normalizedDir = (framePosition - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
-	Vector2D velDif = Vector2D(0, 0) - c->massPoints[s->A].velocity;
+	Vector2D velDif = Vector2D(0, 0) - c->massPoints[s->A].velocity + normalizedDir * f * *deltaTime;
 
 	double dot = Vector2D::DotProduct(normalizedDir, velDif);
 	double damp = dot * s->dampingFactor;
@@ -536,7 +540,7 @@ void Softbody_System::ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P,
 	A->ApplyForce(force);
 }
 
-void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)
 {
 
 
@@ -565,7 +569,7 @@ void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect
 				{
 					nextIndex = p + 1;
 				}
-				thickLineRGBA(renderer, reg->softbodies[e].x[p], reg->softbodies[e].y[p], reg->softbodies[e].x[nextIndex], reg->softbodies[e].y[nextIndex], 10, 0, 0, 0, 255);
+				thickLineRGBA(renderer, reg->softbodies[e].x[p], reg->softbodies[e].y[p], reg->softbodies[e].x[nextIndex], reg->softbodies[e].y[nextIndex], 10 / *game->cam->size, 0, 0, 0, 255);
 			}
 
 			//if (reg->softbodies[e].hardShapeMatching)

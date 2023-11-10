@@ -2,8 +2,9 @@
 #include "Entity.h"
 #include "Registry.h"
 #include <random>
+#include "Game.h"
 
-void RandomSoftbodyGenerator_System::Init(Registry* reg)
+void RandomSoftbodyGenerator_System::Init(Registry* reg, const Game* game)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
@@ -16,8 +17,8 @@ void RandomSoftbodyGenerator_System::Init(Registry* reg)
 
 			std::random_device rd; // obtain a random number from hardware
 			std::mt19937 gen(rd()); // seed the generator
-			std::uniform_int_distribution<> rangeX(c->minX, c->maxX);
-			std::uniform_int_distribution<> rangeY(c->minY, c->maxY);
+			std::uniform_int_distribution<> rangeX(c->minX * game->softbodyScaleMultiplier, c->maxX * game->softbodyScaleMultiplier);
+			std::uniform_int_distribution<> rangeY(c->minY * game->softbodyScaleMultiplier, c->maxY * game->softbodyScaleMultiplier);
 
 			Vector2D lastPointPos = c->pointNO1Pos;
 			points.push_back(lastPointPos);

@@ -1,8 +1,9 @@
 #include "SoftbodyJoint.h"
 #include "Registry.h"
 #include "Entity.h"
+#include "Game.h"
 
-void SoftbodyJoint_System::Init(Registry* reg)
+void SoftbodyJoint_System::Init(Registry* reg, const Game* game)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{
@@ -41,7 +42,7 @@ void SoftbodyJoint_System::Init(Registry* reg)
 						staticAverage += c->values[x].thisBodyAnchorPoints[i]->position;
 					}
 					staticAverage /= c->values[x].thisBodyAnchorPoints.size();
-					staticAverage += c->values[x].offsetFromStaticBody;
+					staticAverage += c->values[x].offsetFromStaticBody * game->softbodyScaleMultiplier;
 
 					Vector2D dif = staticAverage - moveAverage;
 
@@ -121,7 +122,7 @@ void SoftbodyJoint_System::Update(Registry* reg, double* deltaTime)
 					averageVelocityB /= reg->softbodies[e].massPointsN;
 
 					Vector2D forceA, forceB;
-					CalculateSpringForce(AAverage, BAverage, 300, 0, 10, averageVelocityA, averageVelocityB,&forceA, &forceB, deltaTime);
+					CalculateSpringForce(AAverage, BAverage, 3000, 0, 10, averageVelocityA, averageVelocityB,&forceA, &forceB, deltaTime);
 					for (int i = 0; i < c->values[x].otherBody->massPointsN; i++)
 					{
 						c->values[x].otherBody->massPoints[i].force += forceA;
