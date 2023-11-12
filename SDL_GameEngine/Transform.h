@@ -1,7 +1,9 @@
 #pragma once
 #include "Vector2D.h"
-
-struct Transform_Component
+namespace Engine
 {
-	Vector2D position = Vector2D(0, 0);
-};
+	struct Transform_Component
+	{
+		Vector2D position = Vector2D(0, 0);
+	};
+}

@@ -1,141 +1,143 @@
 #include "InputManager.h"
-
-InputManager* InputManager::instance = NULL;
-
-InputManager* InputManager::Instance()
+namespace Engine
 {
-	if (instance == NULL)
+	InputManager* InputManager::instance = NULL;
+
+	InputManager* InputManager::Instance()
 	{
-		instance = new InputManager();
+		if (instance == NULL)
+		{
+			instance = new InputManager();
+		}
+
+		return instance;
 	}
 
-	return instance;
-}
-
-void InputManager::Release()
-{
-	delete instance;
-	instance = NULL;
-}
-
-bool InputManager::KeyDown(SDL_Scancode scanCode)
-{
-	return keyboardState[scanCode];
-}
-bool InputManager::KeyPressed(SDL_Scancode scanCode)
-{
-	return !previousKeyState[scanCode] && keyboardState[scanCode];
-}
-bool InputManager::KeyReleased(SDL_Scancode scanCode)
-{
-	return previousKeyState[scanCode] && !keyboardState[scanCode];
-}
-
-Vector2DInt InputManager::MousePos()
-{
-	return Vector2DInt(mousePos);
-}
-Vector2DInt InputManager::PrevMousePos()
-{
-	return Vector2DInt(prevMousePos);
-}
-
-bool InputManager::MouseButtonDown(MOUSE_BUTTONS button)
-{
-	Uint32 mask = 0;
-
-	switch (button)
+	void InputManager::Release()
 	{
-	case left:
-		mask = SDL_BUTTON_LMASK;
-		break;
-	case right:
-		mask = SDL_BUTTON_RMASK;
-		break;
-	case middle:
-		mask = SDL_BUTTON_MMASK;
-		break;
-	case back:
-		mask = SDL_BUTTON_X1MASK;
-		break;
-	case forward:
-		mask = SDL_BUTTON_X2MASK;
-		break;
+		delete instance;
+		instance = NULL;
 	}
 
-	return (mouseState & mask);
-}
-bool InputManager::MouseButtonPressed(MOUSE_BUTTONS button)
-{
-	Uint32 mask = 0;
-
-	switch (button)
+	bool InputManager::KeyDown(SDL_Scancode scanCode)
 	{
-	case left:
-		mask = SDL_BUTTON_LMASK;
-		break;
-	case right:
-		mask = SDL_BUTTON_RMASK;
-		break;
-	case middle:
-		mask = SDL_BUTTON_MMASK;
-		break;
-	case back:
-		mask = SDL_BUTTON_X1MASK;
-		break;
-	case forward:
-		mask = SDL_BUTTON_X2MASK;
-		break;
+		return keyboardState[scanCode];
+	}
+	bool InputManager::KeyPressed(SDL_Scancode scanCode)
+	{
+		return !previousKeyState[scanCode] && keyboardState[scanCode];
+	}
+	bool InputManager::KeyReleased(SDL_Scancode scanCode)
+	{
+		return previousKeyState[scanCode] && !keyboardState[scanCode];
 	}
 
-	return !(prevMouseState & mask) && (mouseState & mask);
-}
-bool InputManager::MouseButtonReleased(MOUSE_BUTTONS button)
-{
-	Uint32 mask = 0;
-
-	switch (button)
+	Vector2DInt InputManager::MousePos()
 	{
-	case left:
-		mask = SDL_BUTTON_LMASK;
-		break;
-	case right:
-		mask = SDL_BUTTON_RMASK;
-		break;
-	case middle:
-		mask = SDL_BUTTON_MMASK;
-		break;
-	case back:
-		mask = SDL_BUTTON_X1MASK;
-		break;
-	case forward:
-		mask = SDL_BUTTON_X2MASK;
-		break;
+		return Vector2DInt(mousePos);
+	}
+	Vector2DInt InputManager::PrevMousePos()
+	{
+		return Vector2DInt(prevMousePos);
 	}
 
-	return (prevMouseState & mask) && !(mouseState & mask);
-}
+	bool InputManager::MouseButtonDown(MOUSE_BUTTONS button)
+	{
+		Uint32 mask = 0;
 
-void InputManager::Update()
-{
-	mouseState = SDL_GetMouseState(mousePos.getX(), mousePos.getY());
-}
-void InputManager::UpdatePrevInput()
-{
-	SDL_memcpy(previousKeyState, keyboardState, keyLength);
-	prevMousePos = mousePos;
-	prevMouseState = mouseState;
-}
+		switch (button)
+		{
+		case left:
+			mask = SDL_BUTTON_LMASK;
+			break;
+		case right:
+			mask = SDL_BUTTON_RMASK;
+			break;
+		case middle:
+			mask = SDL_BUTTON_MMASK;
+			break;
+		case back:
+			mask = SDL_BUTTON_X1MASK;
+			break;
+		case forward:
+			mask = SDL_BUTTON_X2MASK;
+			break;
+		}
 
-InputManager::InputManager()
-{
-	keyboardState = SDL_GetKeyboardState(&keyLength);
-	previousKeyState = new Uint8[keyLength];
-	SDL_memcpy(previousKeyState, keyboardState, keyLength);
-}
+		return (mouseState & mask);
+	}
+	bool InputManager::MouseButtonPressed(MOUSE_BUTTONS button)
+	{
+		Uint32 mask = 0;
 
-InputManager::~InputManager()
-{
-	delete[] previousKeyState;
-	previousKeyState = NULL;
+		switch (button)
+		{
+		case left:
+			mask = SDL_BUTTON_LMASK;
+			break;
+		case right:
+			mask = SDL_BUTTON_RMASK;
+			break;
+		case middle:
+			mask = SDL_BUTTON_MMASK;
+			break;
+		case back:
+			mask = SDL_BUTTON_X1MASK;
+			break;
+		case forward:
+			mask = SDL_BUTTON_X2MASK;
+			break;
+		}
+
+		return !(prevMouseState & mask) && (mouseState & mask);
+	}
+	bool InputManager::MouseButtonReleased(MOUSE_BUTTONS button)
+	{
+		Uint32 mask = 0;
+
+		switch (button)
+		{
+		case left:
+			mask = SDL_BUTTON_LMASK;
+			break;
+		case right:
+			mask = SDL_BUTTON_RMASK;
+			break;
+		case middle:
+			mask = SDL_BUTTON_MMASK;
+			break;
+		case back:
+			mask = SDL_BUTTON_X1MASK;
+			break;
+		case forward:
+			mask = SDL_BUTTON_X2MASK;
+			break;
+		}
+
+		return (prevMouseState & mask) && !(mouseState & mask);
+	}
+
+	void InputManager::Update()
+	{
+		mouseState = SDL_GetMouseState(mousePos.getX(), mousePos.getY());
+	}
+	void InputManager::UpdatePrevInput()
+	{
+		SDL_memcpy(previousKeyState, keyboardState, keyLength);
+		prevMousePos = mousePos;
+		prevMouseState = mouseState;
+	}
+
+	InputManager::InputManager()
+	{
+		keyboardState = SDL_GetKeyboardState(&keyLength);
+		previousKeyState = new Uint8[keyLength];
+		SDL_memcpy(previousKeyState, keyboardState, keyLength);
+	}
+
+	InputManager::~InputManager()
+	{
+		delete[] previousKeyState;
+		previousKeyState = NULL;
+	}
 }

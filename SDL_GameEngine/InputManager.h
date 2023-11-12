@@ -2,48 +2,50 @@
 
 #include <SDL.h>
 #include "Vector2DInt.h"
-
-class InputManager
+namespace Engine
 {
-public:
+	class InputManager
+	{
+	public:
 
-	enum MOUSE_BUTTONS { left = 0, right, middle, back, forward };
+		enum MOUSE_BUTTONS { left = 0, right, middle, back, forward };
 
-private:
+	private:
 
-	static InputManager* instance;
+		static InputManager* instance;
 
-	Uint8* previousKeyState;
-	const Uint8* keyboardState;
-	int keyLength;
+		Uint8* previousKeyState;
+		const Uint8* keyboardState;
+		int keyLength;
 
-	Uint32 prevMouseState;
-	Uint32 mouseState;
+		Uint32 prevMouseState;
+		Uint32 mouseState;
 
-	Vector2DInt mousePos;
-	Vector2DInt prevMousePos;
+		Vector2DInt mousePos = Vector2DInt(0, 0);
+		Vector2DInt prevMousePos;
 
-public:
+	public:
 
-	static InputManager* Instance();
-	static void Release();
+		static InputManager* Instance();
+		static void Release();
 
-	bool KeyDown(SDL_Scancode scanCode);
-	bool KeyPressed(SDL_Scancode scanCode);
-	bool KeyReleased(SDL_Scancode scanCode);
+		bool KeyDown(SDL_Scancode scanCode);
+		bool KeyPressed(SDL_Scancode scanCode);
+		bool KeyReleased(SDL_Scancode scanCode);
 
-	bool MouseButtonDown(MOUSE_BUTTONS button);
-	bool MouseButtonPressed(MOUSE_BUTTONS button);
-	bool MouseButtonReleased(MOUSE_BUTTONS button);
+		bool MouseButtonDown(MOUSE_BUTTONS button);
+		bool MouseButtonPressed(MOUSE_BUTTONS button);
+		bool MouseButtonReleased(MOUSE_BUTTONS button);
 
-	Vector2DInt MousePos();
-	Vector2DInt PrevMousePos();
+		Vector2DInt MousePos();
+		Vector2DInt PrevMousePos();
 
-	void Update();
-	void UpdatePrevInput();
+		void Update();
+		void UpdatePrevInput();
 
-private:
+	private:
 
-	InputManager();
-	~InputManager();
-};
+		InputManager();
+		~InputManager();
+	};
+}

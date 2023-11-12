@@ -4,39 +4,43 @@
 #include "InputManager.h"
 #include <string>
 #include "Vector2D.h"
-
-class Game
+namespace Engine
 {
-public:
-	Game();
-	~Game();
+	class Game
+	{
+	public:
+		Game();
+		~Game();
 
-	void Init(const char* title, SDL_Rect windowSize, int renderWidth, int renderHeight, bool fullscreen);
+		virtual void Init(const char* title, SDL_Rect windowSize, int renderWidth, int renderHeight, bool fullscreen, bool windowedBorderless, SDL_Color clearColor);
 
-	void InitSDL(bool fullscreen, const char* title, SDL_Rect& windowSize);
+		void InitSDL(bool fullscreen, bool windowedBorderless, const char* title, SDL_Rect& windowSize);
 
-	void HandleEvents();
-	void Update(double* deltaTime);
-	void Render();
+		virtual void HandleEvents();
+		virtual void Update(double* deltaTime);
+		virtual void Render();
 
-	void Clean();
-	bool Running() { return isRunning; };
+		void Clean();
+		bool Running() { return isRunning; };
 
-	void SetTextInputString(std::string* textToPutInputTo);
-	std::string* activeTextInput;
+		void SetTextInputString(std::string* textToPutInputTo);
+		std::string* activeTextInput;
 
-	SDL_Renderer* renderer;
+		SDL_Renderer* renderer;
 
-	class Camera_Component* cam;
+		SDL_Color clearColor;
 
-	double* gravity;
-	double* dragCoeficient;
-	double* camSize;
+		class Camera_Component* cam;
 
-	std::string assetPath = "";
-private:
+		double* gravity;
+		double* dragCoeficient;
+		double* camSize;
 
-	bool isRunning;
-	SDL_Window* window;
-	InputManager* inputManager;
-};
+		std::string assetPath = "";
+	private:
+
+		bool isRunning;
+		SDL_Window* window;
+		InputManager* inputManager;
+	};
+}

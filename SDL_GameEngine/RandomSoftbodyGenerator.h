@@ -3,28 +3,31 @@
 #include "Vector2D.h"
 #include "Softbody.h"
 
-enum RandomSoftbodyGeneration_Type
+namespace Engine
 {
-	HorizontalLinePolygon,
-	VerticalLinePolygon,
-};
+	enum RandomSoftbodyGeneration_Type
+	{
+		HorizontalLinePolygon,
+		VerticalLinePolygon,
+	};
 
-struct RandomSoftbodyGenerator_Component
-{
-	RandomSoftbodyGeneration_Type tp;
-	int amountOfPointsDividedByTwo;
-	Vector2D pointNO1Pos;
+	struct RandomSoftbodyGenerator_Component
+	{
+		RandomSoftbodyGeneration_Type tp;
+		int amountOfPointsDividedByTwo;
+		Vector2D pointNO1Pos;
 
-	Sint16 minX, maxX;
-	Sint16 minY, maxY;
+		Sint16 minX, maxX;
+		Sint16 minY, maxY;
 
-	bool arePointsStatic = false;
+		bool arePointsStatic = false;
 
-	Vector2D offsetOfOtherLine;
-};
+		Vector2D offsetOfOtherLine;
+	};
 
-class RandomSoftbodyGenerator_System
-{
-public:
-	void Init(class Registry* reg, const Game* game);
-};
+	class RandomSoftbodyGenerator_System
+	{
+	public:
+		void Init(class Registry* reg, const Game* game);
+	};
+}
