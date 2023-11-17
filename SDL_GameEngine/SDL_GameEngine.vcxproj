@@ -167,6 +167,8 @@
     <ClCompile Include="SoftbodyJoint.cpp" />
     <ClCompile Include="SoftbodyRotatorMovement.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteSheet.cpp" />
+    <ClCompile Include="SpriteSheetAnimator.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TiledSprite.cpp" />
@@ -194,6 +196,8 @@
     <ClInclude Include="SoftbodyJoint.h" />
     <ClInclude Include="SoftbodyRotatorMovement.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteSheet.h" />
+    <ClInclude Include="SpriteSheetAnimator.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TiledSprite.h" />

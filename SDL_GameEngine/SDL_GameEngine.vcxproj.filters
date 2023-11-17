@@ -96,6 +96,12 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteSheet.cpp">
+      <Filter>Engine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSheetAnimator.cpp">
+      <Filter>Engine\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -180,6 +186,12 @@
       <Filter>Engine\Header Files\Vector</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
+      <Filter>Engine\Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheet.h">
+      <Filter>Engine\Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheetAnimator.h">
       <Filter>Engine\Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

@@ -461,9 +461,11 @@ namespace Engine
 					}*/
 				}
 				
-
-				reg->softbodies[e].x[p] = (reg->softbodies[e].massPoints[p].position.x - game->cam->resultRect.x) / *game->cam->size + ((game->cam->w * *game->cam->size - game->cam->w) / 2) / *game->cam->size;
-				reg->softbodies[e].y[p] = (reg->softbodies[e].massPoints[p].position.y - game->cam->resultRect.y) / *game->cam->size + ((game->cam->h * *game->cam->size - game->cam->h) / 2) / *game->cam->size;
+				if (game->cam != nullptr)
+				{
+					reg->softbodies[e].x[p] = (reg->softbodies[e].massPoints[p].position.x - game->cam->resultRect.x) / *game->cam->size + ((game->cam->w * *game->cam->size - game->cam->w) / 2) / *game->cam->size;
+					reg->softbodies[e].y[p] = (reg->softbodies[e].massPoints[p].position.y - game->cam->resultRect.y) / *game->cam->size + ((game->cam->h * *game->cam->size - game->cam->h) / 2) / *game->cam->size;
+				}
 			}
 
 #pragma endregion
@@ -556,7 +558,10 @@ namespace Engine
 					{
 						nextIndex = p + 1;
 					}
-					thickLineRGBA(renderer, reg->softbodies[e].x[p], reg->softbodies[e].y[p], reg->softbodies[e].x[nextIndex], reg->softbodies[e].y[nextIndex], 10 / *game->cam->size, 0, 0, 0, 255);
+					if (game->cam != NULL)
+					{
+						thickLineRGBA(renderer, reg->softbodies[e].x[p], reg->softbodies[e].y[p], reg->softbodies[e].x[nextIndex], reg->softbodies[e].y[nextIndex], 10 / *game->cam->size, 0, 0, 0, 255);
+					}
 				}
 
 				//if (reg->softbodies[e].hardShapeMatching)

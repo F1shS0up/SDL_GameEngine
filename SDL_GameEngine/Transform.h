@@ -5,5 +5,6 @@ namespace Engine
 	struct Transform_Component
 	{
 		Vector2D position = Vector2D(0, 0);
+		double angle = 0.0;
 	};
 }

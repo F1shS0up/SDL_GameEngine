@@ -15,7 +15,11 @@
 #include "SoftbodyRotatorMovement.h"
 #include "SoftbodyJoint.h"
 #include "Camera.h"
-#include "RandomSoftbodyGenerator.h".h"
+#include "RandomSoftbodyGenerator.h"
+#include "Sprite.h"
+#include "SpriteSheet.h"
+#include "SpriteSheetAnimator.h"
+
 namespace Engine
 {
 	using Entity = std::size_t;
@@ -45,6 +49,9 @@ namespace Engine
 		std::unordered_map<Entity, SoftbodyJoint_Component> softbodyJoints;
 		std::unordered_map<Entity, Camera_Component> cameras;
 		std::unordered_map<Entity, RandomSoftbodyGenerator_Component> randomSoftbodyGenerators;
+		std::unordered_map<Entity, Sprite_Component> sprites;
+		std::unordered_map<Entity, SpriteSheet_Component> spriteSheets;
+		std::unordered_map<Entity, SpriteSheetAnimator_Component> spriteSheetAnimators;
 
 #pragma endregion
 
@@ -64,13 +71,16 @@ namespace Engine
 		SoftbodyJoint_System softbodyJointSystem;
 		Camera_System camSystem;
 		RandomSoftbodyGenerator_System randomSoftbodyGeneratorSystem;
+		Sprite_System spriteSystem;
+		SpriteSheet_System spriteSheetSystem;
+		SpriteSheetAnimator_System spriteSheetAnimatorSystem;
 
 #pragma endregion
 
-		void Init(SDL_Renderer* renderer, const Game* game);
+		void Init(SDL_Renderer* renderer, const class Game* game);
 		void StartUpdate(double* deltaTime, class Game* game);
 		void Update(double* deltaTime, class Game* game);
-		void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game);
+		void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const class Game* game);
 
 	private:
 

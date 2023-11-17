@@ -36,7 +36,7 @@ namespace Engine
 		SDL_RenderSetLogicalSize(renderer, renderWidth, renderHeight);
 
 		SDL_StopTextInput();
-		Registry::Instance()->Init(renderer, this);
+	
 	}
 
 	void Game::InitSDL(bool fullscreen, bool windowedBorderless, const char* title, SDL_Rect& windowSize)
@@ -132,8 +132,6 @@ namespace Engine
 			break;
 		}
 	}
-	int massPointI;
-	int x = 0;
 	void Game::Update(double* deltaTime)
 	{
 		inputManager->Update();

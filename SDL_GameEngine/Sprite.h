@@ -1,11 +1,22 @@
 #pragma once
-
-struct Sprite_Component
+#include <string>
+#include "SDL.h"
+namespace Engine
 {
+	struct Sprite_Component
+	{
+		std::string path;
 
-};
+		//Set windth to zero in order to set dst rect as texture size
+		SDL_Rect* dstRect;
 
-class Sprite_System
-{
-	void Init();
-};
+		SDL_Texture* texture;
+	};
+
+	class Sprite_System
+	{
+	public:
+		void Init(class Registry* reg, SDL_Renderer* renderer);
+		void Draw(class Registry* reg, SDL_Renderer* renderer);
+	};
+}

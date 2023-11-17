@@ -29,6 +29,8 @@ namespace Engine
 		softbodyRotatingMovementSystem.Init(this);
 		softbodyJointSystem.Init(this, game);
 		camSystem.Init(this);
+		spriteSystem.Init(this, renderer);
+		spriteSheetSystem.Init(this, renderer);
 	}
 
 	void Registry::StartUpdate(double* deltaTime, Game* game)
@@ -42,11 +44,12 @@ namespace Engine
 		fluidSimulationSystem.Update(deltaTime);
 		softbodyRotatingMovementSystem.Update(this, deltaTime);
 		softbodyJointSystem.Update(this, deltaTime);
-		softbodySystem.Update(this, deltaTime, game);
+		//softbodySystem.Update(this, deltaTime, game); - TROUBLE WITH INTERFIERING TRANSFORM!!!
 		textBoxSystem.Update(this, deltaTime, game);
 		sliderBoxSystem.Update(this, deltaTime, game);
 		buttonSystem.Update(this, deltaTime, game);
 		camSystem.Update(this, deltaTime);
+		spriteSheetAnimatorSystem.Update(this, deltaTime);
 	}
 
 	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)
@@ -61,5 +64,7 @@ namespace Engine
 #endif // _DEBUG
 		softbodySystem.Draw(this, renderer, cameraRect, game);
 		shapeSystem.Draw(this, renderer, cameraRect);
+		spriteSystem.Draw(this, renderer);
+		spriteSheetSystem.Draw(this, renderer);
 	}
 }
