@@ -25,6 +25,9 @@
     <Filter Include="Engine\Header Files\Vector">
       <UniqueIdentifier>{502a16b5-e88c-4051-8082-108a3debc1cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Source Files\Json">
+      <UniqueIdentifier>{e1043e08-2911-4b4b-b038-e2f7706e9fbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collider.cpp">
@@ -101,6 +104,18 @@
     </ClCompile>
     <ClCompile Include="SpriteSheetAnimator.cpp">
       <Filter>Engine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tilemap.cpp">
+      <Filter>Engine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_reader.cpp">
+      <Filter>Engine\Source Files\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_value.cpp">
+      <Filter>Engine\Source Files\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_writer.cpp">
+      <Filter>Engine\Source Files\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,5 +209,16 @@
     <ClInclude Include="SpriteSheetAnimator.h">
       <Filter>Engine\Header Files\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Tilemap.h">
+      <Filter>Engine\Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_tool.h">
+      <Filter>Engine\Source Files\Json</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_valueiterator.inl">
+      <Filter>Engine\Source Files\Json</Filter>
+    </None>
   </ItemGroup>
 </Project>

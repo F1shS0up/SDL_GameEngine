@@ -19,6 +19,7 @@
 #include "Sprite.h"
 #include "SpriteSheet.h"
 #include "SpriteSheetAnimator.h"
+#include "Tilemap.h"
 
 namespace Engine
 {
@@ -52,6 +53,7 @@ namespace Engine
 		std::unordered_map<Entity, Sprite_Component> sprites;
 		std::unordered_map<Entity, SpriteSheet_Component> spriteSheets;
 		std::unordered_map<Entity, SpriteSheetAnimator_Component> spriteSheetAnimators;
+		std::unordered_map<Entity, Tilemap_Component> tilemaps;
 
 #pragma endregion
 
@@ -74,6 +76,7 @@ namespace Engine
 		Sprite_System spriteSystem;
 		SpriteSheet_System spriteSheetSystem;
 		SpriteSheetAnimator_System spriteSheetAnimatorSystem;
+		Tilemap_System tilemapSystem;
 
 #pragma endregion
 

@@ -15,6 +15,7 @@ namespace Engine
 
 	void Registry::Init(SDL_Renderer* renderer, const Game* game)
 	{
+		tilemapSystem.Init(this, renderer);
 		randomSoftbodyGeneratorSystem.Init(this, game);
 		fluidSimulationSystem.Init(this);
 		rigidbodySystem.Init(this);
@@ -54,14 +55,15 @@ namespace Engine
 
 	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)
 	{
+		tilemapSystem.Draw(this, renderer);
 		tiledSpriteSystem.Draw(this, renderer, cameraRect);
 		fluidSimulationSystem.Draw(renderer, cameraRect);
 		textSystem.Draw(this, renderer, cameraRect);
 		textBoxSystem.Draw(this, renderer, cameraRect);
 #ifdef _DEBUG
 		rigidbodySystem.Draw(this, renderer, cameraRect);
-		colliderSystem.Draw(this, renderer, cameraRect);
 #endif // _DEBUG
+		colliderSystem.Draw(this, renderer, cameraRect);
 		softbodySystem.Draw(this, renderer, cameraRect, game);
 		shapeSystem.Draw(this, renderer, cameraRect);
 		spriteSystem.Draw(this, renderer);

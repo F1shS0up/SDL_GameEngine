@@ -48,7 +48,6 @@ namespace Engine
 		}
 	}
 
-#ifdef _DEBUG
 	void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -58,31 +57,12 @@ namespace Engine
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
 				SDL_RenderDrawLine(renderer, reg->lineColliders[e].a.x, reg->lineColliders[e].a.y, reg->lineColliders[e].b.x, reg->lineColliders[e].b.y);
 
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 1);
-				SDL_RenderDrawLine(renderer, reg->lineColliders[e].mid.x, reg->lineColliders[e].mid.y, reg->lineColliders[e].mid.x + reg->lineColliders[e].normal.x * 200, reg->lineColliders[e].mid.y + reg->lineColliders[e].normal.y * 200);
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
-				SDL_RenderDrawLine(renderer, reg->lineColliders[e].mid.x, reg->lineColliders[e].mid.y, reg->lineColliders[e].mid.x - reg->lineColliders[e].normal.x * 200, reg->lineColliders[e].mid.y - reg->lineColliders[e].normal.y * 200);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+				
 
-				for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
-				{
-					if (reg->circleColliders.count(e2))
-					{
-						LineCollider_Component* cl = &reg->lineColliders[e];
-						CircleCollider_Component* cc = &reg->circleColliders[e2];
-
-						Vector2D intersection;
-						bool inter = ColliderFunctions::LineLineIntersection(*cc->position + cl->normal * cc->radius, *cc->position - cl->normal * cc->radius, cl->a, cl->b, &intersection);
-						if (inter)
-						{
-							filledCircleRGBA(renderer, intersection.x, intersection.y, 20, 255, 255, 0, 1);
-						}
-					}
-				}
+				
 			}
 		}
 	}
-#endif // _DEBUG
 
 	//Reflect point around the A and B line
 	inline Vector2D reflect(Vector2D P, Vector2D A, Vector2D B)

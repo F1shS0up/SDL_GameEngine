@@ -30,9 +30,7 @@ namespace Engine
 	public:
 
 		void Init(class Registry* reg);
-#ifdef _DEBUG
 		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
-#endif // DEBUG
 	};
 
 	namespace ColliderFunctions
