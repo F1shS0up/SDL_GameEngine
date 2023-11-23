@@ -56,10 +56,6 @@ namespace Engine
 			{
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
 				SDL_RenderDrawLine(renderer, reg->lineColliders[e].a.x, reg->lineColliders[e].a.y, reg->lineColliders[e].b.x, reg->lineColliders[e].b.y);
-
-				
-
-				
 			}
 		}
 	}

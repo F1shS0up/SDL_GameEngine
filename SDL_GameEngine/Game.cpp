@@ -31,6 +31,7 @@ namespace Engine
 		assetPath = SDL_GetBasePath();
 		assetPath += "Assets/";
 		inputManager = InputManager::Instance();
+		gravity = new double(0);
 		clearColor = clearColor;
 
 		SDL_RenderSetLogicalSize(renderer, renderWidth, renderHeight);
