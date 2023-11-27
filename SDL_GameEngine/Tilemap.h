@@ -23,7 +23,6 @@ namespace Engine
 		std::pair<int, int>** grid;
 	};
 
-
 	class Tilemap_System
 	{
 	public:

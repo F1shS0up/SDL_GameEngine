@@ -29,7 +29,6 @@ namespace Engine
 
 				reg->tilemaps[e].grid = (std::pair<int, int>**)malloc(reg->tilemaps[e].gridCellsY * sizeof(std::pair<int, int>*));
 
-
 				int** colCheck = (int**)malloc(reg->tilemaps[e].gridCellsY * sizeof(int*));
 				for (int y = 0; y < reg->tilemaps[e].gridCellsY; y++)
 				{
@@ -40,7 +39,7 @@ namespace Engine
 					reg->tilemaps[e].grid[y] = (std::pair<int, int>*)malloc(reg->tilemaps[e].gridCellsX * sizeof(std::pair<int, int>));
 					for (int x = 0; x < reg->tilemaps[e].gridCellsX; x++)
 					{
-						for(int i = 0; i < tilemap["layers"].size(); i++)
+						for (int i = 0; i < tilemap["layers"].size(); i++)
 						{
 							if (tilemap["layers"][i]["name"].asCString()[0] == 't' && tilemap["layers"][i]["name"].asCString()[1] == '_')
 							{
@@ -121,29 +120,24 @@ namespace Engine
 											// top
 											std::cout << "Top" << std::endl;
 											dir = Vector2DInt(0, -1);
-
-
 										}
 										else if (newY < reg->tilemaps[e].gridCellsY - 1 && tilemap["layers"][i]["grid2D"][newY + 1][newX] == "1" && dir.y == 0)
 										{
 											// down
 											std::cout << "Down" << std::endl;
 											dir = Vector2DInt(0, 1);
-
 										}
 										else if (newX > 0 && tilemap["layers"][i]["grid2D"][newY][newX - 1] == "1" && dir.x == 0)
 										{
 											// leftB
 											std::cout << "Left" << std::endl;
 											dir = Vector2DInt(-1, 0);
-
 										}
 										else if (newX < reg->tilemaps[e].gridCellsX - 1 && tilemap["layers"][i]["grid2D"][newY][newX + 1] == "1" && dir.x == 0)
 										{
 											// right
 											std::cout << "Right" << std::endl;
 											dir = Vector2DInt(1, 0);
-
 										}
 										else if (dir.x < 0)
 										{
@@ -172,16 +166,11 @@ namespace Engine
 											std::cout << "Right" << std::endl;
 											dir = Vector2DInt(1, 0);
 											B = A + Vector2D(reg->tilemaps[e].gridCellW, 0);
-
 										}
-
 									}
 								}
 							}
-
-							
 						}
-						
 					}
 				}
 
@@ -203,9 +192,18 @@ namespace Engine
 					{
 						if (reg->tilemaps[e].grid[y][x].first != -1)
 						{
-							SDL_RenderCopy(renderer, reg->tilemaps[e].tileset.texture, 
-								new SDL_Rect{ reg->tilemaps[e].grid[y][x].first * reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].grid[y][x].second * reg->tilemaps[e].tileset.tileH, reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].tileset.tileH },
-								new SDL_Rect{ x * reg->tilemaps[e].gridCellW, y * reg->tilemaps[e].gridCellH, reg->tilemaps[e].gridCellW, reg->tilemaps[e].gridCellH });
+							if (reg->transforms.count(e))
+							{
+								SDL_RenderCopy(renderer, reg->tilemaps[e].tileset.texture,
+									new SDL_Rect{ reg->tilemaps[e].grid[y][x].first * reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].grid[y][x].second * reg->tilemaps[e].tileset.tileH, reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].tileset.tileH },
+									new SDL_Rect{ (int)reg->transforms[e].position.x + x * reg->tilemaps[e].gridCellW, (int)reg->transforms[e].position.y + y * reg->tilemaps[e].gridCellH, reg->tilemaps[e].gridCellW, reg->tilemaps[e].gridCellH });
+							}
+							else
+							{
+								SDL_RenderCopy(renderer, reg->tilemaps[e].tileset.texture,
+									new SDL_Rect{ reg->tilemaps[e].grid[y][x].first * reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].grid[y][x].second * reg->tilemaps[e].tileset.tileH, reg->tilemaps[e].tileset.tileW, reg->tilemaps[e].tileset.tileH },
+									new SDL_Rect{ (int)reg->transforms[e].position.x + x * reg->tilemaps[e].gridCellW, (int)reg->transforms[e].position.y + y * reg->tilemaps[e].gridCellH, reg->tilemaps[e].gridCellW, reg->tilemaps[e].gridCellH });
+							}
 						}
 					}
 				}

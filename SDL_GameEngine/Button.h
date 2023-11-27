@@ -6,7 +6,6 @@
 
 namespace Engine
 {
-
 	struct Button_Component
 	{
 		std::string message;

@@ -9,8 +9,6 @@ namespace Engine
 		Normal, Softbody
 	};
 
-
-
 	struct Node
 	{
 		bool nextDivisionOnXAxis;
@@ -34,11 +32,9 @@ namespace Engine
 		void BuildKDTree(int treshold);
 		std::vector<SoftbodyNode*> BuildKDTreeSoftbody(int treshold);
 
-
 		void BuildKDTreeDebug(int treshold, SDL_Renderer* renderer);
 
 	private:
-
 
 		std::vector<Vector2D*> points;
 

@@ -36,7 +36,6 @@ namespace Engine
 				c->pos.x = c->lastPos.x + (newCameraPos.x - c->lastPos.x) / c->dampingX;
 				c->pos.y = c->lastPos.y + (newCameraPos.y - c->lastPos.y) / c->dampingY;
 
-
 				c->resultRect = SDL_Rect{ (int)c->pos.x, (int)c->pos.y, c->w, c->h };
 			}
 		}

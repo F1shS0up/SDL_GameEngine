@@ -10,10 +10,10 @@ namespace Engine
 		double* gravity;
 		double mass = 10.f;
 		double elasticity = 1;
+		double friction = 1;
 		Layers layer = A;
 		Layers ignoreLayers;
 		bool isStatic = false;
-
 
 		Vector2D force;
 		Vector2D* position;

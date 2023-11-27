@@ -25,7 +25,6 @@ namespace Engine
 		void Play(const char* animationName);
 	};
 
-
 	class SpriteSheetAnimator_System
 	{
 	public:

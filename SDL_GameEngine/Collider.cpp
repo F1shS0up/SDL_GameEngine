@@ -125,7 +125,6 @@ namespace Engine
 	}
 	Vector2D ColliderFunctions::ClosestPointToLine(const Vector2D* A, const Vector2D* B, const Vector2D* P)
 	{
-
 		//Get heading
 		Vector2D heading = (*B - *A);
 		double magnitudeMax = heading.length();
@@ -302,7 +301,6 @@ namespace Engine
 
 		Vector2D mid = Vector2D(A.x + (B.x - A.x) / 2, A.y + (B.y - A.y) / 2);
 
-
 		normalA = mid + normal;
 		normalB = mid - normal;
 
@@ -311,6 +309,8 @@ namespace Engine
 
 		return (lengthA < lengthB) ? normal : Vector2D(-normal.x, -normal.y);
 	}
+
+
 
 	Vector2D ColliderFunctions::PositionToReturnToAfterCollision(const Vector2D* normal, const CircleCollider_Component* circleColliders, Vector2D intersection)
 	{

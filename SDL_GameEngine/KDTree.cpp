@@ -41,7 +41,6 @@ namespace Engine
 			std::vector<Node*> newActiveNodes;
 			for (int i = 0; i < activeNodes.size(); i++)
 			{
-
 				if ((activeNodes[i]->nextDivisionOnXAxis && activeNodes[i]->pointsInNodeInYOrder.size() <= treshold) || (!activeNodes[i]->nextDivisionOnXAxis && activeNodes[i]->pointsInNodeInXOrder.size() <= treshold))
 				{
 					finalNodes.push_back(activeNodes[i]);
@@ -125,7 +124,6 @@ namespace Engine
 					newActiveNodes.push_back(new Node(one));
 					newActiveNodes.push_back(new Node(two));
 				}
-
 			}
 			if (newActiveNodes.size() <= 0)
 			{
@@ -245,7 +243,6 @@ namespace Engine
 					newActiveNodes.push_back(new SoftbodyNode(one));
 					newActiveNodes.push_back(new SoftbodyNode(two));
 				}
-
 			}
 			if (newActiveNodes.size() <= 0)
 			{
@@ -285,7 +282,6 @@ namespace Engine
 			std::vector<Node*> newActiveNodes;
 			for (int i = 0; i < activeNodes.size(); i++)
 			{
-
 				if ((activeNodes[i]->nextDivisionOnXAxis && activeNodes[i]->pointsInNodeInYOrder.size() <= treshold) || (!activeNodes[i]->nextDivisionOnXAxis && activeNodes[i]->pointsInNodeInXOrder.size() <= treshold))
 				{
 					finalNodes.push_back(activeNodes[i]);
@@ -352,7 +348,6 @@ namespace Engine
 					newActiveNodes.push_back(new Node(one));
 					newActiveNodes.push_back(new Node(two));
 				}
-
 			}
 			if (newActiveNodes.size() <= 0)
 			{

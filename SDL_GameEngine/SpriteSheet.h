@@ -8,7 +8,7 @@ namespace Engine
 	struct SpriteSheet_Component
 	{
 		std::string path;
-		
+
 		Vector2D widthAndHeightOfSprite;
 		int numberOfSprites;
 
@@ -27,4 +27,3 @@ namespace Engine
 		void Draw(class Registry* reg, SDL_Renderer* renderer);
 	};
 }
-

@@ -32,6 +32,7 @@ namespace Engine
 		camSystem.Init(this);
 		spriteSystem.Init(this, renderer);
 		spriteSheetSystem.Init(this, renderer);
+		rigidCharacterMovementSystem.Init(this);
 	}
 
 	void Registry::StartUpdate(double* deltaTime, Game* game)
@@ -51,6 +52,7 @@ namespace Engine
 		buttonSystem.Update(this, deltaTime, game);
 		camSystem.Update(this, deltaTime);
 		spriteSheetAnimatorSystem.Update(this, deltaTime);
+		rigidCharacterMovementSystem.Update(this, deltaTime);
 	}
 
 	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)

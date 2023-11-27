@@ -15,12 +15,9 @@ namespace Engine
 		void Lock() { isStatic = true; }
 		void Unlock() { isStatic = false; }
 
-
-
 		Vector2D velocity;
 		Vector2D force;
 		void ApplyForce(Vector2D force);
-
 	};
 
 	struct Spring
@@ -67,7 +64,6 @@ namespace Engine
 		Sint16* x, * xFrame;
 		Sint16* y, * yFrame;
 	};
-
 
 	class Softbody_System
 	{

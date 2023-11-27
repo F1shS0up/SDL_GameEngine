@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -134,7 +133,6 @@ int hline(SDL_Renderer* renderer, Sint16 x1, Sint16 x2, Sint16 y)
 {
 	return SDL_RenderDrawLine(renderer, x1, y, x2, y);;
 }
-
 
 /*!
 \brief Draw horizontal line with blending.
@@ -1011,7 +1009,6 @@ int _aalineRGBA(SDL_Renderer* renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 
 		return (lineRGBA(renderer, x1, y1, x2, y2, r, g, b, a));
 	}
 
-
 	/*
 	* Line is not horizontal, vertical or diagonal (with endpoint)
 	*/
@@ -1042,7 +1039,6 @@ int _aalineRGBA(SDL_Renderer* renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 
 	*/
 	if (dy > dx)
 	{
-
 		/*
 		* y-major.  Calculate 16-bit fixed point fractional part of a pixel that
 		* X advances every time Y advances 1 pixel, truncating the result so that
@@ -1080,11 +1076,9 @@ int _aalineRGBA(SDL_Renderer* renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 
 			result |= pixelRGBAWeight(renderer, xx0, yy0, r, g, b, a, 255 - wgt);
 			result |= pixelRGBAWeight(renderer, x0pxdir, yy0, r, g, b, a, wgt);
 		}
-
 	}
 	else
 	{
-
 		/*
 		* x-major line.  Calculate 16-bit fixed-point fractional part of a pixel
 		* that Y advances each time X advances 1 pixel, truncating the result so
@@ -1101,7 +1095,6 @@ int _aalineRGBA(SDL_Renderer* renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 
 		y0p1 = yy0 + 1;
 		while (--dx)
 		{
-
 			erracctmp = erracc;
 			erracc += erradj;
 			if (erracc <= erracctmp)
@@ -1860,7 +1853,6 @@ int filledCircleRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rad, Uin
 	return _ellipseRGBA(renderer, x, y, rad, rad, r, g, b, a, 1);
 }
 
-
 /* ----- AA Ellipse */
 
 /* Windows targets do not have lrint, so provide a local inline version */
@@ -1868,7 +1860,6 @@ int filledCircleRGBA(SDL_Renderer* renderer, Sint16 x, Sint16 y, Sint16 rad, Uin
 /* Detect 64bit and use intrinsic version */
 #ifdef _M_X64
 #include <emmintrin.h>
-
 
 #elif defined(_M_IX86)
 __inline long int
@@ -3300,7 +3291,6 @@ int filledPolygonRGBAPointer(SDL_Renderer* renderer, Sint16** vx, Sint16** vy, i
 {
 	return filledPolygonRGBAMTPoint(renderer, vx, vy, n, r, g, b, a, NULL, NULL);
 }
-
 
 /* ---- Textured Polygon */
 

@@ -36,6 +36,5 @@ namespace Engine
 		Registry::Instance()->softbodies.erase(entity);
 		Registry::Instance()->buttons.erase(entity);
 		Registry::Instance()->tiledSprites.erase(entity);
-
 	}
 }

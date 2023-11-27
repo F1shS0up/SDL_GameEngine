@@ -9,7 +9,6 @@
 
 namespace Engine
 {
-
 	const double smoothingRadius = 200;
 	const double mass = 1;
 

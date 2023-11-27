@@ -52,7 +52,6 @@ namespace Engine
 			Vector2D dir = movement->softbody->massPoints[nextIndex].position - movement->softbody->massPoints[i].position;
 			dir.normalize();
 
-
 			movement->directionOfForce.push_back(dir);
 		}
 	}
@@ -107,7 +106,6 @@ namespace Engine
 							}
 						}
 					}
-
 
 					UpdateDirection(c, rot);
 					for (int i = 0; i < c->softbody->massPointsN; i++)

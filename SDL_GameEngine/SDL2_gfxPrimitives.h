@@ -48,7 +48,6 @@ extern "C" {
 #define SDL2_GFXPRIMITIVES_MINOR	0
 #define SDL2_GFXPRIMITIVES_MICRO	4
 
-
 	/* ---- Function Prototypes */
 
 #ifdef _MSC_VER
@@ -219,7 +218,6 @@ extern "C" {
 	/* Textured Polygon */
 
 	SDL2_GFXPRIMITIVES_SCOPE int texturedPolygon(SDL_Renderer* renderer, const Sint16* vx, const Sint16* vy, int n, SDL_Surface* texture, int texture_dx, int texture_dy);
-
 
 	/* Ends C function definitions when using C++ */
 #ifdef __cplusplus

@@ -39,7 +39,6 @@ namespace Engine
 						c->func(game);
 						//SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 						//SDL_SetCursor(cursor);
-
 					}
 				}
 				if (InputManager::Instance()->MouseButtonReleased(InputManager::left))

@@ -7,7 +7,6 @@
 
 namespace Engine
 {
-	
 	void TextBox_System::Init(Registry* reg, SDL_Renderer* renderer)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -65,7 +64,6 @@ namespace Engine
 		component->message = message;
 	}
 
-
 	bool TextBox_System::IsVectorInBox(TextBox_Component* comp, Vector2D point)
 	{
 		SDL_Point p = SDL_Point{ (int)point.x, (int)point.y };
@@ -77,5 +75,4 @@ namespace Engine
 		SDL_Point p = SDL_Point{ point.x, point.y };
 		return SDL_PointInRect(&p, &comp->boxRect);
 	}
-
 }

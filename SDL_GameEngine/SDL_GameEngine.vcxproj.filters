@@ -117,6 +117,9 @@
     <ClCompile Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_writer.cpp">
       <Filter>Engine\Source Files\Json</Filter>
     </ClCompile>
+    <ClCompile Include="RigidCharacterMovement.cpp">
+      <Filter>Engine\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentType.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\VS2022Lib\jsoncpp-master\src\lib_json\json_tool.h">
       <Filter>Engine\Source Files\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidCharacterMovement.h">
+      <Filter>Engine\Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

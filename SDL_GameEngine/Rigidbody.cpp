@@ -6,7 +6,6 @@
 
 namespace Engine
 {
-
 #define ComputeVelocityForCircles(v1, v2, x1, x2, m1, m2, out)\
  *out = v1 - Vector2D((2 * m2 / (m1 + m2)) * Vector2D::DotProduct(v1 - v2, x1 - x2) / ((x1 - x2).length() * (x1 - x2).length())* (x1 - x2).x, (2 * m2 / (m1 + m2)) * Vector2D::DotProduct(v1 - v2, x1 - x2) / ((x1 - x2).length() * (x1 - x2).length())* (x1 - x2).y)\
 
@@ -205,10 +204,16 @@ namespace Engine
 
 							Vector2D intersectionPoint, fromIntersectedLine, toIntersectedLine;
 							double outA;
-							if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, x1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
+							if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, upcomingX1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
 							{
-								Vector2D normal = ColliderFunctions::ReflectionNormal(cl, x1);
-								c->velocity = ReflectionResponse(&normal, &v1) * c->elasticity;
+								Vector2D normal = ColliderFunctions::ReflectionNormal(cl, upcomingX1);
+								Vector2D response = ReflectionResponse(&normal, &v1);
+								float l = response.length();
+								Vector2D elasticityResult = (normal * l * (-c->elasticity + 1));
+								Vector2D frictionResult = (response - normal * l) * c->friction;
+
+								c->velocity = response - elasticityResult - frictionResult;
+								
 
 								//Set the position away from the line so that it wont collide again which could result in a rectangle being stuck in line
 								*c->position = ColliderFunctions::PositionToReturnToAfterCollision(fromIntersectedLine, toIntersectedLine, x1, outA, &intersectionPoint);
@@ -236,7 +241,6 @@ namespace Engine
 									if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, upcomingX1, ac2->width, ac2->height, upcomingX2, &normal, &penetration))
 									{
 										ResolveCollision(c, c2, normal);
-
 									}
 								}
 							}

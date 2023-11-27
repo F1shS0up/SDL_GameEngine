@@ -37,7 +37,6 @@ namespace Engine
 		SDL_RenderSetLogicalSize(renderer, renderWidth, renderHeight);
 
 		SDL_StopTextInput();
-	
 	}
 
 	void Game::InitSDL(bool fullscreen, bool windowedBorderless, const char* title, SDL_Rect& windowSize)
@@ -49,7 +48,7 @@ namespace Engine
 		{
 			flags = SDL_WINDOW_FULLSCREEN;
 		}
-		else if(windowedBorderless)
+		else if (windowedBorderless)
 		{
 			flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
@@ -89,7 +88,7 @@ namespace Engine
 		{
 			std::cout << "Error initializing SDL_ttf: " << TTF_GetError() << std::endl;
 		}
-		if(fullscreen)SDL_SetWindowGrab(window, SDL_TRUE);
+		if (fullscreen)SDL_SetWindowGrab(window, SDL_TRUE);
 	}
 
 #pragma region UpdateEveryFrame

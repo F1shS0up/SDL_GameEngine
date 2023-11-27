@@ -34,7 +34,6 @@ namespace Engine
 					}
 
 					c->texture = SDL_CreateTextureFromSurface(renderer, finalSurface);
-
 				}
 			}
 		}

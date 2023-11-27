@@ -53,7 +53,6 @@ namespace Engine
 							c->values[x].otherBody->massPoints[i].position += dif;
 						}
 					}
-
 				}
 			}
 		}
@@ -142,7 +141,6 @@ namespace Engine
 						{
 							c->values[x].thisBodyAnchorPoints[i]->force += forceB;
 						}
-
 					}
 				}
 			}

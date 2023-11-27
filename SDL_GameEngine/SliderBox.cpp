@@ -37,14 +37,12 @@ namespace Engine
 					}
 					if (InputManager::Instance()->MouseButtonPressed(InputManager::left))
 					{
-
 						c->pressedInside = true;
 						c->startPoint = InputManager::Instance()->MousePos();
 						c->startValue = c->value;
 						c->txtComp->boxColor = c->boxColorPressed;
 						SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 						SDL_SetCursor(cursor);
-
 					}
 				}
 
@@ -60,7 +58,6 @@ namespace Engine
 					c->txtComp->boxColor = c->boxColor;
 				}
 
-
 				if (c->pressedInside)
 				{
 					//Difference between the starting position when clicked on element and current mouse position
@@ -69,8 +66,6 @@ namespace Engine
 					c->value = std::clamp <double>(c->startValue + difference * c->coefficient, c->min, c->max);
 					c->txtComp->message = std::to_string(c->value);
 				}
-
-
 			}
 		}
 	}

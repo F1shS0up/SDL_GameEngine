@@ -7,7 +7,7 @@ namespace Engine
 	{
 		std::string path;
 
-		//Set windth to zero in order to set dst rect as texture size
+		//Set width to zero in order to set dst rect as texture size
 		SDL_Rect* dstRect;
 
 		SDL_Texture* texture;
