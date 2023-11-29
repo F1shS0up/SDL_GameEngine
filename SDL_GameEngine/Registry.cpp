@@ -42,6 +42,7 @@ namespace Engine
 
 	void Registry::Update(double* deltaTime, Game* game)
 	{
+		rigidCharacterMovementSystem.Update(this, deltaTime);
 		rigidbodySystem.Update(this, deltaTime);
 		fluidSimulationSystem.Update(deltaTime);
 		softbodyRotatingMovementSystem.Update(this, deltaTime);
@@ -52,7 +53,6 @@ namespace Engine
 		buttonSystem.Update(this, deltaTime, game);
 		camSystem.Update(this, deltaTime);
 		spriteSheetAnimatorSystem.Update(this, deltaTime);
-		rigidCharacterMovementSystem.Update(this, deltaTime);
 	}
 
 	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)

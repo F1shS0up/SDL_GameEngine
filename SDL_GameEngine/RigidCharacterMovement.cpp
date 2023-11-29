@@ -39,19 +39,19 @@ namespace Engine
 				else if (InputManager::Instance()->KeyDown(c->moveRight))
 				{
 					c->holdTime += *deltaTime;
-					float per = std::clamp<float>(c->holdTime / c->acceleration, 0, 1);
+					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D(c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
 				}
 				else if (InputManager::Instance()->KeyDown(c->moveLeft))
 				{
 					c->holdTime += *deltaTime;
-					float per = std::clamp<float>(c->holdTime / c->acceleration, 0, 1);
+					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D(-c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
 				}
 				else if (c->holdTime > 0)
 				{
 					c->holdTime -= *deltaTime;
-					float per = std::clamp<float>(c->holdTime / c->deceleration, 0, 1);
+					double per = std::clamp<double>(c->holdTime / c->deceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D((reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * per, reg->rigidbodies[e].velocity.y);
 				}
 
