@@ -26,9 +26,9 @@ namespace Engine
 	{
 	public:
 		void Init(class Registry* reg);
-#ifdef  _DEBUG
+
 		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
-#endif //  _DEBUG
+
 
 		Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
 		void PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, double penetration, Vector2D collisionNormal);

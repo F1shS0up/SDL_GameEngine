@@ -4,14 +4,30 @@
 
 namespace Engine
 {
-	void SpriteSheetAnimator_Component::Play(const char* animationName)
+	void SpriteSheetAnimator_Component::Play(const char* animationName, bool fromStart)
 	{
-		stop = false;
-		currentAnimName = animationName;
-		currentAnimData = &animationDatas[animationName];
-		currentAnimTime = 0;
-		currentFrameTime = 0;
-		currentAnimFrame = 0;
+		if (fromStart)
+		{
+			stop = false;
+			currentAnimName = animationName;
+			currentAnimData = &animationDatas[animationName];
+			currentAnimTime = 0;
+			currentFrameTime = 0;
+			currentAnimFrame = 0;
+		}
+		else
+		{
+			if (animationName != currentAnimName)
+			{
+				stop = false;
+				currentAnimName = animationName;
+				currentAnimData = &animationDatas[animationName];
+				currentAnimTime = 0;
+				currentFrameTime = 0;
+				currentAnimFrame = 0;
+			}
+		}
+		
 	}
 
 	void SpriteSheetAnimator_System::Init(Registry* reg)

@@ -47,7 +47,7 @@ namespace Engine
 		fluidSimulationSystem.Update(deltaTime);
 		softbodyRotatingMovementSystem.Update(this, deltaTime);
 		softbodyJointSystem.Update(this, deltaTime);
-		//softbodySystem.Update(this, deltaTime, game); - TROUBLE WITH INTERFIERING TRANSFORM!!!
+		softbodySystem.Update(this, deltaTime, game);
 		textBoxSystem.Update(this, deltaTime, game);
 		sliderBoxSystem.Update(this, deltaTime, game);
 		buttonSystem.Update(this, deltaTime, game);
@@ -62,9 +62,9 @@ namespace Engine
 		fluidSimulationSystem.Draw(renderer, cameraRect);
 		textSystem.Draw(this, renderer, cameraRect);
 		textBoxSystem.Draw(this, renderer, cameraRect);
-#ifdef _DEBUG
+
 		rigidbodySystem.Draw(this, renderer, cameraRect);
-#endif // _DEBUG
+
 		colliderSystem.Draw(this, renderer, cameraRect);
 		softbodySystem.Draw(this, renderer, cameraRect, game);
 		shapeSystem.Draw(this, renderer, cameraRect);

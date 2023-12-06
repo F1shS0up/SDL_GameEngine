@@ -22,7 +22,7 @@ namespace Engine
 		double currentFrameTime;
 		double currentAnimTime; //How long is the animation going
 
-		void Play(const char* animationName);
+		void Play(const char* animationName, bool fromStart);
 	};
 
 	class SpriteSheetAnimator_System

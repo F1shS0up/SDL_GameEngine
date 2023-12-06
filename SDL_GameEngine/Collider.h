@@ -21,6 +21,7 @@ namespace Engine
 	struct AABBCollider_Component
 	{
 		double width, height;
+		double offsetX, offsetY;
 
 		Vector2D* position;
 	};

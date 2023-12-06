@@ -122,7 +122,7 @@ namespace Engine
 		return abs(area / 2.0);
 	}
 
-	Vector2D closestPointX;
+	
 	void Softbody_System::Update(Registry* reg, double* deltaTime, Game* game)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
@@ -412,7 +412,7 @@ namespace Engine
 				}
 
 #pragma endregion
-			}
+
 #pragma region AddAllForcesTogetherWithDragForce
 
 			for (int p = 0; p < reg->softbodies[e].massPoints.size(); p++)
@@ -443,15 +443,13 @@ namespace Engine
 			}
 
 #pragma endregion
+			}
 		}
 	}
 	void Softbody_System::CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime)
 	{
 		double length = (c->massPoints[s->B].position - c->massPoints[s->A].position).length();
 		double f = s->stiffness * (length - s->restLength);
-#ifdef _DEBUG
-		s->f = f;
-#endif // _DEBUG
 
 		Vector2D normalizedDir = (c->massPoints[s->B].position - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
 		Vector2D velDif = c->massPoints[s->B].velocity + normalizedDir * f * -1 * *deltaTime - c->massPoints[s->A].velocity + normalizedDir * f * *deltaTime;
@@ -471,9 +469,6 @@ namespace Engine
 	{
 		double length = (framePosition - c->massPoints[s->A].position).length();
 		double f = s->stiffness * (length - s->restLength);
-#ifdef _DEBUG
-		s->f = f;
-#endif // _DEBUG
 
 		Vector2D normalizedDir = (framePosition - c->massPoints[s->A].position) / (length == 0 ? 1 : length);
 		Vector2D velDif = Vector2D(0, 0) - c->massPoints[s->A].velocity + normalizedDir * f * *deltaTime;

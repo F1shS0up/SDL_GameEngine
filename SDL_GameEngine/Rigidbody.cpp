@@ -13,7 +13,7 @@ namespace Engine
 	{
 		if (!isStatic)
 		{
-			//Use GetMass() and GetMoment() here in case we ever need them to do something more than just return their values
+			
 			//Calculate the object's acceleration
 			Vector2D acceleration = force / mass;
 			//Add acceleration to object's velocity
@@ -40,11 +40,23 @@ namespace Engine
 			}
 		}
 	}
-#ifdef _DEBUG
+
 	void Rigidbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
+		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
+		{
+			if (reg->rigidbodies.count(e))
+			{
+				if (reg->AABBColliders.count(e))
+				{
+					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+					SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX), (int)(reg->transforms[e].position.y + reg->AABBColliders[e].offsetY), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
+					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+				}
+			}
+		}
 	}
-#endif
+
 
 	Vector2D Rigidbody_System::ReflectionResponse(Vector2D* normal, Vector2D* velocity)
 	{

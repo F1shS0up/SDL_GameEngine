@@ -41,18 +41,63 @@ namespace Engine
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D(c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
+
+					int x = std::floor(per / 25);
+					if (reg->spriteSheetAnimators.count(e))
+					{
+						if (c->moveRightAnim[x] != nullptr)
+						{
+							reg->spriteSheetAnimators[e].Play(c->moveRightAnim[x], false);
+						}
+					}
 				}
 				else if (InputManager::Instance()->KeyDown(c->moveLeft))
 				{
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D(-c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
+
+					int x = std::floor(per / 25);
+					if (reg->spriteSheetAnimators.count(e))
+					{
+						if (c->moveLeftAnim[x] != nullptr)
+						{
+							reg->spriteSheetAnimators[e].Play(c->moveLeftAnim[x], false);
+						}
+					}
 				}
 				else if (c->holdTime > 0)
 				{
 					c->holdTime -= *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->deceleration, 0, 1);
 					reg->rigidbodies[e].velocity = Vector2D((reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * per, reg->rigidbodies[e].velocity.y);
+					int x = std::floor(per / 25);
+
+
+					if (reg->spriteSheetAnimators.count(e))
+					{
+						if (reg->rigidbodies[e].velocity.x > 0)
+						{
+							if (c->moveRightAnim[x] != nullptr)
+							{
+								reg->spriteSheetAnimators[e].Play(c->moveRightAnim[x], false);
+							}
+						}
+						else if (reg->rigidbodies[e].velocity.x > 0)
+						{
+							if (c->moveLeftAnim[x] != nullptr)
+							{
+								reg->spriteSheetAnimators[e].Play(c->moveLeftAnim[x], false);
+							}
+						}
+						else
+						{
+							if (c->idleAnim != nullptr)
+							{
+								reg->spriteSheetAnimators[e].Play(c->idleAnim, false);
+							}
+						}
+					}
 				}
 
 				if (InputManager::Instance()->KeyReleased(c->moveRight))
