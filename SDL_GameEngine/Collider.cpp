@@ -5,6 +5,7 @@
 #include <numeric>
 #include <complex>
 #include "SDL2_gfxPrimitives.h"
+#include <iomanip>
 
 namespace Engine
 {
@@ -52,10 +53,10 @@ namespace Engine
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{
-			if (reg->lineColliders.count(e))
+			if (reg->AABBColliders.count(e))
 			{
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
-				SDL_RenderDrawLine(renderer, reg->lineColliders[e].a.x, reg->lineColliders[e].a.y, reg->lineColliders[e].b.x, reg->lineColliders[e].b.y);
+				SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX + 0.5), (int)(reg->transforms[e].position.y + (int)reg->AABBColliders[e].offsetY + 0.5), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
 			}
 		}
 	}
@@ -78,7 +79,19 @@ namespace Engine
 		point x = std::conj(Pr) * Bt + point(A.x, A.y);
 		return Vector2D(x.real(), x.imag());
 	}
+	inline float CalculatePerOnline(double X1, double X2, double Y1, double Y2, double XF, double YF)
+	{
+		double dx = X2 - X1;
+		double dy = Y2 - Y1;
+		if (dx > dy){
+			return (XF - X1) / dx;
+		}
+		else
+		{
+			return (YF - Y1) / dy;
+		}
 
+	}
 	bool ColliderFunctions::LineLineIntersection(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2, Vector2D* intersection, double* outA)
 	{
 		Vector2D a(A2 - A1);
@@ -106,11 +119,11 @@ namespace Engine
 			if (aa > f)     return false;
 			if (bb > f)     return false;
 		}
-
+		Vector2D i = (B2 - B1) * (1.0 - (aa / f)) + B1;
 		if (intersection)
-			*intersection = (B2 - B1) * (1.0 - (aa / f)) + B1;
+			*intersection = i;
 		if (outA)
-			*outA = aa;
+			*outA = CalculatePerOnline(A1.x, A2.x, A1.y, A2.y, i.x, i.y);
 		return true;
 	}
 	bool ColliderFunctions::LineIntersectsHorizontalInfiniteLine(Vector2D infLine, Vector2D A, Vector2D B)
@@ -220,8 +233,8 @@ namespace Engine
 
 	bool ColliderFunctions::RectangleWithRectangleIntersection(double widthA, double heightA, Vector2D posA, double widthB, double heightB, Vector2D posB, Vector2D* normal, double* penetration)
 	{
-		SDL_Rect rA = { posA.x, posA.y, widthA, heightA };
-		SDL_Rect rB = { posB.x, posB.y, widthB, heightB };
+		SDL_Rect rA = { posA.x + 0.5, posA.y + 0.5, widthA, heightA };
+		SDL_Rect rB = { posB.x + 0.5, posB.y + 0.5, widthB, heightB };
 		SDL_Rect result;
 		if (SDL_IntersectRect(&rA, &rB, &result))
 		{
@@ -230,26 +243,26 @@ namespace Engine
 				if (result.h > result.w && posA.x + widthA > posB.x && posA.x + widthA < posB.x + widthB)
 				{
 					//B on right
-					*normal = Vector2D(1, 0);
-					if (penetration)*penetration = result.w;
+					*normal = Vector2D(-1, 0);
+					if (penetration)*penetration = result.w - 0.5;
 				}
 				if (result.h > result.w && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
 				{
 					//B on left
-					*normal = Vector2D(-1, 0);
-					if (penetration)*penetration = result.w;
+					*normal = Vector2D(1, 0);
+					if (penetration)*penetration = result.w - 0.5;
 				}
 				if (result.h < result.w && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
 				{
 					//B on bottom
-					*normal = Vector2D(0, 1);
-					if (penetration)*penetration = result.h;
+					*normal = Vector2D(0, -1);
+					if (penetration)*penetration = result.h - 0.5;
 				}
 				if (result.h < result.w && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
 				{
 					//B on top
-					*normal = Vector2D(0, -1);
-					if (penetration)*penetration = result.h;
+					*normal = Vector2D(0, 1);
+					if (penetration)*penetration = result.h - 0.5;
 				}
 			}
 
@@ -330,8 +343,16 @@ namespace Engine
 	{
 		//Doesn't work for rotated rectangles
 		Vector2D point = percentage > 0.5f ? to : from;
-
-		Vector2D neededMovement = *intersectionPoint - point;
-		return pos + neededMovement;
+		std::cout << percentage << std::endl;
+		std::cout << "T:" << to.x << " " << to.y << std::endl;
+		std::cout << "F:" << from.x << " " << from.y << std::endl;
+		std::cout.precision(32);
+		std::cout << std::fixed;
+		Vector2D neededMovement = Vector2D(intersectionPoint->x - point.x, intersectionPoint->y - point.y);
+		std::cout << "Point:" << point.x << " " << point.y << std::endl;
+		std::cout << "Intersection:" << intersectionPoint->x << " " << intersectionPoint->y << std::endl;
+		std::cout << "Needed:" << intersectionPoint->x - point.x << " " << intersectionPoint->y - point.y << std::endl;
+		std::cout << "Final:" << (pos + neededMovement).x << " " << (pos + neededMovement).y << std::endl;
+		return Vector2D(pos.x + neededMovement.x, pos.y + neededMovement.y);
 	}
 }

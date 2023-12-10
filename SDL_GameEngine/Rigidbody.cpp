@@ -49,9 +49,9 @@ namespace Engine
 			{
 				if (reg->AABBColliders.count(e))
 				{
-					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-					SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX), (int)(reg->transforms[e].position.y + reg->AABBColliders[e].offsetY), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
-					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+					/*SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+					SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX + 1.5), (int)(reg->transforms[e].position.y + reg->AABBColliders[e].offsetY + 1.5), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
+					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);*/
 				}
 			}
 		}
@@ -105,7 +105,7 @@ namespace Engine
 
 	void Rigidbody_System::PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, double penetration, Vector2D collisionNormal)
 	{
-		*A->position += collisionNormal * std::abs(penetration);
+		*A->position += collisionNormal * penetration;
 	}
 	void Rigidbody_System::Update(Registry* reg, double* deltaTime)
 	{
@@ -115,6 +115,7 @@ namespace Engine
 			if (reg->rigidbodies.count(e))
 			{
 				Rigidbody_Component* c = &reg->rigidbodies[e];
+				if (c->isStatic) continue;
 				c->force = Vector2D(0, 0);
 				c->force.y = *c->gravity;
 
@@ -207,7 +208,7 @@ namespace Engine
 				if (reg->AABBColliders.count(e))
 				{
 					AABBCollider_Component* ac = &reg->AABBColliders[e];
-
+					Vector2D positionWithOffset = upcomingX1 + Vector2D(ac->offsetX, ac->offsetY);
 					for (int e2 = 1; e2 <= EntityManager::Instance()->num_entities; e2++)
 					{
 						if (reg->lineColliders.count(e2))
@@ -216,19 +217,19 @@ namespace Engine
 
 							Vector2D intersectionPoint, fromIntersectedLine, toIntersectedLine;
 							double outA;
-							if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, upcomingX1, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
+							if (ColliderFunctions::RectangleWithLineIntersection(ac->width, ac->height, positionWithOffset, cl->a, cl->b, &intersectionPoint, &fromIntersectedLine, &toIntersectedLine, &outA))
 							{
-								Vector2D normal = ColliderFunctions::ReflectionNormal(cl, upcomingX1);
+								//!NOT WORKING AS INTENDET. IF NEEDED FIX SOON!!!
+								Vector2D normal = ColliderFunctions::ReflectionNormal(cl, positionWithOffset + Vector2D(ac->width / 2, ac->height / 2));
 								Vector2D response = ReflectionResponse(&normal, &v1);
 								float l = response.length();
 								Vector2D elasticityResult = (normal * l * (-c->elasticity + 1));
 								Vector2D frictionResult = (response - normal * l) * c->friction;
 
-								c->velocity = response - elasticityResult - frictionResult;
-								
-
-								//Set the position away from the line so that it wont collide again which could result in a rectangle being stuck in line
 								*c->position = ColliderFunctions::PositionToReturnToAfterCollision(fromIntersectedLine, toIntersectedLine, x1, outA, &intersectionPoint);
+
+								c->velocity = response - elasticityResult - frictionResult;
+							
 							}
 						}
 					}
@@ -242,21 +243,32 @@ namespace Engine
 							Vector2D v2 = c2->velocity;
 							Vector2D x2 = *c2->position;
 							Vector2D upcomingX2 = x2 + v2 * *deltaTime;
+							
 							double m2 = c2->mass;
 							if (!(c2->ignoreLayers & c->layer) && !(c->ignoreLayers & c2->layer))
 							{
 								if (reg->AABBColliders.count(e2))
 								{
 									AABBCollider_Component* ac2 = &reg->AABBColliders[e2];
+									Vector2D positionWithOffset2 = upcomingX2 + Vector2D(ac2->offsetX, ac2->offsetY);
 									Vector2D normal;
 									double penetration;
-									if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, upcomingX1, ac2->width, ac2->height, upcomingX2, &normal, &penetration))
+									if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, positionWithOffset, ac2->width, ac2->height, positionWithOffset2, &normal, &penetration))
 									{
+										std::cout << e << " " << e2 << std::endl;
+										std::cout << penetration << std::endl;
 										ResolveCollision(c, c2, normal);
-									}
+										std::cout << normal.x << " " << normal.y << std::endl;
+										PositionalCorrection(c, c2, penetration, normal);
+										x1 = *c->position;
+										upcomingX1 = x1 + v1 * *deltaTime;
+										positionWithOffset = upcomingX1 + Vector2D(ac->offsetX, ac->offsetY);
+										
+									}	
 								}
 							}
 						}
+						
 					}
 				}
 
