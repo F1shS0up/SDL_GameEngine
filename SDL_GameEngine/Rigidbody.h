@@ -15,7 +15,6 @@ namespace Engine
 		Layers ignoreLayers;
 		bool isStatic = false;
 
-		Vector2D force;
 		Vector2D* position;
 		double inverseMass;
 
@@ -32,7 +31,7 @@ namespace Engine
 
 		Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);
 		void PositionalCorrection(Rigidbody_Component* A, Rigidbody_Component* B, double penetration, Vector2D collisionNormal);
-		void ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B, Vector2D normal);
+		void ResolveCollision(Rigidbody_Component* A, Rigidbody_Component* B, Vector2D normal, double* deltaTime);
 
 		void Update(class Registry* reg, double* deltaTime);
 	};

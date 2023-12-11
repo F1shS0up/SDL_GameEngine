@@ -42,7 +42,7 @@ namespace Engine
 				{
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
-					reg->rigidbodies[e].velocity.x = c->moveSpeed * per;
+					reg->rigidbodies[e].ApplyForce(Vector2D(c->moveSpeed * *deltaTime, 0));
 
 					int x = std::floor(per / 25);
 					if (reg->spriteSheetAnimators.count(e))
@@ -57,7 +57,7 @@ namespace Engine
 				{
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
-					reg->rigidbodies[e].velocity.x = -c->moveSpeed * per;
+					reg->rigidbodies[e].ApplyForce(Vector2D(-c->moveSpeed * *deltaTime, 0));
 
 					int x = std::floor(per / 25);
 					if (reg->spriteSheetAnimators.count(e))
@@ -72,7 +72,7 @@ namespace Engine
 				{
 					c->holdTime -= *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->deceleration, 0, 1);
-					reg->rigidbodies[e].velocity.x = (reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * per;
+					reg->rigidbodies[e].ApplyForce(Vector2D((reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * -per * *deltaTime, 0));
 					int x = std::floor(per / 25);
 
 
