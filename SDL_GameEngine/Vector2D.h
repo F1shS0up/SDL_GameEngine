@@ -2,6 +2,8 @@
 #define __VECTOR_2D_H__
 #include<math.h>
 #include <algorithm>
+#include <iostream> 
+#include <ostream> 
 
 class Vector2D
 {
@@ -80,6 +82,13 @@ public:
 		}
 		return *this;
 	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Vector2D& v)
+	{
+		os << "X:" << v.x << " " << "Y:" << v.y;
+		return os;
+	}
+
 
 	static Vector2D Clamp(const Vector2D& v, const Vector2D& min, const Vector2D& max)
 	{

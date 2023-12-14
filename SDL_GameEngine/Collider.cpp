@@ -230,13 +230,12 @@ namespace Engine
 		}
 		return false;
 	}
-
 	bool ColliderFunctions::RectangleWithRectangleIntersection(double widthA, double heightA, Vector2D posA, double widthB, double heightB, Vector2D posB, Vector2D* normal, double* penetration)
 	{
-		SDL_Rect rA = { posA.x + 0.5, posA.y + 0.5, widthA, heightA };
-		SDL_Rect rB = { posB.x + 0.5, posB.y + 0.5, widthB, heightB };
-		SDL_Rect result;
-		if (SDL_IntersectRect(&rA, &rB, &result))
+		SDL_FRect rA = { posA.x, posA.y, widthA, heightA };
+		SDL_FRect rB = { posB.x, posB.y, widthB, heightB };
+		SDL_FRect result;
+		if (SDL_IntersectFRect(&rA, &rB, &result))
 		{
 			if (normal)
 			{
@@ -244,25 +243,25 @@ namespace Engine
 				{
 					//B on right
 					*normal = Vector2D(-1, 0);
-					if (penetration)*penetration = result.w - 0.5;
+					if (penetration)*penetration = result.w;
 				}
 				if (result.h > result.w && posB.x + widthB > posA.x && posB.x + widthB < posA.x + widthA)
 				{
 					//B on left
 					*normal = Vector2D(1, 0);
-					if (penetration)*penetration = result.w - 0.5;
+					if (penetration)*penetration = result.w;
 				}
 				if (result.h < result.w && posA.y + heightA > posB.y && posA.y + heightA < posB.y + heightB)
 				{
 					//B on bottom
 					*normal = Vector2D(0, -1);
-					if (penetration)*penetration = result.h - 0.5;
+					if (penetration)*penetration = result.h;
 				}
 				if (result.h < result.w && posB.y + heightB > posA.y && posB.y + heightB < posA.y + heightA)
 				{
 					//B on top
 					*normal = Vector2D(0, 1);
-					if (penetration)*penetration = result.h - 0.5;
+					if (penetration)*penetration = result.h;
 				}
 			}
 

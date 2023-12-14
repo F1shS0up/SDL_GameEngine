@@ -85,37 +85,22 @@ namespace Engine
 
 		if (A->isStatic && !B->isStatic)
 		{
-			double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / (1 / B->mass);
+			double j = Vector2D::DotProduct((relativeVelocity) * -(1 + B->elasticity), normal) / ((1 / B->mass));
 			force = normal * j;
-			Vector2D fNorm = Vector2D(force).normalize();
-			B->ApplyForce(force * *deltaTime);
-			Vector2D friction = Vector2D(B->velocity.x * std::abs(fNorm.y), B->velocity.y * std::abs(fNorm.x)) * B->friction;
-			B->ApplyForce(friction * B->mass);
+			B->ApplyForce(force);
 		}
 		else if (B->isStatic && !A->isStatic)
 		{
 			double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass));
 			force = normal * j;
-			Vector2D fNorm = Vector2D(force).normalize();
-			A->ApplyForce(force * -1 * *deltaTime);
-			Vector2D friction = Vector2D(A->velocity.x * std::abs(fNorm.y), A->velocity.y * std::abs(fNorm.x)) * A->friction * -1;
-			std::cout << "F:" << friction.x << " " << friction.y << std::endl;
-			A->ApplyForce(friction * A->mass);
+			A->ApplyForce(force * -1);
 		}
 		else
 		{
-			double averageFriction = (A->friction + B->friction) / 2;
-
 			double j = Vector2D::DotProduct((relativeVelocity) * -(1 + A->elasticity), normal) / ((1 / A->mass) + (1 / B->mass));
 			force = normal * j;
-			Vector2D fNorm = Vector2D(force).normalize();
-			A->ApplyForce(force * -1 * *deltaTime);
-			Vector2D friction = Vector2D(A->velocity.x * std::abs(fNorm.y), A->velocity.y * std::abs(fNorm.x)) * averageFriction * -1;
-			A->ApplyForce(friction * A->mass);
-
-			B->ApplyForce(force * *deltaTime);
-			friction = Vector2D(B->velocity.x * std::abs(fNorm.y), B->velocity.y * std::abs(fNorm.x)) * averageFriction;
-			B->ApplyForce(friction * B->mass);
+			A->ApplyForce(force * -1);
+			B->ApplyForce(force);
 		}
 	}
 
@@ -269,10 +254,7 @@ namespace Engine
 									double penetration;
 									if (ColliderFunctions::RectangleWithRectangleIntersection(ac->width, ac->height, positionWithOffset, ac2->width, ac2->height, positionWithOffset2, &normal, &penetration))
 									{
-										std::cout << e << " " << e2 << std::endl;
-										std::cout << "Penetration" << penetration << std::endl;
 										ResolveCollision(c, c2, normal, deltaTime);
-										std::cout << normal.x << " " << normal.y << std::endl;
 										PositionalCorrection(c, c2, penetration, normal);
 										x1 = *c->position;
 										upcomingX1 = x1 + v1 * *deltaTime;
@@ -286,6 +268,7 @@ namespace Engine
 					}
 				}
 
+				std::cout << c->velocity << std::endl;
 				*c->position = *c->position + c->velocity * *deltaTime;
 			}
 		}

@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude;C:\Users\adamv\Documents\VS2022Lib\jsoncpp-master\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude;C:\Users\adamv\Documents\VS2022Lib\jsoncpp-master\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude;C:\Users\adamv\Documents\VS2022Lib\jsoncpp-master\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -134,7 +134,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adamv\Documents\VS2022Lib\SDL2-2.28.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_image-2.6.3\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_ttf-2.20.2\include;C:\Users\adamv\Documents\VS2022Lib\SDL2_gfx-1.0.4\acinclude;C:\Users\adamv\Documents\VS2022Lib\jsoncpp-master\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
