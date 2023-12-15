@@ -14,6 +14,10 @@ namespace Engine
 			currentAnimTime = 0;
 			currentFrameTime = 0;
 			currentAnimFrame = 0;
+			if (spr != nullptr)
+			{
+				spr->UpdateCurrentSpriteIndex(currentAnimData->frames[currentAnimFrame].second);
+			}
 		}
 		else
 		{
@@ -25,9 +29,12 @@ namespace Engine
 				currentAnimTime = 0;
 				currentFrameTime = 0;
 				currentAnimFrame = 0;
+				if (spr != nullptr)
+				{
+					spr->UpdateCurrentSpriteIndex(currentAnimData->frames[currentAnimFrame].second);
+				}
 			}
 		}
-		
 	}
 
 	void SpriteSheetAnimator_System::Init(Registry* reg)
@@ -38,6 +45,8 @@ namespace Engine
 			{
 				SpriteSheetAnimator_Component* anim = &reg->spriteSheetAnimators[e];
 				SpriteSheet_Component* spr = &reg->spriteSheets[e];
+				std::cout << "Anim Init" << std::endl;
+				anim->spr = spr;
 			}
 		}
 	}

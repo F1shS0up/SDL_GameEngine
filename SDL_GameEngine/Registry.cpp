@@ -32,6 +32,7 @@ namespace Engine
 		camSystem.Init(this);
 		spriteSystem.Init(this, renderer);
 		spriteSheetSystem.Init(this, renderer);
+		spriteSheetAnimatorSystem.Init(this);
 		rigidCharacterMovementSystem.Init(this);
 	}
 

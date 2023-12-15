@@ -30,7 +30,7 @@ namespace Engine
 				Sprite_Component* c = &reg->sprites[e];
 				if (reg->transforms.count(e))
 				{
-					SDL_RenderCopyEx(renderer, c->texture, nullptr, new SDL_Rect{ (int)reg->transforms[e].position.x, (int)reg->transforms[e].position.y, c->dstRect->w, c->dstRect->h }, reg->transforms[e].angle, nullptr, SDL_FLIP_NONE);
+					SDL_RenderCopyEx(renderer, c->texture, nullptr, new SDL_Rect{ (int)reg->transforms[e].position.x, (int)reg->transforms[e].position.y, c->dstRect->w, c->dstRect->h }, reg->transforms[e].angle, nullptr, c->flip);
 				}
 			}
 		}

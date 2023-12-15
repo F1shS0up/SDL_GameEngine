@@ -55,8 +55,8 @@ namespace Engine
 		{
 			if (reg->AABBColliders.count(e))
 			{
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
-				SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX + 0.5), (int)(reg->transforms[e].position.y + (int)reg->AABBColliders[e].offsetY + 0.5), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
+				//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
+				//SDL_RenderDrawRect(renderer, new SDL_Rect{ (int)(reg->transforms[e].position.x + reg->AABBColliders[e].offsetX + 0.5), (int)(reg->transforms[e].position.y + (int)reg->AABBColliders[e].offsetY + 0.5), (int)reg->AABBColliders[e].width, (int)reg->AABBColliders[e].height });
 			}
 		}
 	}

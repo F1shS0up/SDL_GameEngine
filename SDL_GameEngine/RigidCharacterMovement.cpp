@@ -42,9 +42,20 @@ namespace Engine
 				{
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
-					reg->rigidbodies[e].ApplyForce(Vector2D(c->moveSpeed * *deltaTime, 0));
-
-					int x = std::floor(per / 25);
+					reg->rigidbodies[e].velocity = Vector2D(c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
+					int x = std::clamp<int>(std::floor((double)(per / .25)), 0, 3);
+					std::cout << "XXXX: " << x << std::endl;
+					if (c->flipOnX)
+					{
+						if (reg->spriteSheets.count(e))
+						{
+							reg->spriteSheets[e].flip = SDL_FLIP_NONE;
+						}
+						if (reg->sprites.count(e))
+						{
+							reg->sprites[e].flip = SDL_FLIP_NONE;
+						}
+					}
 					if (reg->spriteSheetAnimators.count(e))
 					{
 						if (c->moveRightAnim[x] != nullptr)
@@ -57,9 +68,21 @@ namespace Engine
 				{
 					c->holdTime += *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->acceleration, 0, 1);
-					reg->rigidbodies[e].ApplyForce(Vector2D(-c->moveSpeed * *deltaTime, 0));
+					reg->rigidbodies[e].velocity = Vector2D(-c->moveSpeed * per, reg->rigidbodies[e].velocity.y);
 
-					int x = std::floor(per / 25);
+					int x = std::clamp<int>(std::floor((double)(per / .25)), 0, 3);
+					std::cout << "XXXX: " << x << std::endl;
+					if (c->flipOnX)
+					{
+						if (reg->spriteSheets.count(e))
+						{
+							reg->spriteSheets[e].flip = SDL_FLIP_HORIZONTAL;
+						}
+						if (reg->sprites.count(e))
+						{
+							reg->sprites[e].flip = SDL_FLIP_HORIZONTAL;
+						}
+					}
 					if (reg->spriteSheetAnimators.count(e))
 					{
 						if (c->moveLeftAnim[x] != nullptr)
@@ -72,8 +95,8 @@ namespace Engine
 				{
 					c->holdTime -= *deltaTime;
 					double per = std::clamp<double>(c->holdTime / c->deceleration, 0, 1);
-					reg->rigidbodies[e].ApplyForce(Vector2D((reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * -per * *deltaTime, 0));
-					int x = std::floor(per / 25);
+					reg->rigidbodies[e].velocity = Vector2D((reg->rigidbodies[e].velocity.x > 0 ? c->moveSpeed : -c->moveSpeed) * per, reg->rigidbodies[e].velocity.y);
+					int x = std::clamp<int>(std::floor((double)(per / .25)), 0, 3);
 
 
 					if (reg->spriteSheetAnimators.count(e))
@@ -85,7 +108,7 @@ namespace Engine
 								reg->spriteSheetAnimators[e].Play(c->moveRightAnim[x], false);
 							}
 						}
-						else if (reg->rigidbodies[e].velocity.x > 0)
+						else if (reg->rigidbodies[e].velocity.x < 0)
 						{
 							if (c->moveLeftAnim[x] != nullptr)
 							{

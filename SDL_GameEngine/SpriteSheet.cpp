@@ -26,7 +26,7 @@ void Engine::SpriteSheet_System::Draw(Registry* reg, SDL_Renderer* renderer)
 			SpriteSheet_Component* c = &reg->spriteSheets[e];
 			if (reg->transforms.count(e))
 			{
-				SDL_RenderCopy(renderer, c->texture, &c->srcRect, new SDL_Rect{ (int)(c->pos->x + 0.5), (int)(c->pos->y + 0.5), (int)c->widthAndHeightOfSprite.x, (int)c->widthAndHeightOfSprite.y });
+				SDL_RenderCopyEx(renderer, c->texture, &c->srcRect, new SDL_Rect{ (int)(c->pos->x + 0.5), (int)(c->pos->y + 0.5), (int)c->widthAndHeightOfSprite.x, (int)c->widthAndHeightOfSprite.y }, reg->transforms[e].angle, nullptr, c->flip);
 			}
 		}
 	}

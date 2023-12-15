@@ -8,6 +8,7 @@ namespace Engine
 		const char* idleAnim;
 		const char* moveRightAnim[4]; //Each element means 25% of speed
 		const char* moveLeftAnim[4]; //Each element means 25% of speed
+		bool flipOnX;
 
 #pragma region Moving
 

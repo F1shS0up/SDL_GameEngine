@@ -10,6 +10,7 @@ namespace Engine
 		//Set width to zero in order to set dst rect as texture size
 		SDL_Rect* dstRect;
 
+		SDL_RendererFlip flip;
 		SDL_Texture* texture;
 	};
 

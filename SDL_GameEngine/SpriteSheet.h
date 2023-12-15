@@ -12,6 +12,7 @@ namespace Engine
 		Vector2D widthAndHeightOfSprite;
 		int numberOfSprites;
 
+		SDL_RendererFlip flip;
 		Vector2D* pos;
 		SDL_Rect srcRect;
 		int currentSprite;
