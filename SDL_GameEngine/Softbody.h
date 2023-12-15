@@ -68,12 +68,12 @@ namespace Engine
 	class Softbody_System
 	{
 	public:
-		void Init(class Registry* reg, const class Game* game);
+		void Init(class Registry* reg, class Game* game);
 		void StartUpdate(class Registry* reg);
 		void Update(class Registry* reg, double* deltaTime, class Game* game);
 		void CalculateSpringForce(Spring* s, Softbody_Component* c, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
 		void CalculateSpringForceForFrame(Spring* s, Softbody_Component* c, Vector2D* forceA, double* deltaTime, Vector2D framePosition);
 		void ResolveCollision(MassPoint* A, MassPoint* B, MassPoint* P, Vector2D normal);
-		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game);
+		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game);
 	};
 }

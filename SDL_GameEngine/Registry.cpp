@@ -13,7 +13,7 @@ namespace Engine
 		return instance;
 	}
 
-	void Registry::Init(SDL_Renderer* renderer, const Game* game)
+	void Registry::Init(SDL_Renderer* renderer, Game* game)
 	{
 		tilemapSystem.Init(this, renderer);
 		randomSoftbodyGeneratorSystem.Init(this, game);
@@ -56,7 +56,7 @@ namespace Engine
 		spriteSheetAnimatorSystem.Update(this, deltaTime);
 	}
 
-	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const Game* game)
+	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game)
 	{
 		tilemapSystem.Draw(this, renderer);
 		tiledSpriteSystem.Draw(this, renderer, cameraRect);

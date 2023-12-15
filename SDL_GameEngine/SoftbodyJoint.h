@@ -28,7 +28,7 @@ namespace Engine
 	class SoftbodyJoint_System
 	{
 	public:
-		void Init(class Registry* reg, const class Game* game);
+		void Init(class Registry* reg, class Game* game);
 		void Update(class Registry* reg, double* deltaTime);
 		void CalculateSpringForce(Vector2D APosition, Vector2D BPosition, float stiffness, float restLength, float dampingFactor, Vector2D velocityA, Vector2D velocityB, Vector2D* forceA, Vector2D* forceB, double* deltaTime);
 	};

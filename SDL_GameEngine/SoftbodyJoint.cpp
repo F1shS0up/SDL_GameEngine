@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-	void SoftbodyJoint_System::Init(Registry* reg, const Game* game)
+	void SoftbodyJoint_System::Init(Registry* reg, Game* game)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

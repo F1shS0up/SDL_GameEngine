@@ -6,7 +6,7 @@
 
 namespace Engine
 {
-	void RandomSoftbodyGenerator_System::Init(Registry* reg, const Game* game)
+	void RandomSoftbodyGenerator_System::Init(Registry* reg, Game* game)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

@@ -28,6 +28,6 @@ namespace Engine
 	class RandomSoftbodyGenerator_System
 	{
 	public:
-		void Init(class Registry* reg, const Game* game);
+		void Init(class Registry* reg, Game* game);
 	};
 }

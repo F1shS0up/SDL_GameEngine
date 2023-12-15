@@ -28,7 +28,7 @@ namespace Engine
 
 	struct Registry
 	{
-	public:
+
 		static Registry* Instance();
 
 #pragma region components
@@ -83,12 +83,12 @@ namespace Engine
 
 #pragma endregion
 
-		void Init(SDL_Renderer* renderer, const class Game* game);
-		void StartUpdate(double* deltaTime, class Game* game);
-		void Update(double* deltaTime, class Game* game);
-		void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, const class Game* game);
+		virtual void Init(SDL_Renderer* renderer, class Game* game);
+		virtual void StartUpdate(double* deltaTime, class Game* game);
+		virtual void Update(double* deltaTime, class Game* game);
+		virtual void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, class Game* game);
 
-	private:
+	protected:
 
 		static Registry* instance;
 	};
