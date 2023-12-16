@@ -21,7 +21,7 @@ namespace Engine
 		}
 	}
 
-	void Sprite_System::Draw(Registry* reg, SDL_Renderer* renderer)
+	void Sprite_System::Render(Registry* reg, SDL_Renderer* renderer)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

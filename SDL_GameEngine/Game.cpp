@@ -145,7 +145,7 @@ namespace Engine
 		SDL_SetRenderDrawColor(renderer, clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		SDL_RenderClear(renderer);
 
-		Registry::Instance()->Draw(renderer, &cam->resultRect, this);
+		Registry::Instance()->Render(renderer, &cam->resultRect, this);
 		SDL_RenderPresent(renderer);
 	}
 

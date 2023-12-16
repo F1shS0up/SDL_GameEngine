@@ -16,6 +16,6 @@ namespace Engine
 	{
 	public:
 		void Init(class Registry* reg, SDL_Renderer* renderer);
-		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+		void Render(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 	};
 }

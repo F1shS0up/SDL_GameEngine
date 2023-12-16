@@ -49,7 +49,7 @@ namespace Engine
 		}
 	}
 
-	void Collider_System::Draw(Registry* reg, class SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+	void Collider_System::Render(Registry* reg, class SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

@@ -10,13 +10,13 @@ namespace Engine
 	}
 	void ShapesRendering::DrawTiled(SDL_Surface* bmp, SDL_Surface* tile, int offset_x, int offset_y, int screenW, int screenH)
 	{
-		// Draw the background tiles
+		// Render the background tiles
 		int x = offset_x, y = offset_y;
 		int w = tile->w;
 		int h = tile->h;
 		while (1)
 		{
-			// Draw a tile to the current position
+			// Render a tile to the current position
 			SDL_Rect r;
 			r.x = x;
 			r.y = y;

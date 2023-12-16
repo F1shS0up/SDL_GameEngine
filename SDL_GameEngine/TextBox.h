@@ -22,7 +22,7 @@ namespace Engine
 	{
 	public:
 		void Init(class Registry* reg, SDL_Renderer* renderer);
-		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+		void Render(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 		void Update(class Registry* reg, double* deltaTime, class Game* game);
 		void LoadFont(SDL_Renderer* renderer, TextBox_Component* comp);
 		void SetText(TextBox_Component* component, char* message);

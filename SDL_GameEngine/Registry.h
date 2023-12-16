@@ -86,7 +86,7 @@ namespace Engine
 		virtual void Init(SDL_Renderer* renderer, class Game* game);
 		virtual void StartUpdate(double* deltaTime, class Game* game);
 		virtual void Update(double* deltaTime, class Game* game);
-		virtual void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, class Game* game);
+		virtual void Render(SDL_Renderer* renderer, const SDL_Rect* cameraRect, class Game* game);
 
 	protected:
 

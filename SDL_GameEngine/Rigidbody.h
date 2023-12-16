@@ -26,7 +26,7 @@ namespace Engine
 	public:
 		void Init(class Registry* reg);
 
-		void Draw(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+		void Render(class Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 
 
 		Vector2D ReflectionResponse(Vector2D* normal, Vector2D* velocity);

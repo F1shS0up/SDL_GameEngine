@@ -73,7 +73,7 @@ namespace Engine
 			}
 		}
 	}
-	void Tilemap_System::Draw(Registry* reg, SDL_Renderer* renderer)
+	void Tilemap_System::Render(Registry* reg, SDL_Renderer* renderer)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

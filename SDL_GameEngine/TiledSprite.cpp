@@ -39,7 +39,7 @@ namespace Engine
 		}
 	}
 
-	void TiledSprite_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+	void TiledSprite_System::Render(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

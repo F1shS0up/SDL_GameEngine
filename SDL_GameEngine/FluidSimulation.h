@@ -32,6 +32,6 @@ namespace Engine
 		double CalculateDensity(Vector2D samplePoint);
 		Vector2D CalculatePressureForce(int index);
 		double ConvertDensityToPressure(double density);
-		void Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect);
+		void Render(SDL_Renderer* renderer, const SDL_Rect* cameraRect);
 	};
 }

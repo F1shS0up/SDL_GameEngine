@@ -17,7 +17,7 @@ void Engine::SpriteSheet_System::Init(Registry* reg, SDL_Renderer* renderer)
 	}
 }
 
-void Engine::SpriteSheet_System::Draw(Registry* reg, SDL_Renderer* renderer)
+void Engine::SpriteSheet_System::Render(Registry* reg, SDL_Renderer* renderer)
 {
 	for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 	{

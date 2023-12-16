@@ -20,7 +20,7 @@ namespace Engine
 		}
 	}
 
-	void Shape_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+	void Shape_System::Render(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{

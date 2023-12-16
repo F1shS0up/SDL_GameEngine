@@ -149,7 +149,7 @@ namespace Engine
 		return pressure;
 	}
 
-	void FluidSimulation_System::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
+	void FluidSimulation_System::Render(SDL_Renderer* renderer, const SDL_Rect* cameraRect)
 	{
 		if (fluid)
 		{

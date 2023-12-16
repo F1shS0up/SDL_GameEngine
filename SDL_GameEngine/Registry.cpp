@@ -56,20 +56,20 @@ namespace Engine
 		spriteSheetAnimatorSystem.Update(this, deltaTime);
 	}
 
-	void Registry::Draw(SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game)
+	void Registry::Render(SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game)
 	{
-		tilemapSystem.Draw(this, renderer);
-		tiledSpriteSystem.Draw(this, renderer, cameraRect);
-		fluidSimulationSystem.Draw(renderer, cameraRect);
-		textSystem.Draw(this, renderer, cameraRect);
-		textBoxSystem.Draw(this, renderer, cameraRect);
+		tilemapSystem.Render(this, renderer);
+		tiledSpriteSystem.Render(this, renderer, cameraRect);
+		fluidSimulationSystem.Render(renderer, cameraRect);
+		textSystem.Render(this, renderer, cameraRect);
+		textBoxSystem.Render(this, renderer, cameraRect);
 
-		rigidbodySystem.Draw(this, renderer, cameraRect);
+		rigidbodySystem.Render(this, renderer, cameraRect);
 
-		colliderSystem.Draw(this, renderer, cameraRect);
-		softbodySystem.Draw(this, renderer, cameraRect, game);
-		shapeSystem.Draw(this, renderer, cameraRect);
-		spriteSystem.Draw(this, renderer);
-		spriteSheetSystem.Draw(this, renderer);
+		colliderSystem.Render(this, renderer, cameraRect);
+		softbodySystem.Render(this, renderer, cameraRect, game);
+		shapeSystem.Render(this, renderer, cameraRect);
+		spriteSystem.Render(this, renderer);
+		spriteSheetSystem.Render(this, renderer);
 	}
 }

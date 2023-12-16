@@ -496,7 +496,7 @@ namespace Engine
 		A->ApplyForce(force);
 	}
 
-	void Softbody_System::Draw(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game)
+	void Softbody_System::Render(Registry* reg, SDL_Renderer* renderer, const SDL_Rect* cameraRect, Game* game)
 	{
 		for (int e = 1; e <= EntityManager::Instance()->num_entities; e++)
 		{
